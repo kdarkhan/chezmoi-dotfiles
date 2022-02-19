@@ -42,6 +42,7 @@ end
 local function setup_options()
   -- Incremental live completion
   vim.o.inccommand = 'nosplit'
+  vim.o.laststatus = 3
 
   vim.o.jumpoptions = 'stack'
 
@@ -561,10 +562,10 @@ function MyLspConfig(opts)
     -- add('~/.local/share/nvim/site/pack/packer/start/*')
 
     local runtime_path = vim.split(package.path, ';')
-    table.insert(runtime_path, "lua/?.lua")
-    table.insert(runtime_path, "lua/?/init.lua")
+    table.insert(runtime_path, 'lua/?.lua')
+    table.insert(runtime_path, 'lua/?/init.lua')
 
-    require'lspconfig'.sumneko_lua.setup {
+    require('lspconfig').sumneko_lua.setup({
       capabilities = capabilities,
       settings = {
         Lua = {
@@ -576,11 +577,11 @@ function MyLspConfig(opts)
           },
           diagnostics = {
             -- Get the language server to recognize the `vim` global
-            globals = {'vim'},
+            globals = { 'vim' },
           },
           workspace = {
             -- Make the server aware of Neovim runtime files
-            library = vim.api.nvim_get_runtime_file("", true),
+            library = vim.api.nvim_get_runtime_file('', true),
           },
           -- Do not send telemetry data containing a randomized but unique identifier
           telemetry = {
@@ -588,7 +589,7 @@ function MyLspConfig(opts)
           },
         },
       },
-    }
+    })
 
     -- require('lspconfig').sumneko_lua.setup({
     --   on_new_config = function(config, root)
