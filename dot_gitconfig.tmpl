@@ -1,0 +1,27 @@
+[user]
+	email = {{ .email }}
+	name = {{ .fullname }}
+[push]
+	default = matching
+[branch]
+	autosetuprebase = always
+[credential]
+	helper = cache --timeout=3600
+[alias]
+	dsf = "!f() { [ \"$GIT_PREFIX\" != \"\" ] && cd "$GIT_PREFIX"; git diff --color $@ | diff-so-fancy | less --tabs=4 -RFX; }; f"
+	co = checkout
+	ci = checkin
+	l = log --date-order --date=iso --graph --full-history --all --pretty=format:'%x08%x09%C(red)%h %C(cyan)%ad%x08%x08%x08%x08%x08%x08%x08%x08%x08%x08%x08%x08%x08%x08%x08 %C(bold blue)%aN%C(reset)%C(bold yellow)%d %C(reset)%s'
+[diff]
+	# Use better, descriptive initials (c, i, w) instead of a/b.
+	mnemonicPrefix = true
+	# Show renames/moves as such
+	renames = true
+	# When using --word-diff, assume --word-diff-regex=.
+	wordRegex = .
+	# Display submodule-related information (commit listings)
+	submodule = log
+[color]
+	ui = auto
+[init]
+	defaultBranch = master
