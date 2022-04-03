@@ -1,0 +1,4 @@
+README.md
+{{- if ne .machine_type "work" }}
+.work # only manage .work on work-laptop
+{{- end }}
