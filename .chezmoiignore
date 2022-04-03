@@ -1,4 +1,9 @@
 README.md
+stylua.toml
+Makefile
 {{- if ne .machine_type "work" }}
 .work # only manage .work on work-laptop
+{{- end }}
+{{- if ne .chezmoi.os "linux" }}
+.config/picom.conf
 {{- end }}
