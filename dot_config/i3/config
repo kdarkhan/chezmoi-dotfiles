@@ -28,7 +28,8 @@ font pango:monospace 8
 exec --no-startup-id xss-lock --transfer-sleep-lock -- ./scripts/fuzzy-i3lock.sh
 
 # exec_always --no-startup-id feh --bg-scale ./Pictures/autumn.png
-exec_always --no-startup-id feh --bg-scale ./Pictures/wallpapers/robot_3.jpg
+# exec_always --no-startup-id feh --bg-scale ./Pictures/wallpapers/robot_3.jpg
+exec_always --no-startup-id feh --bg-scale ./Pictures/wallpapers/spirited-away.png
 # exec_always --no-startup-id feh --bg-scale ./Desktop/chess.png
 
 # NetworkManager is the most popular way to manage wireless networks on Linux,
@@ -131,6 +132,28 @@ set $ws8 "8:сегіз"
 set $ws9 "9:тоғыз"
 set $ws10 "10:он"
 
+set $ws1 "1:1"
+set $ws2 "2:2"
+set $ws3 "3:3"
+set $ws4 "4:4"
+set $ws5 "5:5"
+set $ws6 "6:6"
+set $ws7 "7:7"
+set $ws8 "8:8"
+set $ws9 "9:9"
+set $ws10 "10:10"
+
+set $ws1 "1"
+set $ws2 "2"
+set $ws3 "3"
+set $ws4 "4"
+set $ws5 "5"
+set $ws6 "6"
+set $ws7 "7"
+set $ws8 "8"
+set $ws9 "9"
+set $ws10 "10"
+
 
 # switch to workspace
 bindsym $mod+1 workspace number $ws1
@@ -210,32 +233,32 @@ mode "passthrough" {
 }
 
 # using https://github.com/greshake/i3status-rust as the status bar
-bar {
-    # font pango:Cascadia Mono PL:style=Regular, Font Awesome 5 Free 9
-    font pango:Cascadia Code PL:style=ExtraLight, Font Awesome 5 Free 9
-    position top
-    status_command i3status-rs .config/i3/status.toml
-    i3bar_command i3bar --transparency
+# bar {
+#     # font pango:Cascadia Mono PL:style=Regular, Font Awesome 5 Free 9
+#     font pango:Cascadia Code PL:style=ExtraLight, Font Awesome 5 Free 9
+#     # position top
+#     # status_command i3status-rs .config/i3/status.toml
+#     # i3bar_command i3bar --transparency
 
-    # height 19
-    # separator_symbol "/"
+#     # height 19
+#     # separator_symbol "/"
 
-    colors {
-        background #26262699
-        statusline #ffffff00
-        separator #66666600
+#     colors {
+#         background #26262699
+#         statusline #ffffff00
+#         separator #66666600
 
-        # focused_workspace  #4c7899 #339966 #fff3b0
-        focused_workspace  #4c7899 #336666 #fff3b0
-        active_workspace   #333333 #fff3b0 #3d405b
-        inactive_workspace #333333 #424242 #ffffff
-        urgent_workspace   #2f343a #e09f3e #ffffff
-        binding_mode       #2f343a #e09f3e #ffffff
-    }
+#         # focused_workspace  #4c7899 #339966 #fff3b0
+#         focused_workspace  #4c7899 #336666 #fff3b0
+#         active_workspace   #333333 #fff3b0 #3d405b
+#         inactive_workspace #333333 #424242 #ffffff
+#         urgent_workspace   #2f343a #e09f3e #ffffff
+#         binding_mode       #2f343a #e09f3e #ffffff
+#     }
 
 
-    strip_workspace_numbers yes
-}
+#     strip_workspace_numbers no
+# }
 
 for_window [class=".*"] border pixel 0
 for_window [class="ghidra-Ghidra"] floating enable
