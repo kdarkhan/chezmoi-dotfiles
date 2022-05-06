@@ -293,51 +293,78 @@ function MyTelescopeConfig(opts)
   })
 
   -- Add leader shortcuts
-  vim.api.nvim_set_keymap(
-    'n',
-    '<leader><leader>',
-    [[<cmd>lua require('telescope.builtin').find_files{find_command={'rg','--files', '-.', '--no-ignore', '-g', '!.git/' }}<CR>]],
-    { noremap = true, silent = true }
-  )
+  vim.api.nvim_set_keymap('n', '<leader><leader>', '', {
+    noremap = true,
+    silent = true,
+    callback = function()
+      require('telescope.builtin').find_files({
+        find_command = { 'rg', '--files', '-.', '--no-ignore', '-g', '!.git/' },
+      })
+    end,
+  })
 
   vim.api.nvim_set_keymap(
     'n',
     'fg',
-    [[<cmd>lua require('telescope.builtin').live_grep()<CR>]],
-    { noremap = true, silent = true }
+    '',
+    {
+      noremap = true,
+      silent = true,
+      callback = require('telescope.builtin').live_grep,
+    }
   )
 
   vim.api.nvim_set_keymap(
     'n',
     '<leader>bb',
-    [[<cmd>lua require('telescope.builtin').buffers()<CR>]],
-    { noremap = true, silent = true }
+    '',
+    {
+      noremap = true,
+      silent = true,
+      callback = require('telescope.builtin').buffers,
+    }
   )
   vim.api.nvim_set_keymap(
     'n',
     '<leader>fb',
-    [[<cmd>lua require('telescope.builtin').current_buffer_fuzzy_find()<CR>]],
-    { noremap = true, silent = true }
+    '',
+    {
+      noremap = true,
+      silent = true,
+      callback = require('telescope.builtin').current_buffer_fuzzy_find,
+    }
   )
   vim.api.nvim_set_keymap(
     'n',
     '<leader>fh',
-    [[<cmd>lua require('telescope.builtin').help_tags()<CR>]],
-    { noremap = true, silent = true }
+    '',
+    {
+      noremap = true,
+      silent = true,
+      callback = require('telescope.builtin').help_tags,
+    }
   )
   -- vim.api.nvim_set_keymap('n', '<leader>st', [[<cmd>lua require('telescope.builtin').tags()<CR>]], { noremap = true, silent = true })
   vim.api.nvim_set_keymap(
     'n',
     '<leader>fs',
-    [[<cmd>lua require('telescope.builtin').treesitter()<CR>]],
-    { noremap = true, silent = true }
+    '',
+    {
+      noremap = true,
+      silent = true,
+      callback = require('telescope.builtin').treesitter,
+    }
   )
   -- vim.api.nvim_set_keymap('n', '<leader>so', [[<cmd>lua require('telescope.builtin').tags{ only_current_buffer = true }<CR>]], { noremap = true, silent = true })
   vim.api.nvim_set_keymap(
     'n',
     '<leader>fo',
-    [[<cmd>lua require('telescope.builtin').oldfiles()<CR>]],
-    { noremap = true, silent = true }
+    '',
+    {
+      noremap = true,
+      silent = true,
+      callback = require('telescope.builtin').oldfiles,
+    }
   )
 end
 
@@ -371,9 +398,9 @@ end
 function MyLspConfig(opts)
   opts = opts or {}
   local servers = opts.servers or { 'rust_analyzer' }
-  local sumneko_root_path = opts.sumneko_root_path
-    or '/usr/share/lua-language-server'
-  local sumneko_binary = opts.sumneko_binary or 'lua-language-server'
+  -- local sumneko_root_path = opts.sumneko_root_path
+  -- or '/usr/share/lua-language-server'
+  -- local sumneko_binary = opts.sumneko_binary or 'lua-language-server'
 
   require('trouble').setup({})
 
@@ -393,122 +420,57 @@ function MyLspConfig(opts)
     lsp_signature.on_attach()
     aerial.on_attach(client, bufnr, attach_opts)
 
-    local function buf_set_keymap(...)
-      vim.api.nvim_buf_set_keymap(bufnr, ...)
+    local function buf_set_keymap(lhs, rhs, callback)
+      vim.api.nvim_buf_set_keymap(
+        bufnr,
+        lhs,
+        rhs,
+        '',
+        { noremap = true, silent = true, callback = callback }
+      )
     end
 
     -- Mappings.
     local map_opts = { noremap = true, silent = true }
 
     -- See `:help vim.lsp.*` for documentation on any of the below functions
-    buf_set_keymap(
-      'n',
-      'gD',
-      '<Cmd>lua vim.lsp.buf.declaration()<CR>',
-      map_opts
-    )
+    buf_set_keymap('n', 'gD', vim.lsp.buf.declaration)
     -- buf_set_keymap('n', 'gd', '<Cmd>lua vim.lsp.buf.definition()<CR>', map_opts)
-    buf_set_keymap(
-      'n',
-      'gd',
-      [[<cmd>lua require('telescope.builtin').lsp_definitions()<CR>]],
-      map_opts
-    )
+    buf_set_keymap('n', 'gd', require('telescope.builtin').lsp_definitions)
     -- buf_set_keymap('n', 'gt', '<cmd>lua vim.lsp.buf.type_definition()<CR>', map_opts)
-    buf_set_keymap(
-      'n',
-      'gt',
-      [[<cmd>lua require('telescope.builtin').lsp_type_definitions()<CR>]],
-      map_opts
-    )
+    buf_set_keymap('n', 'gt', require('telescope.builtin').lsp_type_definitions)
     -- buf_set_keymap('n', 'gr', '<cmd>lua vim.lsp.buf.references()<CR>', map_opts)
-    buf_set_keymap(
-      'n',
-      'gr',
-      [[<cmd>lua require('telescope.builtin').lsp_references()<CR>]],
-      map_opts
-    )
+    buf_set_keymap('n', 'gr', require('telescope.builtin').lsp_references)
     -- buf_set_keymap('n', 'gi', '<cmd>lua vim.lsp.buf.implementation()<CR>', map_opts)
-    buf_set_keymap(
-      'n',
-      'gi',
-      [[<cmd>lua require('telescope.builtin').lsp_implementations()<CR>]],
-      map_opts
-    )
-    buf_set_keymap('n', 'K', '<Cmd>lua vim.lsp.buf.hover()<CR>', map_opts)
-    buf_set_keymap(
-      'n',
-      '<C-k>',
-      '<cmd>lua vim.lsp.buf.signature_help()<CR>',
-      map_opts
-    )
-    buf_set_keymap(
-      'n',
-      '<leader>lwa',
-      '<cmd>lua vim.lsp.buf.add_workspace_folder()<CR>',
-      map_opts
-    )
-    buf_set_keymap(
-      'n',
-      '<leader>lwr',
-      '<cmd>lua vim.lsp.buf.remove_workspace_folder()<CR>',
-      map_opts
-    )
-    buf_set_keymap(
-      'n',
-      '<leader>lwl',
-      '<cmd>lua print(vim.inspect(vim.lsp.buf.list_workspace_folders()))<CR>',
-      map_opts
-    )
+    buf_set_keymap('n', 'gi', require('telescope.builtin').lsp_implementations)
+    buf_set_keymap('n', 'K', vim.lsp.buf.hover)
+    buf_set_keymap('n', '<C-k>', vim.lsp.buf.signature_help)
+    buf_set_keymap('n', '<leader>lwa', vim.lsp.buf.add_workspace_folder)
+    buf_set_keymap('n', '<leader>lwr', vim.lsp.buf.remove_workspace_folder)
+    buf_set_keymap('n', '<leader>lwl', function()
+      print(vim.inspect(vim.lsp.buf.list_workspace_folders()))
+    end)
     buf_set_keymap(
       'n',
       '<leader>lwd',
-      [[<cmd>lua require('telescope.builtin').lsp_workspace_diagnostics()<CR>]],
-      map_opts
+      require('telescope.builtin').lsp_workspace_diagnostics
     )
-    buf_set_keymap(
-      'n',
-      '<leader>lr',
-      '<cmd>lua vim.lsp.buf.rename()<CR>',
-      map_opts
-    )
+    buf_set_keymap('n', '<leader>lr', vim.lsp.buf.rename)
     -- buf_set_keymap('n', '<leader>la', '<cmd>lua vim.lsp.buf.code_action()<CR>', map_opts)
     buf_set_keymap(
       'n',
       '<leader>la',
-      [[<cmd>lua require('telescope.builtin').lsp_code_actions()<CR>]],
-      map_opts
+      require('telescope.builtin').lsp_code_actions
     )
     buf_set_keymap(
       'n',
       '<leader>ls',
-      [[<cmd>lua require('telescope.builtin').lsp_workspace_symbols()<CR>]],
-      map_opts
+      require('telescope.builtin').lsp_workspace_symbols
     )
-    buf_set_keymap(
-      'n',
-      '<leader>ld',
-      '<cmd>lua vim.lsp.diagnostic.show_line_diagnostics()<CR>',
-      map_opts
-    )
-    buf_set_keymap(
-      'n',
-      '<leader>lf',
-      '<cmd>lua vim.lsp.buf.formatting()<CR>',
-      map_opts
-    )
-    buf_set_keymap(
-      'n',
-      'gp',
-      '<cmd>lua vim.lsp.diagnostic.goto_prev()<CR>',
-      map_opts
-    )
-    buf_set_keymap(
-      'n',
-      'gn',
-      '<cmd>lua vim.lsp.diagnostic.goto_next()<CR>',
-      map_opts
-    )
+    buf_set_keymap('n', '<leader>ld', vim.lsp.diagnostic.show_line_diagnostics)
+    buf_set_keymap('n', '<leader>lf', vim.lsp.buf.formatting)
+    buf_set_keymap('n', 'gp', vim.lsp.diagnostic.goto_prev)
+    buf_set_keymap('n', 'gn', vim.lsp.diagnostic.goto_next)
 
     -- buf_set_keymap('n', '<leader>q', '<cmd>lua vim.lsp.diagnostic.set_loclist()<CR>', map_opts)
     vim.cmd([[ command! Format execute 'lua vim.lsp.buf.formatting()' ]])
