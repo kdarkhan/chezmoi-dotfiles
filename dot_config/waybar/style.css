@@ -75,12 +75,17 @@ window#waybar.chromium {
 #network,
 #pulseaudio,
 #custom-media,
+#custom-output-scale,
 #tray,
 #mode,
 #idle_inhibitor,
+#keyboard-state,
+#language,
+#bluetooth,
 #mpd {
     padding: 0 10px;
     color: #ffffff;
+    border-radius: 20px;
 }
 
 #window,
@@ -175,6 +180,12 @@ label:focus {
     min-width: 100px;
 }
 
+
+#custom-output-scale {
+    background-color: #66cc99;
+    /* background-color: #2d3436; */
+}
+
 #custom-media.custom-spotify {
     background-color: #66cc99;
 }
@@ -233,17 +244,22 @@ label:focus {
 #language {
     background: #00b093;
     color: #740864;
-    padding: 0 5px;
-    margin: 0 5px;
+    padding: 0 4px;
+    margin: 0 4px;
     min-width: 16px;
+}
+
+
+#bluetooth {
+    background: #00b093;
 }
 
 #keyboard-state {
     background: #97e1ad;
     color: #000000;
-    padding: 0 0px;
-    margin: 0 5px;
-    min-width: 16px;
+    /* padding: 0 0px; */
+    /* margin: 0 3px; */
+    /* min-width: 16px; */
 }
 
 #keyboard-state > label {

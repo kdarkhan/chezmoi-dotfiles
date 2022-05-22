@@ -3,11 +3,11 @@
     // "position": "bottom", // Waybar position (top|bottom|left|right)
     "height": 30, // Waybar height (to be removed for auto height)
     // "width": 1280, // Waybar width
-    "spacing": 4, // Gaps between modules (4px)
+    "spacing": 3, // Gaps between modules (4px)
     // Choose the order of the modules
     "modules-left": ["sway/workspaces", "sway/mode"],
     "modules-center": ["sway/window"],
-    "modules-right": ["idle_inhibitor", "custom/output-scale", "pulseaudio", "network", "network#wifi", "cpu", "memory", "temperature", "backlight", "keyboard-state", "sway/language", "clock", "bluetooth", "tray"],
+    "modules-right": ["idle_inhibitor", "custom/output-scale", "pulseaudio", "network", "network#wifi", "cpu", "memory", "temperature", "keyboard-state", "sway/language", "bluetooth", "clock", "tray"],
     // Modules configuration
     // "sway/workspaces": {
     //     "disable-scroll": true,
@@ -113,9 +113,6 @@
         // "format-full": "",
         "format-icons": ["", "", "", "", ""]
     },
-    "battery#bat2": {
-        "bat": "BAT2"
-    },
     "network": {
         "interface": "net0", // (Optional) To force the use of this interface
         "format-wifi": "{essid} ({signalStrength}%) ",
@@ -173,7 +170,6 @@
     "custom/output-scale": {
         "format": "{icon} {}",
         "return-type": "json",
-        "max-length": 40,
         "format-icons": {
             "scale": " \uf0b2",
             "noscale": "\uf066"
