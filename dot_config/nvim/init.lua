@@ -298,7 +298,7 @@ function MyTelescopeConfig(opts)
     silent = true,
     callback = function()
       require('telescope.builtin').find_files({
-        find_command = { 'rg', '--files', '-.', '--no-ignore', '-g', '!.git/' },
+        -- find_command = { 'rg', '--files', '-.', '--no-ignore', '-g', '!.git/' },
       })
     end,
   })
@@ -802,6 +802,10 @@ local function get_statusline_plugins(opts)
       -- https://github.com/wbthomason/packer.nvim/issues/655
       -- https://github.com/wbthomason/packer.nvim/pull/402
       config = string.format('MyStatuslineConfig(%s)', vim.inspect(opts)),
+      after = 'kanagawa.nvim',
+      -- config = function()
+      --   MyStatuslineConfig(opts)
+      -- end
     },
   }
 end
@@ -1043,7 +1047,13 @@ local function get_other_plugins()
     -- Tools
     'ojroques/vim-oscyank',
     'tpope/vim-commentary',
-    'tpope/vim-surround',
+    -- 'tpope/vim-surround',
+    {
+      'kylechui/nvim-surround',
+      config = function()
+        require("nvim-surround").setup({})
+      end
+    },
     'tpope/vim-sleuth',
     'justinmk/vim-sneak',
 
@@ -1097,6 +1107,15 @@ local function is_init_script()
   return script_name:sub(-#init_ending) == init_ending
 end
 
+
+local function scan_config_dir()
+  print('hello there')
+  local files = vim.split(vim.fn.glob('~/.config/nvim/packers/*.lua'), '\n')
+  for i, file in pairs(files) do
+    print(i, file)
+  end
+end
+
 -- I am structuring this file in a weird way to reuse it for both my work and home machines.
 -- My home machine mostly will use this script directly as ~/.config/nvim/init.lua.
 -- My work machine will source this as a differently named file by customizing some of the
@@ -1111,6 +1130,8 @@ if is_init_script() then
       servers = { 'rust_analyzer', 'clangd', 'jedi_language_server' },
     },
   }))
+
+  -- scan_config_dir()
 else
   local M = {
     setup_packer = setup_packer,
