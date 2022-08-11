@@ -937,6 +937,12 @@ local function get_other_plugins()
 
     'windwp/nvim-ts-autotag',
     {
+    'mg979/vim-visual-multi',
+    config = function()
+      vim.g['VM_leader'] = { default = '\\', visual = 'z', buffer = 'z' }
+    end,
+    },
+    {
       'windwp/nvim-autopairs',
       config = function()
         require('nvim-autopairs').setup()
@@ -1127,7 +1133,7 @@ if is_init_script() then
   setup_autocommands()
   setup_packer(get_all_plugins({
     lsp = {
-      servers = { 'rust_analyzer', 'clangd', 'jedi_language_server' },
+      servers = { 'rust_analyzer', 'clangd', 'jedi_language_server', 'tsserver' },
     },
   }))
 
