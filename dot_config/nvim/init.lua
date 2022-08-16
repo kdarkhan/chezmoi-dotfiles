@@ -397,7 +397,7 @@ end
 
 function MyLspConfig(opts)
   opts = opts or {}
-  local servers = opts.servers or { 'rust_analyzer' }
+  local servers = opts.servers or {}
   -- local sumneko_root_path = opts.sumneko_root_path
   -- or '/usr/share/lua-language-server'
   -- local sumneko_binary = opts.sumneko_binary or 'lua-language-server'
@@ -418,7 +418,7 @@ function MyLspConfig(opts)
     vim.api.nvim_buf_set_option(bufnr, 'omnifunc', 'v:lua.vim.lsp.omnifunc')
 
     lsp_signature.on_attach()
-    aerial.on_attach(client, bufnr, attach_opts)
+    aerial.on_attach(client, bufnr, attach_opts or {})
 
     local function buf_set_keymap(lhs, rhs, callback)
       vim.api.nvim_buf_set_keymap(
@@ -431,7 +431,7 @@ function MyLspConfig(opts)
     end
 
     -- Mappings.
-    local map_opts = { noremap = true, silent = true }
+    -- local map_opts = { noremap = true, silent = true }
 
     -- See `:help vim.lsp.*` for documentation on any of the below functions
     buf_set_keymap('n', 'gD', vim.lsp.buf.declaration)
@@ -475,6 +475,13 @@ function MyLspConfig(opts)
     -- buf_set_keymap('n', '<leader>q', '<cmd>lua vim.lsp.diagnostic.set_loclist()<CR>', map_opts)
     vim.cmd([[ command! Format execute 'lua vim.lsp.buf.formatting()' ]])
   end
+
+  local rust_tools = require("rust-tools")
+  rust_tools.setup({
+    server = {
+      on_attach = on_attach,
+    },
+  })
 
   local capabilities = vim.lsp.protocol.make_client_capabilities()
   capabilities = require('cmp_nvim_lsp').update_capabilities(capabilities)
@@ -596,7 +603,9 @@ local function get_lsp_plugins(opts)
         'j-hui/fidget.nvim',
         'folke/trouble.nvim',
         'ray-x/lsp_signature.nvim',
+        'simrat39/rust-tools.nvim'
       },
+      after = 'aerial.nvim',
       -- TODO: workaround for upvalues not being propagated by Packer.use
       -- https://github.com/wbthomason/packer.nvim/issues/655
       -- https://github.com/wbthomason/packer.nvim/pull/402
@@ -1041,7 +1050,12 @@ local function get_other_plugins()
         })
       end,
     },
-    'stevearc/aerial.nvim',
+    {
+      'stevearc/aerial.nvim',
+      config = function()
+        require('aerial').setup()
+      end
+    },
     {
       'L3MON4D3/LuaSnip',
       requires = { 'rafamadriz/friendly-snippets' },
@@ -1057,7 +1071,7 @@ local function get_other_plugins()
     {
       'kylechui/nvim-surround',
       config = function()
-        require("nvim-surround").setup({})
+        require('nvim-surround').setup({})
       end
     },
     'tpope/vim-sleuth',
@@ -1133,7 +1147,7 @@ if is_init_script() then
   setup_autocommands()
   setup_packer(get_all_plugins({
     lsp = {
-      servers = { 'rust_analyzer', 'clangd', 'jedi_language_server', 'tsserver' },
+      servers = { 'clangd', 'jedi_language_server', 'tsserver' },
     },
   }))
 
