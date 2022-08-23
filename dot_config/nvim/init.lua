@@ -303,69 +303,39 @@ function MyTelescopeConfig(opts)
     end,
   })
 
-  vim.api.nvim_set_keymap(
-    'n',
-    'fg',
-    '',
-    {
-      noremap = true,
-      silent = true,
-      callback = require('telescope.builtin').live_grep,
-    }
-  )
+  vim.api.nvim_set_keymap('n', 'fg', '', {
+    noremap = true,
+    silent = true,
+    callback = require('telescope.builtin').live_grep,
+  })
 
-  vim.api.nvim_set_keymap(
-    'n',
-    '<leader>bb',
-    '',
-    {
-      noremap = true,
-      silent = true,
-      callback = require('telescope.builtin').buffers,
-    }
-  )
-  vim.api.nvim_set_keymap(
-    'n',
-    '<leader>fb',
-    '',
-    {
-      noremap = true,
-      silent = true,
-      callback = require('telescope.builtin').current_buffer_fuzzy_find,
-    }
-  )
-  vim.api.nvim_set_keymap(
-    'n',
-    '<leader>fh',
-    '',
-    {
-      noremap = true,
-      silent = true,
-      callback = require('telescope.builtin').help_tags,
-    }
-  )
+  vim.api.nvim_set_keymap('n', '<leader>bb', '', {
+    noremap = true,
+    silent = true,
+    callback = require('telescope.builtin').buffers,
+  })
+  vim.api.nvim_set_keymap('n', '<leader>fb', '', {
+    noremap = true,
+    silent = true,
+    callback = require('telescope.builtin').current_buffer_fuzzy_find,
+  })
+  vim.api.nvim_set_keymap('n', '<leader>fh', '', {
+    noremap = true,
+    silent = true,
+    callback = require('telescope.builtin').help_tags,
+  })
   -- vim.api.nvim_set_keymap('n', '<leader>st', [[<cmd>lua require('telescope.builtin').tags()<CR>]], { noremap = true, silent = true })
-  vim.api.nvim_set_keymap(
-    'n',
-    '<leader>fs',
-    '',
-    {
-      noremap = true,
-      silent = true,
-      callback = require('telescope.builtin').treesitter,
-    }
-  )
+  vim.api.nvim_set_keymap('n', '<leader>fs', '', {
+    noremap = true,
+    silent = true,
+    callback = require('telescope.builtin').treesitter,
+  })
   -- vim.api.nvim_set_keymap('n', '<leader>so', [[<cmd>lua require('telescope.builtin').tags{ only_current_buffer = true }<CR>]], { noremap = true, silent = true })
-  vim.api.nvim_set_keymap(
-    'n',
-    '<leader>fo',
-    '',
-    {
-      noremap = true,
-      silent = true,
-      callback = require('telescope.builtin').oldfiles,
-    }
-  )
+  vim.api.nvim_set_keymap('n', '<leader>fo', '', {
+    noremap = true,
+    silent = true,
+    callback = require('telescope.builtin').oldfiles,
+  })
 end
 
 local function get_telescope_plugins(opts)
@@ -468,7 +438,7 @@ function MyLspConfig(opts)
       require('telescope.builtin').lsp_workspace_symbols
     )
     buf_set_keymap('n', '<leader>ld', vim.lsp.diagnostic.show_line_diagnostics)
-    buf_set_keymap('n', '<leader>lf', vim.lsp.buf.formatting)
+    buf_set_keymap('n', '<leader>lf', vim.lsp.buf.format({ async = true }))
     buf_set_keymap('n', 'gp', vim.lsp.diagnostic.goto_prev)
     buf_set_keymap('n', 'gn', vim.lsp.diagnostic.goto_next)
 
@@ -476,11 +446,22 @@ function MyLspConfig(opts)
     vim.cmd([[ command! Format execute 'lua vim.lsp.buf.formatting()' ]])
   end
 
-  local rust_tools = require("rust-tools")
+  local rust_tools = require('rust-tools')
   rust_tools.setup({
     server = {
       on_attach = on_attach,
     },
+  })
+
+  -- null_ls setup
+  local null_ls = require('null-ls')
+  null_ls.setup({
+    sources = {
+      null_ls.builtins.diagnostics.cspell,
+      null_ls.builtins.formatting.stylua,
+    },
+    debug = false,
+    on_attach = on_attach,
   })
 
   local capabilities = vim.lsp.protocol.make_client_capabilities()
@@ -603,7 +584,8 @@ local function get_lsp_plugins(opts)
         'j-hui/fidget.nvim',
         'folke/trouble.nvim',
         'ray-x/lsp_signature.nvim',
-        'simrat39/rust-tools.nvim'
+        'simrat39/rust-tools.nvim',
+        'jose-elias-alvarez/null-ls.nvim',
       },
       after = 'aerial.nvim',
       -- TODO: workaround for upvalues not being propagated by Packer.use
@@ -946,10 +928,10 @@ local function get_other_plugins()
 
     'windwp/nvim-ts-autotag',
     {
-    'mg979/vim-visual-multi',
-    config = function()
-      vim.g['VM_leader'] = { default = '\\', visual = 'z', buffer = 'z' }
-    end,
+      'mg979/vim-visual-multi',
+      config = function()
+        vim.g['VM_leader'] = { default = '\\', visual = 'z', buffer = 'z' }
+      end,
     },
     {
       'windwp/nvim-autopairs',
@@ -1054,7 +1036,7 @@ local function get_other_plugins()
       'stevearc/aerial.nvim',
       config = function()
         require('aerial').setup()
-      end
+      end,
     },
     {
       'L3MON4D3/LuaSnip',
@@ -1072,7 +1054,7 @@ local function get_other_plugins()
       'kylechui/nvim-surround',
       config = function()
         require('nvim-surround').setup({})
-      end
+      end,
     },
     'tpope/vim-sleuth',
     'justinmk/vim-sneak',
@@ -1126,7 +1108,6 @@ local function is_init_script()
   local init_ending = '.config/nvim/init.lua'
   return script_name:sub(-#init_ending) == init_ending
 end
-
 
 local function scan_config_dir()
   print('hello there')
