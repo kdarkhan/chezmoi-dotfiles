@@ -443,7 +443,9 @@ function MyLspConfig(opts)
     buf_set_keymap('n', 'gn', vim.lsp.diagnostic.goto_next)
 
     -- buf_set_keymap('n', '<leader>q', '<cmd>lua vim.lsp.diagnostic.set_loclist()<CR>', map_opts)
-    vim.cmd([[ command! Format execute 'lua vim.lsp.buf.formatting()' ]])
+    vim.cmd(
+      [[ command! Format execute 'lua vim.lsp.buf.format({ async = true })' ]]
+    )
   end
 
   local rust_tools = require('rust-tools')
