@@ -101,11 +101,11 @@ local function setup_autocommands()
   augroup customColors
     autocmd!
     autocmd ColorScheme * highlight Normal guibg=NONE
-    autocmd ColorScheme * highlight ExtraWhitespace ctermbg=red guibg=red
-    autocmd BufWinEnter * match ExtraWhitespace /\s\+$/
-    autocmd InsertEnter * match ExtraWhitespace /\s\+\%#\@<!$/
-    autocmd InsertLeave * match ExtraWhitespace /\s\+$/
-    autocmd BufWinLeave * call clearmatches()
+    autocmd ColorScheme * if &ft != "neo-tree" | highlight ExtraWhitespace ctermbg=red guibg=red
+    autocmd BufWinEnter * if &ft != "neo-tree" | match ExtraWhitespace /\s\+$/
+    autocmd InsertEnter * if &ft != "neo-tree" | match ExtraWhitespace /\s\+\%#\@<!$/
+    autocmd InsertLeave * if &ft != "neo-tree" | match ExtraWhitespace /\s\+$/
+    autocmd BufWinLeave * if &ft != "neo-tree" | call clearmatches()
   augroup end
 
   augroup CustomStuff
