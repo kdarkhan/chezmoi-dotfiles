@@ -7,7 +7,7 @@
     // Choose the order of the modules
     "modules-left": ["sway/workspaces", "sway/mode"],
     "modules-center": ["sway/window"],
-    "modules-right": ["idle_inhibitor", "custom/output-scale", "pulseaudio", "network", "network#wifi", "cpu", "memory", "temperature", "keyboard-state", "sway/language", "bluetooth", "clock", "tray"],
+    "modules-right": ["idle_inhibitor", "custom/output-scale", "custom/pa-cycle", "pulseaudio", "network", "network#wifi", "cpu", "memory", "temperature", "keyboard-state", "sway/language", "bluetooth", "clock", "tray"],
     // Modules configuration
     // "sway/workspaces": {
     //     "disable-scroll": true,
@@ -88,7 +88,7 @@
     },
     "temperature": {
         // "thermal-zone": 2,
-        "hwmon-path": "/sys/class/hwmon/hwmon1/temp2_input",
+        "hwmon-path": "/sys/class/hwmon/hwmon4/temp1_input",
         "critical-threshold": 80,
         // "format-critical": "{temperatureC}°C {icon}",
         "format": "{temperatureC}°C {icon}",
@@ -179,6 +179,18 @@
         "exec": "( swaymsg -r -t get_outputs | jq '.[0].scale' | xargs test 1 == ) && echo '{\"alt\": \"noscale\"}' || echo '{\"alt\":\"scale\"}'",
         "exec-if": "sleep 0.1", // Give enough time for `sway output` command changes to propagate so we can read them in the next `exec`
         "on-click": "( swaymsg -r -t get_outputs | jq '.[0].scale' | xargs test 1 = ) && swaymsg output DP-1 scale 1.4 || swaymsg output DP-1 scale 1"
+    },
+    "custom/pa-cycle": {
+        "format": "{}",
+        "return-type": "json",
+        "format-icons": {
+            "scale": " \uf0b2",
+            "noscale": "\uf066"
+        },
+        "exec-on-event": true,
+        "interval": "once",
+        "exec": "pactl get-default-sink | rg -r '{\"text\":\"$1\"}' '.+\\.([a-z]+)-stereo'",
+        "exec-if": "sleep 0.1", // Give enough time for `pactl get-default-sink` to update
+        "on-click": "~/scripts/toggle-default-pa-sink.sh"
     }
 }
-
