@@ -1105,43 +1105,31 @@ local function get_all_plugins(opts)
   return plugins
 end
 
-local function is_init_script()
-  local script_name = debug.getinfo(2, 'S').source:sub(2)
-  local init_ending = '.config/nvim/init.lua'
-  return script_name:sub(-#init_ending) == init_ending
-end
-
-local function scan_config_dir()
-  print('hello there')
-  local files = vim.split(vim.fn.glob('~/.config/nvim/packers/*.lua'), '\n')
-  for i, file in pairs(files) do
-    print(i, file)
-  end
-end
-
--- I am structuring this file in a weird way to reuse it for both my work and home machines.
--- My home machine mostly will use this script directly as ~/.config/nvim/init.lua.
--- My work machine will source this as a differently named file by customizing some of the
--- options and making each call manually. This will allow me to share majority of the config
--- while overriding only some of LSP and work specific tooling.
-if is_init_script() then
+local function setup_all()
   setup_options()
   setup_keymap()
   setup_autocommands()
-  setup_packer(get_all_plugins({
+
+  local plugins = get_all_plugins({
     lsp = {
       servers = { 'clangd', 'jedi_language_server', 'tsserver' },
     },
-  }))
+  })
 
-  -- scan_config_dir()
-else
-  local M = {
-    setup_packer = setup_packer,
-    setup_options = setup_options,
-    setup_autocommands = setup_autocommands,
-    setup_keymap = setup_keymap,
-    get_all_plugins = get_all_plugins,
-  }
-  return M
+  -- Custom logic: "require" all files in nvim/packers
+  -- local packers_dir = vim.fn.expand('~/.config/nvim/packers/')
+  local packers_dir = '/home/dark/.config/nvim/packers/'
+  if vim.fn.isdirectory(packers_dir) == 1 then
+    package.path = package.path .. ';' .. packers_dir .. '?.lua'
+
+    local module_paths = vim.fn.readdir(packers_dir, [[v:val =~ '\.lua$']])
+    for _, module_path in pairs(module_paths) do
+      local packers_module = require(string.sub(module_path, 1, -5))
+      plugins = packers_module.setup(plugins)
+    end
+  end
+
+  setup_packer(plugins)
 end
+
+setup_all()
