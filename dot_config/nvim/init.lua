@@ -388,7 +388,6 @@ function MyLspConfig(opts)
     vim.api.nvim_buf_set_option(bufnr, 'omnifunc', 'v:lua.vim.lsp.omnifunc')
 
     lsp_signature.on_attach()
-    aerial.on_attach(client, bufnr, attach_opts or {})
 
     local function buf_set_keymap(lhs, rhs, callback)
       vim.api.nvim_buf_set_keymap(
@@ -467,7 +466,7 @@ function MyLspConfig(opts)
   })
 
   local capabilities = vim.lsp.protocol.make_client_capabilities()
-  capabilities = require('cmp_nvim_lsp').update_capabilities(capabilities)
+  capabilities = require('cmp_nvim_lsp').default_capabilities(capabilities)
 
   -- Use a loop to conveniently call 'setup' on multiple servers and
   -- map buffer local keybindings when the language server attaches
