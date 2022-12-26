@@ -1,3 +1,2 @@
 stylua-format:
-	stylua --config-path=stylua.toml dot_config/nvim/init.lua
-
+	stylua --config-path=stylua.toml dot_config/nvim/{,**/}*.lua

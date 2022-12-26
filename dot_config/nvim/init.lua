@@ -14,7 +14,6 @@ local function bootstrap_lazy()
   end
   vim.opt.runtimepath:prepend(lazypath)
 
-
   vim.g.mapleader = ' '
   vim.g.maplocalleader = ' '
   require('lazy').setup('plugins')
