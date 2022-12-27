@@ -321,8 +321,6 @@ local function get_telescope_plugins()
   }
 end
 
--- Not local but global so that can be reused from other places in
--- ./plugins/*.lua
 function MyLspConfig(opts)
   opts = opts or {}
   local servers = opts.servers or {}
@@ -661,8 +659,7 @@ local function get_completion_plugins()
         local has_words_before = function()
           local line, col = unpack(vim.api.nvim_win_get_cursor(0))
           return col ~= 0
-            and vim.api
-                .nvim_buf_get_lines(0, line - 1, line, true)[1]
+            and vim.api.nvim_buf_get_lines(0, line - 1, line, true)[1]
                 :sub(col, col)
                 :match('%s')
               == nil
@@ -794,6 +791,7 @@ local function get_visual_tweak_plugins()
         vim.cmd([[colorscheme kanagawa]])
       end,
       after = 'indent-blankline.nvim',
+      priority = 9000,
     },
     {
       'kyazdani42/nvim-web-devicons',

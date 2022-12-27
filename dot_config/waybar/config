@@ -178,14 +178,15 @@
         "interval": "once",
         "exec": "( swaymsg -r -t get_outputs | jq '.[0].scale' | xargs test 1 == ) && echo '{\"alt\": \"noscale\"}' || echo '{\"alt\":\"scale\"}'",
         "exec-if": "sleep 0.1", // Give enough time for `sway output` command changes to propagate so we can read them in the next `exec`
-        "on-click": "( swaymsg -r -t get_outputs | jq '.[0].scale' | xargs test 1 = ) && swaymsg output DP-1 scale 1.4 || swaymsg output DP-1 scale 1"
+        "on-click": "( swaymsg -r -t get_outputs | jq '.[0].scale' | xargs test 1 = ) && swaymsg output DP-1 scale 1.4 || swaymsg output DP-1 scale 1; pkill -SIGRTMIN+1 waybar",
+        "signal": 1
     },
     "custom/pa-cycle": {
         "return-type": "json",
         "exec-on-event": true,
-        "interval": "once",
-        "exec": "~/.config/waybar/scripts/get-default-pactl-sink.sh",
+        "interval": 10,
+        "exec": "pactl --format=json list sinks | jq -cM --unbuffered \"map(select(.name == \\\"$(pactl get-default-sink)\\\"))[0].properties | {text:(.\\\"media.name\\\" // .\\\"alsa.name\\\" // .\\\"node.name\\\")}\"",
         "exec-if": "sleep 0.1", // Give enough time for `pactl get-default-sink` to update
-        "on-click": "~/.config/waybar/scripts/cycle-default-pa-sinks.sh"
+        "on-click": "pactl --format=json list sinks short | jq -cM --unbuffered \"[.[].name] | .[((index(\\\"$(pactl get-default-sink)\\\")+1)%length)]\" | xargs pactl set-default-sink"
     }
 }
