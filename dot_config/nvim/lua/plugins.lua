@@ -110,20 +110,25 @@ local function setup_keymaps()
     { noremap = true, expr = true, silent = true }
   )
 
-  vim.api.nvim_set_keymap('n', '<leader>q', ':q!<CR>', { noremap = true })
+  vim.api.nvim_set_keymap(
+    'n',
+    '<leader>q',
+    ':q!<CR>',
+    { noremap = true, desc = 'Quit without saving' }
+  )
 
   -- options
   vim.api.nvim_set_keymap(
     'n',
     '<leader>ow',
     ':set list!<CR>',
-    { noremap = true, silent = true }
+    { noremap = true, silent = true, desc = 'Toggle visible whitespace' }
   )
   vim.api.nvim_set_keymap(
     'n',
     '<leader>ob',
     ':IndentBlanklineToggle<CR>',
-    { noremap = true, silent = true }
+    { noremap = true, silent = true, desc = 'Togggle IndentBlankLine' }
   )
 
   -- files
@@ -131,19 +136,19 @@ local function setup_keymaps()
     'n',
     '<leader>ft',
     ':NeoTreeRevealToggle<CR>',
-    { noremap = true, silent = true }
+    { noremap = true, silent = true, desc = 'NeoTree toggle' }
   )
   vim.api.nvim_set_keymap(
     'n',
     '<leader>ff',
     ':NeoTreeReveal<CR>',
-    { noremap = true, silent = true }
+    { noremap = true, silent = true, desc = 'NeoTree find' }
   )
   vim.api.nvim_set_keymap(
     'n',
     '<leader>to',
     ':AerialToggle<CR>',
-    { noremap = true, silent = true }
+    { noremap = true, silent = true, desc = 'Aerial toggle' }
   )
 
   -- actions
@@ -151,36 +156,71 @@ local function setup_keymaps()
     'n',
     '<leader>aw',
     ':let _s=@/<Bar>:%s/\\s\\+$//e<Bar>:let @/=_s<Bar><CR>',
-    { noremap = true }
+    { noremap = true, desc = 'Remove trailing whitespace' }
   )
   vim.api.nvim_set_keymap(
     'n',
     '<leader>ac',
     ":let @+=expand('%:p')<CR>",
-    { noremap = true }
+    { noremap = true, desc = 'Copy filename' }
   )
   vim.api.nvim_set_keymap(
     'n',
     '<leader>aj',
     ':%!python3 -m json.tool<CR>',
-    { noremap = true }
+    { noremap = true, desc = 'JSON format with python3' }
   )
-  vim.api.nvim_set_keymap('n', '<leader>am', ':make<CR>', { noremap = true })
+  vim.api.nvim_set_keymap(
+    'n',
+    '<leader>am',
+    ':make<CR>',
+    { noremap = true, desc = 'Run make' }
+  )
 
   -- buffers
-  vim.api.nvim_set_keymap('n', '<leader>bn', ':bnext<CR>', { noremap = true })
-  vim.api.nvim_set_keymap('n', '<leader>bp', ':bprev<CR>', { noremap = true })
-  vim.api.nvim_set_keymap('n', '<leader>bd', ':bdelete<CR>', { noremap = true })
+  vim.api.nvim_set_keymap(
+    'n',
+    '<leader>bn',
+    ':bnext<CR>',
+    { noremap = true, desc = 'Buffer next' }
+  )
+  vim.api.nvim_set_keymap(
+    'n',
+    '<leader>bp',
+    ':bprev<CR>',
+    { noremap = true, desc = 'Buffer prev' }
+  )
+  vim.api.nvim_set_keymap(
+    'n',
+    '<leader>bd',
+    ':bdelete<CR>',
+    { noremap = true, desc = 'Buffer delete' }
+  )
 
   -- tabs
-  vim.api.nvim_set_keymap('n', '<leader>tn', ':tabnext<CR>', { noremap = true })
-  vim.api.nvim_set_keymap('n', '<leader>tp', ':tabprev<CR>', { noremap = true })
-  vim.api.nvim_set_keymap('n', '<leader>tt', ':tabnew<CR>', { noremap = true })
+  vim.api.nvim_set_keymap(
+    'n',
+    '<leader>tn',
+    ':tabnext<CR>',
+    { noremap = true, desc = 'Tab next' }
+  )
+  vim.api.nvim_set_keymap(
+    'n',
+    '<leader>tp',
+    ':tabprev<CR>',
+    { noremap = true, desc = 'Tab prev' }
+  )
+  vim.api.nvim_set_keymap(
+    'n',
+    '<leader>tt',
+    ':tabnew<CR>',
+    { noremap = true, desc = 'Tab new' }
+  )
   vim.api.nvim_set_keymap(
     'n',
     '<leader>tc',
     ':tabclose<CR>',
-    { noremap = true }
+    { noremap = true, desc = 'Tab close' }
   )
 
   -- Y yank until the end of line
@@ -471,23 +511,13 @@ function MyLspConfig(opts)
   table.insert(runtime_path, 'lua/?.lua')
   table.insert(runtime_path, 'lua/?/init.lua')
 
+  require('neodev').setup({})
   require('lspconfig').sumneko_lua.setup({
     capabilities = capabilities,
     settings = {
       Lua = {
-        runtime = {
-          -- Tell the language server which version of Lua you're using (most likely LuaJIT in the case of Neovim)
-          version = 'LuaJIT',
-          -- Setup your lua path
-          path = runtime_path,
-        },
-        diagnostics = {
-          -- Get the language server to recognize the `vim` global
-          globals = { 'vim' },
-        },
         workspace = {
-          -- Make the server aware of Neovim runtime files
-          library = vim.api.nvim_get_runtime_file('', true),
+          checkThirdParty = false,
         },
         -- Do not send telemetry data containing a randomized but unique identifier
         telemetry = {
@@ -540,6 +570,7 @@ local function get_lsp_plugins()
         'folke/trouble.nvim',
         'ray-x/lsp_signature.nvim',
         'simrat39/rust-tools.nvim',
+        'folke/neodev.nvim',
         -- 'jose-elias-alvarez/null-ls.nvim',
       },
       -- after = 'aerial.nvim',
