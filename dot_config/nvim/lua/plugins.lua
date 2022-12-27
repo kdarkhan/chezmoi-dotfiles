@@ -725,32 +725,27 @@ local function get_completion_plugins()
 end
 
 local function MyStatuslineConfig(opts)
-  opts = opts
-    or {
-      options = { section_separators = '', component_separators = '' },
-      sections = {
-        lualine_a = { 'mode' },
-        lualine_b = {
-          'branch',
-          'diff',
-          {
-            'diagnostics',
-            sources = { 'nvim_diagnostic' },
-            always_visible = function()
-              return vim.tbl_count(vim.lsp.buf_get_clients()) > 0
-            end,
-          },
+  opts = {
+    options = { section_separators = '', component_separators = '' },
+    sections = {
+      lualine_a = { 'mode' },
+      lualine_b = {
+        'branch',
+        'diff',
+        {
+          'diagnostics',
+          sources = { 'nvim_diagnostic' },
+          always_visible = function()
+            return vim.tbl_count(vim.lsp.buf_get_clients()) > 0
+          end,
         },
-        lualine_c = { 'filename', 'lsp_progress' },
-        lualine_x = { 'encoding', 'fileformat', 'filetype' },
-        lualine_y = { 'progress' },
-        lualine_z = { 'location' },
       },
-      -- extensions = { 'nvim-tree' },
-    }
-
-  opts.options = opts.options or {}
-  opts.options.theme = 'kanagawa'
+      lualine_c = { 'filename', 'lsp_progress' },
+      lualine_x = { 'encoding', 'fileformat', 'filetype' },
+      lualine_y = { 'progress' },
+      lualine_z = { 'location' },
+    },
+  }
 
   require('lualine').setup(opts)
 end
@@ -759,14 +754,7 @@ local function get_statusline_plugins()
   return {
     {
       'nvim-lualine/lualine.nvim',
-      -- TODO: workaround for upvalues not being propagated by Packer.use
-      -- https://github.com/wbthomason/packer.nvim/issues/655
-      -- https://github.com/wbthomason/packer.nvim/pull/402
       config = MyStatuslineConfig,
-      -- after = 'kanagawa.nvim',
-      -- config = function()
-      --   MyStatuslineConfig(opts)
-      -- end
     },
   }
 end
@@ -776,21 +764,10 @@ local function get_visual_tweak_plugins()
     {
       'rebelot/kanagawa.nvim',
       config = function()
-        require('kanagawa').setup({
-          overrides = {
-            Visual = {
-              bg = require('kanagawa.colors').setup().waveBlue2,
-              -- fg = require('kanagawa.colors').bg,
-            },
-            VertSplit = {
-              fg = require('kanagawa.colors').setup().bg_dark,
-              bg = 'NONE',
-            },
-          },
-        })
+        require('kanagawa').setup({})
         vim.cmd([[colorscheme kanagawa]])
       end,
-      after = 'indent-blankline.nvim',
+      dependencies = { 'indent-blankline.nvim' },
       priority = 9000,
     },
     {
@@ -831,11 +808,6 @@ local function get_visual_tweak_plugins()
             'IndentBlanklineIndent6',
           },
         })
-        -- Not used anymore because colorscheme is loaded using Packer's `after` keyword.
-        -- If colorscheme has already been loaded, trigger autocmds again
-        -- if vim.g.colors_name ~= nil then
-        --   vim.cmd('doautocmd ColorScheme')
-        -- end
       end,
     },
     {
