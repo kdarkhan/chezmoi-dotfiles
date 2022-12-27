@@ -35,6 +35,8 @@ set $lock swaylock -c 1F1F28
 #     resume 'swaymsg "output * dpms on"' before-sleep '$lock'
 
 exec_always --no-startup-id ./scripts/autostart-wayland.sh
+exec_always --no-startup-id exec dbus-update-activation-environment --systemd DISPLAY WAYLAND_DISPLAY SWAYSOCK
+exec wl-paste -t text --watch clipman store --no-persist
 # exec_always --no-startup-id feh --bg-scale ./Pictures/autumn.png
 # exec_always --no-startup-id feh --bg-scale ./Pictures/wallpapers/robot_3.jpg
 # exec_always --no-startup-id feh --bg-scale ./Pictures/wallpapers/spirited-away.png
@@ -42,7 +44,7 @@ exec_always --no-startup-id ./scripts/autostart-wayland.sh
 
 output * bg ~/Pictures/wallpapers/elden-ring.jpg fill
 
-# NetworkManager is the most popular way to manage wireless networks on {{ .chezmoi.kernel.ostype }},
+# NetworkManager is the most popular way to manage wireless networks on Linux,
 # and nm-applet is a desktop environment-independent system tray GUI for it.
 # exec_always --no-startup-id ./scripts/autostart-x.sh
 
@@ -71,7 +73,7 @@ bindsym --to-code $mod+q kill
 # start dmenu (a program launcher)
 # bindsym $mod+d exec dmenu_run
 
-# bindsym $mod+i exec "rofi -show combi -combi-modi drun,run -modi combi -theme gruvbox-{{ .chezmoi.group }}-soft"
+# bindsym $mod+i exec "rofi -show combi -combi-modi drun,run -modi combi -theme gruvbox-dark-soft"
 # bindsym $mod+i exec "rofi -show combi -combi-modi drun,run -modi combi"
 bindsym --to-code $mod+i exec "wofi --show drun"
 
@@ -274,18 +276,31 @@ mode "passthrough" {
 #     strip_workspace_numbers no
 # }
 
+set $bg #171717
+set $fg #eff1f5
+set $br #ffcc00
+set $ia #232425
+# client.focused '#fc9d03' '#fc9d03' '#fc9d03'
+# class                 border  backgr. text    indicator child_border
+client.focused          $br     $br     $bg     $bg       $br
+client.focused_inactive $bg     $bg     $fg     $bg       $bg
+client.unfocused        $bg     $bg     $fg     $bg       $bg
+client.background $bg
+
 # for_window [class=".*"] border pixel 0
 for_window [class="ghidra-Ghidra"] floating enable
 for_window [class="jetbrains-studio" title="win0"] floating enable
-for_window [app_id="firefox"] border pixel 0
+for_window [app_id="firefox"] border pixel 1
 for_window [app_id="chromium"] border pixel 1
 for_window [app_id="kitty"] border pixel 1
-for_window [app_id="telegramdesktop"] border pixel 1
+for_window [app_id="org.telegram.desktop"] border pixel 1
 for_window [class="Steam"] border pixel 1
 for_window [class="Spotify"] border pixel 1
-for_window [class="Blender"] border pixel 1
+for_window [app_id="blender"] border pixel 1
 for_window [class="vlc"] border pixel 1
+for_window [class="Gimp-2.10"] border pixel 1
 for_window [app_id="pavucontrol"] floating enable
+for_window [title="Firefox — Sharing Indicator"] floating enable
 # for_window [class="Spotify"] border pixel 1
 # for_window [class="qBittorrent"] border pixel 1
 # for_window [class="Gimp-2.10"] border pixel 1
@@ -303,7 +318,13 @@ input 1133:16511:Logitech_G502 {
     # natural_scroll disabled
     # dwt enabled
     accel_profile "flat" # disable mouse acceleration (enabled by default; to set it manually, use "adaptive" instead of "flat")
-    pointer_accel -0.72 # set mouse sensitivity (between -1 and 1)
+    pointer_accel -0.78 # set mouse sensitivity (between -1 and 1)
+}
+
+
+input 1133:49293:Logitech_G502_LIGHTSPEED_Wireless_Gaming_Mouse {
+    accel_profile "flat" # disable mouse acceleration (enabled by default; to set it manually, use "adaptive" instead of "flat")
+    pointer_accel -0.78 # set mouse sensitivity (between -1 and 1)
 }
 
 input "type:keyboard" {
