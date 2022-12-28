@@ -111,3 +111,6 @@ set -ga terminal-overrides ",*256col*:Tc"
 
 set -g set-clipboard on
 set-option -g focus-events on
+
+# This is needed to make osc52 work on Wayland
+set -g allow-passthrough on
