@@ -1034,6 +1034,8 @@ local function get_other_plugins()
       'folke/which-key.nvim',
       config = function()
         local wk = require('which-key')
+        wk.setup({})
+
         wk.register({
           f = { 'file' },
           a = { 'actions' },
@@ -1047,7 +1049,6 @@ local function get_other_plugins()
         }, {
           prefix = '<leader>',
         })
-        wk.setup({})
       end,
     },
   }
