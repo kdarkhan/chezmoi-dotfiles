@@ -1,0 +1,4 @@
+max-history=100
+history=1
+[app-name=Spotify]
+default-timeout=15000
