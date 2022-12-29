@@ -596,17 +596,18 @@ local function get_treesitter_plugins()
         require('nvim-treesitter.configs').setup({
           ensure_installed = {
             'c',
-            'lua',
-            'rust',
-            'vim',
-            'help',
-            'markdown',
-            'java',
             'css',
-            'typescript',
-            'yaml',
+            'help',
             'html',
+            'java',
+            'lua',
+            'markdown',
+            'regex',
+            'rust',
             'sql',
+            'typescript',
+            'vim',
+            'yaml',
           },
           highlight = {
             enable = true, -- false will disable the whole extension
