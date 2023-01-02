@@ -930,10 +930,12 @@ local function get_other_plugins()
           popup_border_style = 'rounded',
           enable_git_status = true,
           enable_diagnostics = true,
+          window = {
+            width = 40,
+          },
           filesystem = {
             window = {
               position = 'left',
-              width = 40,
               mappings = {
                 ['<2-LeftMouse>'] = 'open',
                 ['<cr>'] = 'open',
