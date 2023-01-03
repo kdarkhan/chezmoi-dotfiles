@@ -51,6 +51,11 @@ local function setup_options()
   vim.opt.listchars = { space = '·', tab = '▸ ' }
   -- Set completeopt to have a better completion experience
   vim.o.completeopt = 'menu,menuone,noselect'
+
+  if vim.g['neovide'] then
+    vim.o.guifont = 'JetBrainsMonoNL Nerd Font Mono:h10'
+    vim.g['neovide_cursor_vfx_mode'] = 'pixiedust'
+  end
 end
 
 local function setup_autocommands()
@@ -596,6 +601,7 @@ local function get_treesitter_plugins()
         require('nvim-treesitter.configs').setup({
           ensure_installed = {
             'c',
+            'cpp',
             'css',
             'help',
             'html',
