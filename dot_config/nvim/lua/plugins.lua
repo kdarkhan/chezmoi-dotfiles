@@ -805,7 +805,14 @@ local function get_visual_tweak_plugins()
     {
       'rebelot/kanagawa.nvim',
       config = function()
-        require('kanagawa').setup({})
+        require('kanagawa').setup({
+          overrides = {
+            Visual = {
+              bg = require('kanagawa.colors').setup().sumiInk4,
+              -- bg = require('kanagawa.colors').setup().waveBlue2,
+            },
+          },
+        })
         vim.cmd([[colorscheme kanagawa]])
       end,
       dependencies = { 'indent-blankline.nvim' },
