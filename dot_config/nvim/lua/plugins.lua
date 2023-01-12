@@ -438,7 +438,7 @@ function MyLspConfig(opts)
       require('telescope.builtin').lsp_workspace_symbols
     )
     buf_set_keymap('n', '<leader>ld', vim.lsp.diagnostic.show_line_diagnostics)
-    buf_set_keymap('n', '<leader>lf', vim.lsp.buf.format({ async = true }))
+    buf_set_keymap('n', '<leader>lf', vim.lsp.buf.format)
     buf_set_keymap('n', 'gp', vim.lsp.diagnostic.goto_prev)
     buf_set_keymap('n', 'gn', vim.lsp.diagnostic.goto_next)
 
@@ -519,6 +519,7 @@ function MyLspConfig(opts)
   require('neodev').setup({})
   require('lspconfig').sumneko_lua.setup({
     capabilities = capabilities,
+    on_attach = on_attach,
     settings = {
       Lua = {
         workspace = {
