@@ -301,7 +301,7 @@ local function MyTelescopeConfig()
     end,
   })
 
-  vim.api.nvim_set_keymap('n', 'fg', '', {
+  vim.api.nvim_set_keymap('n', '<leader>fg', '', {
     noremap = true,
     silent = true,
     callback = require('telescope.builtin').live_grep,
