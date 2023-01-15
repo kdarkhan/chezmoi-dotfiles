@@ -366,8 +366,8 @@ local function get_telescope_plugins()
   }
 end
 
-function MyLspConfig(opts)
-  local servers = { 'clangd' }
+function MyLspConfig(servers)
+  local lsp_servers = servers or { 'clangd' }
   -- local sumneko_root_path = opts.sumneko_root_path
   -- or '/usr/share/lua-language-server'
   -- local sumneko_binary = opts.sumneko_binary or 'lua-language-server'
@@ -469,7 +469,7 @@ function MyLspConfig(opts)
 
   -- Use a loop to conveniently call 'setup' on multiple servers and
   -- map buffer local keybindings when the language server attaches
-  for _, lsp in ipairs(servers) do
+  for _, lsp in ipairs(lsp_servers) do
     lspconfig[lsp].setup({
       cmd = (lsp == 'clangd' and {
         'clangd',
