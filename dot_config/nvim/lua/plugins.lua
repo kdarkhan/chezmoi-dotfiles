@@ -425,12 +425,7 @@ function MyLspConfig(opts)
       require('telescope.builtin').lsp_workspace_diagnostics
     )
     buf_set_keymap('n', '<leader>lr', vim.lsp.buf.rename)
-    -- buf_set_keymap('n', '<leader>la', '<cmd>lua vim.lsp.buf.code_action()<CR>', map_opts)
-    buf_set_keymap(
-      'n',
-      '<leader>la',
-      require('telescope.builtin').lsp_code_actions
-    )
+    buf_set_keymap('n', '<leader>la', vim.lsp.buf.code_action)
     buf_set_keymap(
       'n',
       '<leader>ls',
@@ -442,9 +437,13 @@ function MyLspConfig(opts)
     buf_set_keymap('n', 'gn', vim.lsp.diagnostic.goto_next)
 
     -- buf_set_keymap('n', '<leader>q', '<cmd>lua vim.lsp.diagnostic.set_loclist()<CR>', map_opts)
-    vim.cmd(
-      [[ command! Format execute 'lua vim.lsp.buf.format({ async = true })' ]]
-    )
+    vim.cmd([[
+			command! Format execute 'lua vim.lsp.buf.format({ async = true })' 
+			augroup MyLspHold
+				autocmd! * <buffer>
+				autocmd CursorHold,CursorHoldI <buffer> lua require('nvim-lightbulb').update_lightbulb()
+			augroup END
+			]])
   end
 
   local rust_tools = require('rust-tools')
@@ -576,6 +575,7 @@ local function get_lsp_plugins()
         'ray-x/lsp_signature.nvim',
         'simrat39/rust-tools.nvim',
         'folke/neodev.nvim',
+        'kosayoda/nvim-lightbulb',
         -- 'jose-elias-alvarez/null-ls.nvim',
       },
       -- after = 'aerial.nvim',
@@ -624,10 +624,10 @@ local function get_treesitter_plugins()
           incremental_selection = {
             enable = true,
             keymaps = {
-              init_selection = "<CR>",
-              node_incremental = "<CR>",
-              scope_incremental = "<S-CR>",
-              node_decremental = "<BS>",
+              init_selection = '<CR>',
+              node_incremental = '<CR>',
+              scope_incremental = '<S-CR>',
+              node_decremental = '<BS>',
             },
           },
           indent = { enable = false },
@@ -661,6 +661,15 @@ local function get_treesitter_plugins()
               goto_previous_end = {
                 ['[M'] = '@function.outer',
                 ['[]'] = '@class.outer',
+              },
+            },
+            swap = {
+              enable = true,
+              swap_next = {
+                ['<leader>ss'] = '@parameter.inner',
+              },
+              swap_previous = {
+                ['<leader>sS'] = '@parameter.inner',
               },
             },
           },
