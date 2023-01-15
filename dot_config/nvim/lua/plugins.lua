@@ -446,10 +446,14 @@ function MyLspConfig(servers)
 			]])
   end
 
+  local capabilities = vim.lsp.protocol.make_client_capabilities()
+  capabilities = require('cmp_nvim_lsp').default_capabilities(capabilities)
+
   local rust_tools = require('rust-tools')
   rust_tools.setup({
     server = {
       on_attach = on_attach,
+      capabilities = capabilities,
     },
   })
 
@@ -463,9 +467,6 @@ function MyLspConfig(servers)
   --   debug = false,
   --   on_attach = on_attach,
   -- })
-
-  local capabilities = vim.lsp.protocol.make_client_capabilities()
-  capabilities = require('cmp_nvim_lsp').default_capabilities(capabilities)
 
   -- Use a loop to conveniently call 'setup' on multiple servers and
   -- map buffer local keybindings when the language server attaches
@@ -482,33 +483,6 @@ function MyLspConfig(servers)
       flags = { debounce_text_changes = 150 },
     })
   end
-
-  -- local path = vim.split(package.path, ';')
-  -- local library = {}
-
-  -- -- this is the ONLY correct way to setup your path
-  -- table.insert(path, 'lua/?.lua')
-  -- table.insert(path, 'lua/?/init.lua')
-
-  -- local function add(lib)
-  --   for _, p in pairs(vim.fn.expand(lib, false, true)) do
-  --     p = vim.loop.fs_realpath(p)
-  --     if p then
-  --       library[p] = true
-  --     end
-  --   end
-  -- end
-
-  -- -- add runtime
-  -- add('$VIMRUNTIME')
-
-  -- -- add your config
-  -- add('~/.config/nvim')
-
-  -- -- add plugins
-  -- -- if you're not using packer, then you might need to change the paths below
-  -- add('~/.local/share/nvim/site/pack/packer/opt/*')
-  -- add('~/.local/share/nvim/site/pack/packer/start/*')
 
   local runtime_path = vim.split(package.path, ';')
   table.insert(runtime_path, 'lua/?.lua')
@@ -530,39 +504,6 @@ function MyLspConfig(servers)
       },
     },
   })
-
-  -- require('lspconfig').sumneko_lua.setup({
-  --   on_new_config = function(config, root)
-  --     local libs = vim.tbl_deep_extend('force', {}, library)
-  --     libs[root] = nil
-  --     config.settings.Lua.workspace.library = libs
-  --     return config
-  --   end,
-  --   cmd = { sumneko_binary, '-E', sumneko_root_path .. '/main.lua' },
-  --   on_attach = on_attach,
-  --   capabilities = capabilities,
-  --   flags = { debounce_text_changes = 150 },
-  --   settings = {
-  --     Lua = {
-  --       runtime = {
-  --         -- Tell the language server which version of Lua you're using (most likely LuaJIT in the case of Neovim)
-  --         version = 'LuaJIT',
-  --         -- Setup your lua path
-  --         path = path,
-  --       },
-  --       diagnostics = {
-  --         -- Get the language server to recognize the `vim` global
-  --         globals = { 'vim' },
-  --       },
-  --       workspace = {
-  --         -- Make the server aware of Neovim runtime files
-  --         library = vim.api.nvim_get_runtime_file('', true),
-  --       },
-  --       -- Do not send telemetry data containing a randomized but unique identifier
-  --       telemetry = { enable = false },
-  --     },
-  --   },
-  -- })
 end
 
 local function get_lsp_plugins()
@@ -578,11 +519,6 @@ local function get_lsp_plugins()
         'kosayoda/nvim-lightbulb',
         -- 'jose-elias-alvarez/null-ls.nvim',
       },
-      -- after = 'aerial.nvim',
-      -- TODO: workaround for upvalues not being propagated by Packer.use
-      -- https://github.com/wbthomason/packer.nvim/issues/655
-      -- https://github.com/wbthomason/packer.nvim/pull/402
-      -- config = string.format('MyLspConfig(%s)', vim.inspect(opts)),
       config = MyLspConfig,
     },
   }
@@ -596,8 +532,6 @@ local function get_treesitter_plugins()
         'nvim-treesitter/nvim-treesitter-textobjects',
       },
       config = function()
-        -- Treesitter configuration
-        -- Parsers must be installed manually via :TSInstall
         require('nvim-treesitter.configs').setup({
           ensure_installed = {
             'c',
