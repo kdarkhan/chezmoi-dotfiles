@@ -367,8 +367,7 @@ local function get_telescope_plugins()
 end
 
 function MyLspConfig(opts)
-  opts = opts or {}
-  local servers = opts.servers or {}
+  local servers = { 'clangd' }
   -- local sumneko_root_path = opts.sumneko_root_path
   -- or '/usr/share/lua-language-server'
   -- local sumneko_binary = opts.sumneko_binary or 'lua-language-server'
@@ -607,6 +606,7 @@ local function get_treesitter_plugins()
             'help',
             'html',
             'java',
+            'json',
             'lua',
             'markdown',
             'proto',
@@ -624,10 +624,10 @@ local function get_treesitter_plugins()
           incremental_selection = {
             enable = true,
             keymaps = {
-              init_selection = 'gss',
-              node_incremental = 'gsi',
-              scope_incremental = 'gsc',
-              node_decremental = 'gsd',
+              init_selection = "<CR>",
+              node_incremental = "<CR>",
+              scope_incremental = "<S-CR>",
+              node_decremental = "<BS>",
             },
           },
           indent = { enable = false },
