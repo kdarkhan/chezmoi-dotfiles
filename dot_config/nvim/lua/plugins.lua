@@ -626,8 +626,8 @@ local function get_treesitter_plugins()
             keymaps = {
               init_selection = '<CR>',
               node_incremental = '<CR>',
-              scope_incremental = '<S-CR>',
-              node_decremental = '<BS>',
+              scope_incremental = 'BS',
+              node_decremental = '<S-CR>',
             },
           },
           indent = { enable = false },
