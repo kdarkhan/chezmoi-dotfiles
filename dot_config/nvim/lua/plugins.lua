@@ -455,12 +455,12 @@ function MyLspConfig(servers)
 
     -- buf_set_keymap('n', '<leader>q', '<cmd>lua vim.lsp.diagnostic.set_loclist()<CR>', map_opts)
     vim.cmd([[
-			command! Format execute 'lua vim.lsp.buf.format({ async = true })'
-			augroup MyLspHold
-				autocmd! * <buffer>
-				autocmd CursorHold,CursorHoldI <buffer> lua require('nvim-lightbulb').update_lightbulb()
-			augroup END
-			]])
+      command! Format execute 'lua vim.lsp.buf.format({ async = true })'
+      augroup MyLspHold
+              autocmd! * <buffer>
+              autocmd CursorHold,CursorHoldI <buffer> lua require('nvim-lightbulb').update_lightbulb()
+      augroup END
+    ]])
   end
 
   local capabilities = vim.lsp.protocol.make_client_capabilities()
