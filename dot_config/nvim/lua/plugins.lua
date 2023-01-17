@@ -824,21 +824,6 @@ local function get_visual_tweak_plugins()
       end,
     },
     {
-      'lewis6991/gitsigns.nvim',
-      dependencies = { 'nvim-lua/plenary.nvim' },
-      config = function()
-        require('gitsigns').setup({
-          signs = {
-            add = { text = '+' },
-            change = { text = '~' },
-            delete = { text = '_' },
-            topdelete = { text = '‾' },
-            changedelete = { text = '~' },
-          },
-        })
-      end,
-    },
-    {
       'karb94/neoscroll.nvim',
       enabled = false,
       config = function()
