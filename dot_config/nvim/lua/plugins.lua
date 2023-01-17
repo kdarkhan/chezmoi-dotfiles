@@ -536,7 +536,9 @@ local function get_lsp_plugins()
         'kosayoda/nvim-lightbulb',
         -- 'jose-elias-alvarez/null-ls.nvim',
       },
-      config = MyLspConfig,
+      config = function()
+        MyLspConfig()
+      end,
     },
     {
       'weilbith/nvim-code-action-menu',
