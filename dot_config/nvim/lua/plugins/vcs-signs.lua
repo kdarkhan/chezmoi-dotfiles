@@ -3,7 +3,19 @@ return {
     'lewis6991/gitsigns.nvim',
     dependencies = { 'nvim-lua/plenary.nvim' },
     config = function()
-      require('gitsigns').setup()
+      require('gitsigns').setup({
+        linehl = true,
+        numhl = true,
+        diffopts = {
+          internal = true,
+        },
+      })
+    vim.api.nvim_set_keymap(
+      'n',
+      '<leader>og',
+      ':Gitsigns toggle_current_line_blame<CR>',
+      { noremap = true, silent = true, desc = 'Toggle git blame' }
+    )
     end,
   },
   {
