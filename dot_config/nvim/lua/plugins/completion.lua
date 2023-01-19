@@ -63,8 +63,8 @@ return {
           end, { 'i', 's' }),
         },
         sources = {
-          { name = 'luasnip' },
           { name = 'nvim_lsp' },
+          { name = 'luasnip' },
           { name = 'buffer' },
           { name = 'path' },
         },
@@ -72,8 +72,8 @@ return {
           format = require('lspkind').cmp_format({
             mode = 'symbol_text',
             menu = {
-              luasnip = '[SNP]',
               nvim_lsp = '[LSP]',
+              luasnip = '[SNP]',
               buffer = '[BUF]',
               path = '[PTH]',
             },
