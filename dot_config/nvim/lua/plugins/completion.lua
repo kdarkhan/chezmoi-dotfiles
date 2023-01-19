@@ -9,6 +9,7 @@ return {
 			'saadparwaiz1/cmp_luasnip',
 			'windwp/nvim-autopairs',
 			'L3MON4D3/LuaSnip',
+			'onsails/lspkind.nvim',
 		},
 		config = function()
 			local cmp = require('cmp')
@@ -67,6 +68,19 @@ return {
 					{ name = 'buffer' },
 					{ name = 'path' },
 				},
+				formatting = {
+					format = require('lspkind').cmp_format({
+						mode = 'symbol_text',
+						menu = ({
+							luasnip = "[SNP]",
+							nvim_lsp = "[LSP]",
+							buffer = "[BUF]",
+							path = "[PTH]",
+						}),
+						maxwidth = 50,
+						ellipsis_char = '…',
+					}),
+				}
 			})
 
 			-- Use buffer source for `/` (if you enabled `native_menu`, this won't work anymore).
