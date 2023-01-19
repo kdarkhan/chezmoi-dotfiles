@@ -6,6 +6,7 @@ return {
 			'hrsh7th/cmp-buffer',
 			'hrsh7th/cmp-path',
 			'hrsh7th/cmp-cmdline',
+			'hrsh7th/cmp-nvim-lsp-signature-help',
 			'saadparwaiz1/cmp_luasnip',
 			'windwp/nvim-autopairs',
 			'L3MON4D3/LuaSnip',
@@ -63,6 +64,7 @@ return {
 					end, { 'i', 's' }),
 				},
 				sources = {
+					{ name = 'nvim_lsp_signature_help' },
 					{ name = 'luasnip' },
 					{ name = 'nvim_lsp' },
 					{ name = 'buffer' },
@@ -80,13 +82,24 @@ return {
 						maxwidth = 50,
 						ellipsis_char = '…',
 					}),
-				}
+				},
+				view = {
+					entries = {name = 'custom', selection_order = 'near_cursor' }
+				},
 			})
 
-			-- Use buffer source for `/` (if you enabled `native_menu`, this won't work anymore).
+      cmp.setup.filetype('rust', {
+				sources = {
+					-- Disabling nvim_lsp_signature_help because rust-tools.nvim has their own version
+					{ name = 'luasnip' },
+					{ name = 'nvim_lsp' },
+					{ name = 'buffer' },
+					{ name = 'path' },
+				},
+      })
+
 			cmp.setup.cmdline('/', { sources = { { name = 'buffer' } } })
 
-			-- Use cmdline & path source for ':' (if you enabled `native_menu`, this won't work anymore).
 			cmp.setup.cmdline(':', {
 				sources = cmp.config.sources(
 					{ { name = 'path' } },
