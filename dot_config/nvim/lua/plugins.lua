@@ -366,126 +366,94 @@ local function get_telescope_plugins()
   }
 end
 
-function MyLspConfig(servers)
-  local lsp_servers = servers or { 'clangd' }
-  -- local sumneko_root_path = opts.sumneko_root_path
-  -- or '/usr/share/lua-language-server'
-  -- local sumneko_binary = opts.sumneko_binary or 'lua-language-server'
+function MyLspOnAttach(client, bufnr)
+  vim.api.nvim_buf_set_option(bufnr, 'omnifunc', 'v:lua.vim.lsp.omnifunc')
+
+  require('lsp_signature').on_attach()
+
+  local function buf_set_keymap_normal(lhs, rhs, callback)
+    vim.api.nvim_buf_set_keymap(
+      bufnr,
+      'n',
+      lhs,
+      rhs,
+      { noremap = true, silent = true, callback = callback }
+    )
+  end
+
+  -- Mappings.
+
+  buf_set_keymap_normal('gD', '', vim.lsp.buf.declaration)
+  buf_set_keymap_normal('gd', '', require('telescope.builtin').lsp_definitions)
+  buf_set_keymap_normal(
+    'gt',
+    '',
+    require('telescope.builtin').lsp_type_definitions
+  )
+  buf_set_keymap_normal('gr', '', require('telescope.builtin').lsp_references)
+  buf_set_keymap_normal(
+    'gi',
+    '',
+    require('telescope.builtin').lsp_implementations
+  )
+  buf_set_keymap_normal('K', '', vim.lsp.buf.hover)
+  buf_set_keymap_normal('<C-k>', '', vim.lsp.buf.signature_help)
+  buf_set_keymap_normal('<leader>lwa', '', vim.lsp.buf.add_workspace_folder)
+  buf_set_keymap_normal('<leader>lwr', '', vim.lsp.buf.remove_workspace_folder)
+  buf_set_keymap_normal('<leader>lwl', '', function()
+    print(vim.inspect(vim.lsp.buf.list_workspace_folders()))
+  end)
+  buf_set_keymap_normal(
+    '<leader>lwd',
+    '',
+    require('telescope.builtin').lsp_workspace_diagnostics
+  )
+  buf_set_keymap_normal('<leader>lr', '', vim.lsp.buf.rename)
+  -- buf_set_keymap_normal('<leader>la', '', vim.lsp.buf.code_action)
+  buf_set_keymap_normal('<leader>la', ':CodeActionMenu<CR>')
+  buf_set_keymap_normal(
+    '<leader>ls',
+    '',
+    require('telescope.builtin').lsp_workspace_symbols
+  )
+  buf_set_keymap_normal(
+    '<leader>ld',
+    '',
+    vim.lsp.diagnostic.show_line_diagnostics
+  )
+  buf_set_keymap_normal('<leader>lf', '', vim.lsp.buf.format)
+  buf_set_keymap_normal('gp', '', vim.lsp.diagnostic.goto_prev)
+  buf_set_keymap_normal('gn', '', vim.lsp.diagnostic.goto_next)
+
+  -- buf_set_keymap('n', '<leader>q', '<cmd>lua vim.lsp.diagnostic.set_loclist()<CR>', map_opts)
+  vim.cmd([[
+		command! Format execute 'lua vim.lsp.buf.format({ async = true })'
+		augroup MyLspHold
+						autocmd! * <buffer>
+						autocmd CursorHold,CursorHoldI <buffer> lua require('nvim-lightbulb').update_lightbulb()
+		augroup END
+	]])
+end
+
+local function setup_lsp()
+  local lsp_servers = { 'clangd' }
 
   require('trouble').setup({})
 
   require('fidget').setup({})
 
-  local lsp_signature = require('lsp_signature')
-
   local lspconfig = require('lspconfig')
-
-  local aerial = require('aerial')
-
-  -- Use an on_attach function to only map the following keys
-  -- after the language server attaches to the current buffer
-  local on_attach = function(client, bufnr, attach_opts)
-    vim.api.nvim_buf_set_option(bufnr, 'omnifunc', 'v:lua.vim.lsp.omnifunc')
-
-    lsp_signature.on_attach()
-
-    local function buf_set_keymap_normal(lhs, rhs, callback)
-      vim.api.nvim_buf_set_keymap(
-        bufnr,
-        'n',
-        lhs,
-        rhs,
-        { noremap = true, silent = true, callback = callback }
-      )
-    end
-
-    -- Mappings.
-    -- local map_opts = { noremap = true, silent = true }
-
-    -- See `:help vim.lsp.*` for documentation on any of the below functions
-    buf_set_keymap_normal('gD', '', vim.lsp.buf.declaration)
-    buf_set_keymap_normal(
-      'gd',
-      '',
-      require('telescope.builtin').lsp_definitions
-    )
-    buf_set_keymap_normal(
-      'gt',
-      '',
-      require('telescope.builtin').lsp_type_definitions
-    )
-    buf_set_keymap_normal('gr', '', require('telescope.builtin').lsp_references)
-    buf_set_keymap_normal(
-      'gi',
-      '',
-      require('telescope.builtin').lsp_implementations
-    )
-    buf_set_keymap_normal('K', '', vim.lsp.buf.hover)
-    buf_set_keymap_normal('<C-k>', '', vim.lsp.buf.signature_help)
-    buf_set_keymap_normal('<leader>lwa', '', vim.lsp.buf.add_workspace_folder)
-    buf_set_keymap_normal(
-      '<leader>lwr',
-      '',
-      vim.lsp.buf.remove_workspace_folder
-    )
-    buf_set_keymap_normal('<leader>lwl', '', function()
-      print(vim.inspect(vim.lsp.buf.list_workspace_folders()))
-    end)
-    buf_set_keymap_normal(
-      '<leader>lwd',
-      '',
-      require('telescope.builtin').lsp_workspace_diagnostics
-    )
-    buf_set_keymap_normal('<leader>lr', '', vim.lsp.buf.rename)
-    -- buf_set_keymap_normal('<leader>la', '', vim.lsp.buf.code_action)
-    buf_set_keymap_normal('<leader>la', ':CodeActionMenu<CR>')
-    buf_set_keymap_normal(
-      '<leader>ls',
-      '',
-      require('telescope.builtin').lsp_workspace_symbols
-    )
-    buf_set_keymap_normal(
-      '<leader>ld',
-      '',
-      vim.lsp.diagnostic.show_line_diagnostics
-    )
-    buf_set_keymap_normal('<leader>lf', '', vim.lsp.buf.format)
-    buf_set_keymap_normal('gp', '', vim.lsp.diagnostic.goto_prev)
-    buf_set_keymap_normal('gn', '', vim.lsp.diagnostic.goto_next)
-
-    -- buf_set_keymap('n', '<leader>q', '<cmd>lua vim.lsp.diagnostic.set_loclist()<CR>', map_opts)
-    vim.cmd([[
-      command! Format execute 'lua vim.lsp.buf.format({ async = true })'
-      augroup MyLspHold
-              autocmd! * <buffer>
-              autocmd CursorHold,CursorHoldI <buffer> lua require('nvim-lightbulb').update_lightbulb()
-      augroup END
-    ]])
-  end
 
   local capabilities = require('cmp_nvim_lsp').default_capabilities()
 
   local rust_tools = require('rust-tools')
   rust_tools.setup({
     server = {
-      on_attach = on_attach,
+      on_attach = MyLspOnAttach,
       capabilities = capabilities,
     },
   })
 
-  -- null_ls setup
-  -- local null_ls = require('null-ls')
-  -- null_ls.setup({
-  --   sources = {
-  --     -- null_ls.builtins.diagnostics.cspell,
-  --     null_ls.builtins.formatting.stylua,
-  --   },
-  --   debug = false,
-  --   on_attach = on_attach,
-  -- })
-
-  -- Use a loop to conveniently call 'setup' on multiple servers and
-  -- map buffer local keybindings when the language server attaches
   for _, lsp in ipairs(lsp_servers) do
     lspconfig[lsp].setup({
       cmd = (lsp == 'clangd' and {
@@ -494,20 +462,16 @@ function MyLspConfig(servers)
         '-query-driver',
         '/usr/bin/avr-gcc,/usr/bin/arm-none-eabi-gcc',
       } or nil),
-      on_attach = on_attach,
+      on_attach = MyLspOnAttach,
       capabilities = capabilities,
       flags = { debounce_text_changes = 150 },
     })
   end
 
-  local runtime_path = vim.split(package.path, ';')
-  table.insert(runtime_path, 'lua/?.lua')
-  table.insert(runtime_path, 'lua/?/init.lua')
-
   require('neodev').setup({})
   require('lspconfig').sumneko_lua.setup({
     capabilities = capabilities,
-    on_attach = on_attach,
+    on_attach = MyLspOnAttach,
     settings = {
       Lua = {
         workspace = {
@@ -535,9 +499,7 @@ local function get_lsp_plugins()
         'kosayoda/nvim-lightbulb',
         'hrsh7th/nvim-cmp',
       },
-      config = function()
-        MyLspConfig()
-      end,
+      config = setup_lsp,
     },
     {
       'weilbith/nvim-code-action-menu',
