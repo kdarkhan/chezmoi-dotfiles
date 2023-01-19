@@ -743,7 +743,7 @@ local function MyStatuslineConfig(opts)
           'diagnostics',
           sources = { 'nvim_diagnostic' },
           always_visible = function()
-            return vim.tbl_count(vim.lsp.buf_get_clients()) > 0
+            return vim.tbl_count(vim.lsp.get_active_clients()) > 0
           end,
         },
       },
