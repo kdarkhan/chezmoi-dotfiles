@@ -6,7 +6,6 @@ return {
       'hrsh7th/cmp-buffer',
       'hrsh7th/cmp-path',
       'hrsh7th/cmp-cmdline',
-      'hrsh7th/cmp-nvim-lsp-signature-help',
       'saadparwaiz1/cmp_luasnip',
       'windwp/nvim-autopairs',
       'L3MON4D3/LuaSnip',
@@ -64,7 +63,6 @@ return {
           end, { 'i', 's' }),
         },
         sources = {
-          { name = 'nvim_lsp_signature_help' },
           { name = 'luasnip' },
           { name = 'nvim_lsp' },
           { name = 'buffer' },
@@ -85,16 +83,6 @@ return {
         },
         view = {
           entries = { name = 'custom', selection_order = 'near_cursor' },
-        },
-      })
-
-      cmp.setup.filetype('rust', {
-        sources = {
-          -- Disabling nvim_lsp_signature_help because rust-tools.nvim has their own version
-          { name = 'luasnip' },
-          { name = 'nvim_lsp' },
-          { name = 'buffer' },
-          { name = 'path' },
         },
       })
 
