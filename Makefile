@@ -5,7 +5,7 @@ apply:
 	chezmoi -S . apply --verbose
 
 stylua-format:
-	stylua --config-path=stylua.toml dot_config/nvim/{,**/}*.lua
+	stylua --config-path=stylua.toml dot_config/nvim/ -g '*.lua'
 
 diff:
 	chezmoi -S . diff
