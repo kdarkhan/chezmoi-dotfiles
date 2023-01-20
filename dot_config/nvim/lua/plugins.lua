@@ -918,8 +918,17 @@ local function get_all_plugins()
   return plugins
 end
 
+local function setup_filetypes()
+  vim.filetype.add({
+    pattern = {
+      ['.*/waybar/config'] = 'jsonc',
+    },
+  })
+end
+
 setup_options()
 setup_autocommands()
 setup_keymaps()
+setup_filetypes()
 
 return get_all_plugins()
