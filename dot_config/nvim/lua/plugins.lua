@@ -74,7 +74,7 @@ local function setup_autocommands()
   augroup CustomStuff
     autocmd!
     " Highlight on YANK
-    autocmd TextYankPost * silent! lua vim.highlight.on_yank { higroup="IncSearch", timeout=1500 }
+    " autocmd TextYankPost * silent! lua vim.highlight.on_yank { higroup="IncSearch", timeout=1500 }
     " Spell enable
     autocmd FileType markdown,gitcommit,hgcommit,python setlocal spell
     " Make genfiles readonly
