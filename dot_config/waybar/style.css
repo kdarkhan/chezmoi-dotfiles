@@ -1,7 +1,7 @@
 * {
-    /* `otf-font-awesome` is required to be installed for icons */
-    font-family: FontAwesome, Roboto, Helvetica, Arial, sans-serif;
-    font-size: 10px;
+    /* Requires nerd font version for icons to work */
+    font-family: Inconsolata Semi Condensed SemiBold,IosevkaTerm Nerd Font,FontAwesome, Roboto, Helvetica, Arial, sans-serif;
+    font-size: 12px;
 }
 
 window#waybar {
@@ -84,9 +84,9 @@ window#waybar.chromium {
 #language,
 #bluetooth,
 #mpd {
-    padding: 0 10px;
+    padding: 0 9px;
     color: #ffffff;
-    border-radius: 10px 0px 10px 0px;
+    border-radius: 9px 0px 9px 0px;
     /* height: 50px; */
     /* clip-path: polygon(25% 5%, 75% 5%, 100% 50%, 75% 95%, 25% 95%, 0% 50%); */
     /* clip-path: polygon(25% 5%, 75% 5%, 100% 50%, 75% 95%, 25% 95%, 0% 50%); */
@@ -231,6 +231,7 @@ label:focus {
 
 #idle_inhibitor {
     background-color: #66cc99;
+    min-width: 12px;
 }
 
 #idle_inhibitor.activated {
