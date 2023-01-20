@@ -1,6 +1,34 @@
 README.md
 stylua.toml
 Makefile
-{{- if ne .machine_type "personal" }}
+
+{{- if or (ne .machine_type "personal") (ne .desktop_env "sway") }}
 .config/waybar/
+scripts/autostart-wayland.sh
+{{- end }}
+
+{{- if ne .desktop_env "sway" }}
+.config/sway/
+.config/mako/
+.config/gammastep/
+{{- end }}
+
+
+{{- if not (lookPath "kitty") }}
+.config/kitty/
+{{- end }}
+
+
+{{- if not (lookPath "fish") }}
+.config/fish/
+{{- end }}
+
+
+{{- if not (lookPath "wireplumber") }}
+.config/wireplumber/
+{{- end }}
+
+
+{{- if not (lookPath "npm") }}
+.npmrc
 {{- end }}
