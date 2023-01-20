@@ -176,7 +176,7 @@
         },
         "exec-on-event": true,
         "interval": "once",
-        "exec": "( swaymsg -r -t get_outputs | jq '.[0].scale' | xargs test 1 == ) && echo '{\"alt\": \"noscale\"}' || echo '{\"alt\":\"scale\"}'",
+        "exec": "( swaymsg -r -t get_outputs | jq '.[0].scale' | xargs test 1 == ) && echo '{\"alt\": \"noscale\",\"class\":\"activated\"}' || echo '{\"alt\":\"scale\"}'",
         "exec-if": "sleep 0.1", // Give enough time for `sway output` command changes to propagate so we can read them in the next `exec`
         "on-click": "( swaymsg -r -t get_outputs | jq '.[0].scale' | xargs test 1 = ) && swaymsg output DP-1 scale 1.4 || swaymsg output DP-1 scale 1; pkill -SIGRTMIN+1 waybar",
         "signal": 1

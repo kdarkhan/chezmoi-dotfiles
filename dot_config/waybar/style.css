@@ -76,6 +76,7 @@ window#waybar.chromium {
 #pulseaudio,
 #custom-media,
 #custom-output-scale,
+#custom-pa-cycle,
 #tray,
 #mode,
 #idle_inhibitor,
@@ -185,10 +186,18 @@ label:focus {
     min-width: 100px;
 }
 
-
 #custom-output-scale {
     background-color: #66cc99;
-    /* background-color: #2d3436; */
+}
+
+#custom-output-scale.activated {
+    background-color: #a30537;
+    color: #2d3436;
+}
+
+#custom-media,
+#custom-pa-cycle {
+    background-color: #66cc99;
 }
 
 #custom-media.custom-spotify {
@@ -221,11 +230,11 @@ label:focus {
 }
 
 #idle_inhibitor {
-    background-color: #2d3436;
+    background-color: #66cc99;
 }
 
 #idle_inhibitor.activated {
-    background-color: #ecf0f1;
+    background-color: #a30537;
     color: #2d3436;
 }
 
