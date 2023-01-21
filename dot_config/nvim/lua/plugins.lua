@@ -436,7 +436,7 @@ function MyLspOnAttach(client, bufnr)
 end
 
 local function setup_lsp()
-  local lsp_servers = { 'clangd' }
+  local lsp_servers = { 'clangd', 'gopls' }
 
   require('trouble').setup({})
 
