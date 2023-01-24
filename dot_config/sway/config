@@ -206,6 +206,7 @@ for_window [app_id="telegramdesktop"] border pixel 1
 for_window [class="Steam"] border pixel 1
 for_window [class="Spotify"] border pixel 1
 for_window [app_id="blender"] border pixel 1
+for_window [app_id="code-url-handler"] border pixel 1
 for_window [class="vlc"] border pixel 1
 for_window [class="Gimp-2.10"] border pixel 1
 for_window [app_id="pavucontrol"] floating enable
