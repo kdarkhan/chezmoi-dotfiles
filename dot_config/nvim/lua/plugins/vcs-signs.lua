@@ -6,9 +6,6 @@ return {
       require('gitsigns').setup({
         linehl = true,
         numhl = true,
-        diffopts = {
-          internal = true,
-        },
       })
       vim.api.nvim_set_keymap(
         'n',
