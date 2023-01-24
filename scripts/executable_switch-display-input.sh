@@ -5,7 +5,7 @@ set -ex
 # x0f - DisplayPort
 # x13 - USB
 
-current_display="$(ddcutil -d 1 getvcp 60 --brief)"
+current_display="$(ddcutil -d 1 getvcp 60 --brief | grep 'VCP 60')"
 
 
 if [[ "$1" == "toggle" ]]; then

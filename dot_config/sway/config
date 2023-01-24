@@ -5,7 +5,7 @@ set $mod Mod4
 font pango:monospace 8
 
 exec_always --no-startup-id ./scripts/autostart-wayland.sh
-exec_always --no-startup-id exec dbus-update-activation-environment --systemd DISPLAY WAYLAND_DISPLAY SWAYSOCK
+exec_always --no-startup-id exec dbus-update-activation-environment --systemd WAYLAND_DISPLAY DISPLAY SWAYSOCK XDG_CURRENT_DESKTOP=sway XDG_SESSION_DESKTOP=sway
 
 bindsym XF86AudioRaiseVolume exec --no-startup-id "test $(pactl get-sink-volume @DEFAULT_SINK@ short | rg '.+ (\d+)% .*' -r '$1') -lt 120 && pactl set-sink-volume @DEFAULT_SINK@ +5%"
 bindsym XF86AudioLowerVolume exec --no-startup-id pactl set-sink-volume @DEFAULT_SINK@ -5%
@@ -195,9 +195,14 @@ client.background       $fg
 for_window [class="ghidra-Ghidra"] floating enable
 for_window [class="jetbrains-studio" title="win0"] floating enable
 for_window [app_id="firefox"] border pixel 1
+for_window [app_id="Firefox-esr"] border pixel 1
 for_window [app_id="chromium"] border pixel 1
+for_window [app_id="google-chrome"] border pixel 1
+for_window [app_id="^chrome-.*-.*$"] shortcuts_inhibitor disable
+for_window [app_id="^chrome-.*-.*$"] border pixel 1
 for_window [app_id="kitty"] border pixel 1
 for_window [app_id="org.telegram.desktop"] border pixel 1
+for_window [app_id="telegramdesktop"] border pixel 1
 for_window [class="Steam"] border pixel 1
 for_window [class="Spotify"] border pixel 1
 for_window [app_id="blender"] border pixel 1
