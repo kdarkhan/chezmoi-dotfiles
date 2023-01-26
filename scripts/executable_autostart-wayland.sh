@@ -5,6 +5,7 @@ pgrep mako || systemd-cat --identifier mako mako &
 pgrep wl-paste || wl-paste -t text --watch clipman store --no-persist &
 
 swaymsg "output * scale 1.4 bg ~/Pictures/wallpapers/wallpaper.jpg fill"
+swaymsg "input 1133:16511:Logitech_G502 scroll_factor 0.55"
 
 if pgrep kanshi
 then
