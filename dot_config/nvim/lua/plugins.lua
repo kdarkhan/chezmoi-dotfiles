@@ -460,6 +460,9 @@ local function setup_lsp()
       null_ls.builtins.completion.spell.with({
         filetypes = { 'markdown', 'gitcommit', 'hgcommit' },
       }),
+      null_ls.builtins.diagnostics.cspell.with({
+        filetypes = { 'markdown', 'gitcommit', 'hgcommit' },
+      }),
     },
     on_attach = MyLspOnAttach,
   })
