@@ -366,7 +366,7 @@ local function get_telescope_plugins()
   }
 end
 
-function MyLspOnAttach(client, bufnr)
+function MyLspOnAttach(_, bufnr)
   vim.api.nvim_buf_set_option(bufnr, 'omnifunc', 'v:lua.vim.lsp.omnifunc')
 
   require('lsp_signature').on_attach()
@@ -461,6 +461,7 @@ local function setup_lsp()
         filetypes = { 'markdown', 'gitcommit', 'hgcommit' },
       }),
     },
+    on_attach = MyLspOnAttach,
   })
 
   for _, lsp in ipairs(lsp_servers) do
