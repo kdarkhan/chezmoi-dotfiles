@@ -794,7 +794,6 @@ local function get_other_plugins()
                 ['c'] = 'copy_to_clipboard',
                 ['x'] = 'cut_to_clipboard',
                 ['p'] = 'paste_from_clipboard',
-                ['bd'] = 'buffer_delete',
               },
             },
             follow_current_file = true,
