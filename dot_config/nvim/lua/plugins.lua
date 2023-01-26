@@ -446,11 +446,20 @@ local function setup_lsp()
 
   local capabilities = require('cmp_nvim_lsp').default_capabilities()
 
-  local rust_tools = require('rust-tools')
-  rust_tools.setup({
+  require('rust-tools').setup({
     server = {
       on_attach = MyLspOnAttach,
       capabilities = capabilities,
+    },
+  })
+
+  local null_ls = require('null-ls')
+  null_ls.setup({
+    sources = {
+      null_ls.builtins.formatting.stylua,
+      null_ls.builtins.completion.spell.with({
+        filetypes = { 'markdown', 'gitcommit', 'hgcommit' },
+      }),
     },
   })
 
@@ -498,6 +507,7 @@ local function get_lsp_plugins()
         'folke/neodev.nvim',
         'kosayoda/nvim-lightbulb',
         'hrsh7th/nvim-cmp',
+        'jose-elias-alvarez/null-ls.nvim',
       },
       config = setup_lsp,
     },
