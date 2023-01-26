@@ -605,37 +605,31 @@ local function get_treesitter_plugins()
   }
 end
 
-local function MyStatuslineConfig(opts)
-  opts = {
-    options = { section_separators = '', component_separators = '' },
-    sections = {
-      lualine_a = { 'mode' },
-      lualine_b = {
-        'branch',
-        'diff',
-        {
-          'diagnostics',
-          sources = { 'nvim_diagnostic' },
-          always_visible = function()
-            return vim.tbl_count(vim.lsp.get_active_clients()) > 0
-          end,
-        },
-      },
-      lualine_c = { 'filename', 'lsp_progress' },
-      lualine_x = { 'encoding', 'fileformat', 'filetype' },
-      lualine_y = { 'progress' },
-      lualine_z = { 'location' },
-    },
-  }
-
-  require('lualine').setup(opts)
-end
-
 local function get_statusline_plugins()
   return {
     {
       'nvim-lualine/lualine.nvim',
-      config = MyStatuslineConfig,
+      config = {
+        options = { section_separators = '', component_separators = '' },
+        sections = {
+          lualine_a = { 'mode' },
+          lualine_b = {
+            'branch',
+            'diff',
+            {
+              'diagnostics',
+              sources = { 'nvim_diagnostic' },
+              always_visible = function()
+                return vim.tbl_count(vim.lsp.get_active_clients()) > 0
+              end,
+            },
+          },
+          lualine_c = { 'filename', 'lsp_progress' },
+          lualine_x = { 'encoding', 'fileformat', 'filetype' },
+          lualine_y = { 'progress' },
+          lualine_z = { 'location' },
+        },
+      },
     },
   }
 end
