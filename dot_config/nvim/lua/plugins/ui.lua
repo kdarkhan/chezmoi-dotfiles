@@ -1,7 +1,11 @@
 return {
   {
     'stevearc/dressing.nvim',
-    config = true,
+    config = {
+      input = {
+        insert_only = false,
+      },
+    },
     enabled = true,
   },
 }
