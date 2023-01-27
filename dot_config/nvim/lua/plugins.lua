@@ -237,6 +237,39 @@ local function setup_keymaps()
   vim.api.nvim_set_keymap('v', 'gy', ':OSCYank<CR>', { noremap = true })
 end
 
+local function visual_selection_range()
+  local _, csrow, cscol, _ = unpack(vim.fn.getpos('v'))
+  local _, cerow, cecol, _ = unpack(vim.fn.getcurpos())
+  if csrow < cerow or (csrow == cerow and cscol <= cecol) then
+    return csrow, cscol, cerow, cecol
+  else
+    return cerow, cecol, csrow, cscol
+  end
+end
+
+local function get_visual_selection(separator)
+  separator = separator or '\\n'
+  local csrow, cscol, cerow, cecol = visual_selection_range()
+
+  local lines = vim.api.nvim_buf_get_lines(
+    vim.api.nvim_get_current_buf(),
+    csrow - 1,
+    cerow,
+    false
+  )
+  if #lines == 1 then
+    return string.sub(lines[1], cscol, cecol)
+  elseif #lines > 1 then
+    local result = { string.sub(lines[1], cscol) }
+    for i = 2, #lines - 1, 1 do
+      table.insert(result, lines[i])
+    end
+    table.insert(result, string.sub(lines[#lines], 1, cecol))
+    return table.concat(result, separator)
+  end
+  return ''
+end
+
 local function MyTelescopeConfig()
   local actions = require('telescope.actions')
   local action_state = require('telescope.actions.state')
@@ -305,6 +338,17 @@ local function MyTelescopeConfig()
     noremap = true,
     silent = true,
     callback = require('telescope.builtin').live_grep,
+  })
+
+  vim.api.nvim_set_keymap('v', '<leader>fg', '', {
+    noremap = true,
+    silent = true,
+    callback = function()
+      local text = get_visual_selection()
+      require('telescope.builtin').live_grep({
+        default_text = text,
+      })
+    end,
   })
 
   vim.api.nvim_set_keymap('n', '<leader>bb', '', {
