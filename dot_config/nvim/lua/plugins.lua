@@ -371,59 +371,45 @@ function MyLspOnAttach(_, bufnr)
 
   require('lsp_signature').on_attach()
 
-  local function buf_set_keymap_normal(lhs, rhs, callback)
+  local function buf_set_keymap_normal(lhs, callback, rhs)
     vim.api.nvim_buf_set_keymap(
       bufnr,
       'n',
       lhs,
-      rhs,
+      rhs or '',
       { noremap = true, silent = true, callback = callback }
     )
   end
 
   -- Mappings.
 
-  buf_set_keymap_normal('gD', '', vim.lsp.buf.declaration)
-  buf_set_keymap_normal('gd', '', require('telescope.builtin').lsp_definitions)
-  buf_set_keymap_normal(
-    'gt',
-    '',
-    require('telescope.builtin').lsp_type_definitions
-  )
-  buf_set_keymap_normal('gr', '', require('telescope.builtin').lsp_references)
-  buf_set_keymap_normal(
-    'gi',
-    '',
-    require('telescope.builtin').lsp_implementations
-  )
-  buf_set_keymap_normal('K', '', vim.lsp.buf.hover)
-  buf_set_keymap_normal('<C-k>', '', vim.lsp.buf.signature_help)
-  buf_set_keymap_normal('<leader>lwa', '', vim.lsp.buf.add_workspace_folder)
-  buf_set_keymap_normal('<leader>lwr', '', vim.lsp.buf.remove_workspace_folder)
-  buf_set_keymap_normal('<leader>lwl', '', function()
+  buf_set_keymap_normal('gD', vim.lsp.buf.declaration)
+  buf_set_keymap_normal('gd', require('telescope.builtin').lsp_definitions)
+  buf_set_keymap_normal('gt', require('telescope.builtin').lsp_type_definitions)
+  buf_set_keymap_normal('gr', require('telescope.builtin').lsp_references)
+  buf_set_keymap_normal('gi', require('telescope.builtin').lsp_implementations)
+  buf_set_keymap_normal('K', vim.lsp.buf.hover)
+  buf_set_keymap_normal('<C-k>', vim.lsp.buf.signature_help)
+  buf_set_keymap_normal('<leader>lwa', vim.lsp.buf.add_workspace_folder)
+  buf_set_keymap_normal('<leader>lwr', vim.lsp.buf.remove_workspace_folder)
+  buf_set_keymap_normal('<leader>lwl', function()
     print(vim.inspect(vim.lsp.buf.list_workspace_folders()))
   end)
   buf_set_keymap_normal(
     '<leader>lwd',
-    '',
     require('telescope.builtin').lsp_workspace_diagnostics
   )
-  buf_set_keymap_normal('<leader>lr', '', vim.lsp.buf.rename)
+  buf_set_keymap_normal('<leader>lr', vim.lsp.buf.rename)
   -- buf_set_keymap_normal('<leader>la', '', vim.lsp.buf.code_action)
-  buf_set_keymap_normal('<leader>la', ':CodeActionMenu<CR>')
+  buf_set_keymap_normal('<leader>la', nil, ':CodeActionMenu<CR>')
   buf_set_keymap_normal(
     '<leader>ls',
-    '',
     require('telescope.builtin').lsp_workspace_symbols
   )
-  buf_set_keymap_normal(
-    '<leader>ld',
-    '',
-    vim.lsp.diagnostic.show_line_diagnostics
-  )
-  buf_set_keymap_normal('<leader>lf', '', vim.lsp.buf.format)
-  buf_set_keymap_normal('gp', '', vim.lsp.diagnostic.goto_prev)
-  buf_set_keymap_normal('gn', '', vim.lsp.diagnostic.goto_next)
+  buf_set_keymap_normal('<leader>ld', vim.lsp.diagnostic.show_line_diagnostics)
+  buf_set_keymap_normal('<leader>lf', vim.lsp.buf.format)
+  buf_set_keymap_normal('gp', vim.lsp.diagnostic.goto_prev)
+  buf_set_keymap_normal('gn', vim.lsp.diagnostic.goto_next)
 
   -- buf_set_keymap('n', '<leader>q', '<cmd>lua vim.lsp.diagnostic.set_loclist()<CR>', map_opts)
   vim.cmd([[
