@@ -1,3 +1,12 @@
 #!/bin/sh
 
+{{- if eq .machine_type "personal" }}
+
+echo 'Creating a file for display input switching with udev'
 echo 'ACTION=="add", SUBSYSTEM=="usb", ATTRS{idVendor}=="046d", ATTRS{idProduct}=="c539", RUN+="{{.chezmoi.homeDir}}/scripts/switch-display-input.sh x0f"' | sudo tee /etc/udev/rules.d/51-logitech-mouse-connect.rules
+
+{{- else }}
+
+echo 'Nothing to do'
+
+{{- end }}

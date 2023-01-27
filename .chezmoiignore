@@ -7,11 +7,6 @@ Makefile
 scripts/autostart-wayland.sh
 {{- end }}
 
-
-{{- if ne .machine_type "personal" }}
-run_once_setup_udev_rules.sh
-{{- end }}
-
 {{- if ne .desktop_env "sway" }}
 .config/sway/
 .config/mako/
