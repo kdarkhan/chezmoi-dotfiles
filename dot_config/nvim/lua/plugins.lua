@@ -58,6 +58,30 @@ local function setup_options()
   end
 end
 
+local function set_keymap_helper(lhs, rhs, opts, mode)
+  if mode == nil then
+    mode = 'n'
+  end
+
+  local actual_opts = {
+    noremap = true,
+    silent = true,
+  }
+
+  if type(rhs) == 'function' then
+    actual_opts['callback'] = rhs
+    rhs = ''
+  elseif rhs == nil then
+    rhs = ''
+  end
+
+  if opts ~= nil then
+    actual_opts = vim.tbl_extend('force', actual_opts, opts)
+  end
+
+  vim.api.nvim_set_keymap(mode, lhs, rhs, actual_opts)
+end
+
 local function setup_autocommands()
   vim.api.nvim_exec(
     [[
@@ -94,147 +118,84 @@ end
 
 local function setup_keymaps()
   -- Remap space as leader key
-  vim.api.nvim_set_keymap(
-    '',
-    '<Space>',
-    '<Nop>',
-    { noremap = true, silent = true }
-  )
+  set_keymap_helper('<Space>', '<Nop>', nil, '')
 
   -- Remap for dealing with word wrap
-  vim.api.nvim_set_keymap(
-    'n',
-    'k',
-    "v:count == 0 ? 'gk' : 'k'",
-    { noremap = true, expr = true, silent = true }
-  )
-  vim.api.nvim_set_keymap(
-    'n',
-    'j',
-    "v:count == 0 ? 'gj' : 'j'",
-    { noremap = true, expr = true, silent = true }
-  )
+  set_keymap_helper('k', "v:count == 0 ? 'gk' : 'k'", { expr = true })
+  set_keymap_helper('j', "v:count == 0 ? 'gj' : 'j'", { expr = true })
 
-  vim.api.nvim_set_keymap(
-    'n',
-    '<leader>q',
-    ':q!<CR>',
-    { noremap = true, desc = 'Quit without saving' }
-  )
+  set_keymap_helper('<leader>q', ':q!<CR>', { desc = 'Quit without saving' })
 
   -- options
-  vim.api.nvim_set_keymap(
-    'n',
+
+  set_keymap_helper(
     '<leader>ow',
     ':set list!<CR>',
-    { noremap = true, silent = true, desc = 'Toggle visible whitespace' }
+    { desc = 'Toggle visible whitespace' }
   )
-  vim.api.nvim_set_keymap(
-    'n',
+  set_keymap_helper(
     '<leader>ob',
     ':IndentBlanklineToggle<CR>',
-    { noremap = true, silent = true, desc = 'Togggle IndentBlankLine' }
+    { desc = 'Togggle IndentBlankLine' }
   )
 
   -- files
-  vim.api.nvim_set_keymap(
-    'n',
+  set_keymap_helper(
     '<leader>ft',
     ':NeoTreeRevealToggle<CR>',
-    { noremap = true, silent = true, desc = 'NeoTree toggle' }
+    { desc = 'NeoTree toggle' }
   )
-  vim.api.nvim_set_keymap(
-    'n',
+  set_keymap_helper(
     '<leader>ff',
     ':NeoTreeReveal<CR>',
-    { noremap = true, silent = true, desc = 'NeoTree find' }
+    { desc = 'NeoTree find' }
   )
-  vim.api.nvim_set_keymap(
-    'n',
+  set_keymap_helper(
     '<leader>to',
     ':AerialToggle<CR>',
-    { noremap = true, silent = true, desc = 'Aerial toggle' }
+    { desc = 'Aerial toggle' }
   )
 
   -- actions
-  vim.api.nvim_set_keymap(
-    'n',
+  set_keymap_helper(
     '<leader>aw',
     ':let _s=@/<Bar>:%s/\\s\\+$//e<Bar>:let @/=_s<Bar><CR>',
-    { noremap = true, desc = 'Remove trailing whitespace' }
+    { desc = 'Remove trailing whitespace' }
   )
-  vim.api.nvim_set_keymap(
-    'n',
+  set_keymap_helper(
     '<leader>ac',
     ":let @+=expand('%:p')<CR>",
-    { noremap = true, desc = 'Copy filename' }
+    { desc = 'Copy filename' }
   )
-  vim.api.nvim_set_keymap(
-    'n',
+  set_keymap_helper(
     '<leader>aj',
     ':%!python3 -m json.tool<CR>',
-    { noremap = true, desc = 'JSON format with python3' }
+    { desc = 'JSON format with python3' }
   )
-  vim.api.nvim_set_keymap(
-    'n',
-    '<leader>am',
-    ':make<CR>',
-    { noremap = true, desc = 'Run make' }
-  )
+  set_keymap_helper('<leader>am', ':make<CR>', { desc = 'Run make' })
 
   -- buffers
-  vim.api.nvim_set_keymap(
-    'n',
-    '<leader>bn',
-    ':bnext<CR>',
-    { noremap = true, desc = 'Buffer next' }
-  )
-  vim.api.nvim_set_keymap(
-    'n',
-    '<leader>bp',
-    ':bprev<CR>',
-    { noremap = true, desc = 'Buffer prev' }
-  )
-  vim.api.nvim_set_keymap(
-    'n',
-    '<leader>bd',
-    ':bdelete<CR>',
-    { noremap = true, desc = 'Buffer delete' }
-  )
+  set_keymap_helper('<leader>bn', ':bnext<CR>', { desc = 'Buffer next' })
+  set_keymap_helper('<leader>bp', ':bprev<CR>', { desc = 'Buffer prev' })
+  set_keymap_helper('<leader>bd', ':bdelete<CR>', { desc = 'Buffer delete' })
 
   -- tabs
-  vim.api.nvim_set_keymap(
-    'n',
-    '<leader>tn',
-    ':tabnext<CR>',
-    { noremap = true, desc = 'Tab next' }
-  )
-  vim.api.nvim_set_keymap(
-    'n',
-    '<leader>tp',
-    ':tabprev<CR>',
-    { noremap = true, desc = 'Tab prev' }
-  )
-  vim.api.nvim_set_keymap(
-    'n',
-    '<leader>tt',
-    ':tabnew<CR>',
-    { noremap = true, desc = 'Tab new' }
-  )
-  vim.api.nvim_set_keymap(
-    'n',
-    '<leader>tc',
-    ':tabclose<CR>',
-    { noremap = true, desc = 'Tab close' }
-  )
+  set_keymap_helper('<leader>tn', ':tabnext<CR>', { desc = 'Tab next' })
+  set_keymap_helper('<leader>tp', ':tabprev<CR>', { desc = 'Tab prev' })
+  set_keymap_helper('<leader>tt', ':tabnew<CR>', { desc = 'Tab new' })
+  set_keymap_helper('<leader>tc', ':tabclose<CR>', { desc = 'Tab close' })
 
   -- Y yank until the end of line
-  vim.api.nvim_set_keymap('n', 'Y', 'y$', { noremap = true })
+  set_keymap_helper(
+    'Y',
+    'y$',
+    { noremap = true, desc = 'Yank until the end of line' }
+  )
 
-  vim.api.nvim_set_keymap('x', '<Tab>', '>gv', { noremap = true })
-  vim.api.nvim_set_keymap('x', '<S-Tab>', '<gv', { noremap = true })
+  set_keymap_helper('<Tab>', '>gv', nil, 'x')
+  set_keymap_helper('<S-Tab>', '<gv', nil, 'x')
 
-  vim.api.nvim_set_keymap('v', 'gy', ':OSCYank<CR>', { noremap = true })
+  set_keymap_helper('gy', ':OSCYank<CR>', nil, 'v')
 end
 
 local function visual_selection_range()
@@ -324,77 +285,42 @@ local function MyTelescopeConfig()
   })
 
   -- Add leader shortcuts
-  vim.api.nvim_set_keymap('n', '<leader><leader>', '', {
-    noremap = true,
-    silent = true,
-    callback = function()
-      require('telescope.builtin').find_files({
-        -- find_command = { 'rg', '--files', '-.', '--no-ignore', '-g', '!.git/' },
-      })
-    end,
-  })
+  set_keymap_helper('<leader><leader>', function()
+    require('telescope.builtin').find_files({
+      -- find_command = { 'rg', '--files', '-.', '--no-ignore', '-g', '!.git/' },
+    })
+  end)
 
-  vim.api.nvim_set_keymap('n', '<leader>fg', '', {
-    noremap = true,
-    silent = true,
-    callback = require('telescope.builtin').live_grep,
-  })
+  set_keymap_helper('<leader>fg', require('telescope.builtin').live_grep)
 
-  vim.api.nvim_set_keymap('v', '<leader>fg', '', {
-    noremap = true,
-    silent = true,
-    callback = function()
-      local text = get_visual_selection()
-      require('telescope.builtin').live_grep({
-        default_text = text,
-      })
-    end,
-  })
+  set_keymap_helper('<leader>fg', function()
+    local text = get_visual_selection()
+    require('telescope.builtin').live_grep({
+      default_text = text,
+    })
+  end, nil, 'v')
 
-  vim.api.nvim_set_keymap('n', '<leader>fd', '', {
-    noremap = true,
-    silent = true,
-    callback = function()
-      require('telescope.builtin').find_files({
-        find_command = {
-          'rg',
-          '--no-ignore',
-          '-L',
-          '--hidden',
-          '--files',
-          vim.fn.expand('~/.config/nvim'),
-        },
-      })
-    end,
-  })
+  set_keymap_helper('<leader>fd', function()
+    require('telescope.builtin').find_files({
+      find_command = {
+        'rg',
+        '--no-ignore',
+        '-L',
+        '--hidden',
+        '--files',
+        vim.fn.expand('~/.config/nvim'),
+      },
+    })
+  end)
 
-  vim.api.nvim_set_keymap('n', '<leader>bb', '', {
-    noremap = true,
-    silent = true,
-    callback = require('telescope.builtin').buffers,
-  })
-  vim.api.nvim_set_keymap('n', '<leader>fb', '', {
-    noremap = true,
-    silent = true,
-    callback = require('telescope.builtin').current_buffer_fuzzy_find,
-  })
-  vim.api.nvim_set_keymap('n', '<leader>fh', '', {
-    noremap = true,
-    silent = true,
-    callback = require('telescope.builtin').help_tags,
-  })
-  -- vim.api.nvim_set_keymap('n', '<leader>st', [[<cmd>lua require('telescope.builtin').tags()<CR>]], { noremap = true, silent = true })
-  vim.api.nvim_set_keymap('n', '<leader>fs', '', {
-    noremap = true,
-    silent = true,
-    callback = require('telescope.builtin').treesitter,
-  })
-  -- vim.api.nvim_set_keymap('n', '<leader>so', [[<cmd>lua require('telescope.builtin').tags{ only_current_buffer = true }<CR>]], { noremap = true, silent = true })
-  vim.api.nvim_set_keymap('n', '<leader>fo', '', {
-    noremap = true,
-    silent = true,
-    callback = require('telescope.builtin').oldfiles,
-  })
+  set_keymap_helper('<leader>bb', require('telescope.builtin').buffers)
+  set_keymap_helper(
+    '<leader>fb',
+    require('telescope.builtin').current_buffer_fuzzy_find
+  )
+  set_keymap_helper('<leader>fh', require('telescope.builtin').help_tags)
+  set_keymap_helper('<leader>fs', require('telescope.builtin').treesitter)
+  set_keymap_helper('<leader>fo', require('telescope.builtin').oldfiles)
 end
 
 local function get_telescope_plugins()
@@ -472,7 +398,7 @@ function MyLspOnAttach(_, bufnr)
   buf_set_keymap_normal('gp', vim.lsp.diagnostic.goto_prev)
   buf_set_keymap_normal('gn', vim.lsp.diagnostic.goto_next)
 
-  -- buf_set_keymap('n', '<leader>q', '<cmd>lua vim.lsp.diagnostic.set_loclist()<CR>', map_opts)
+  -- buf_set_keymap_helper('n', '<leader>q', '<cmd>lua vim.lsp.diagnostic.set_loclist()<CR>', map_opts)
   vim.cmd([[
 		command! Format execute 'lua vim.lsp.buf.format({ async = true })'
 		augroup MyLspHold
