@@ -86,7 +86,7 @@ window#waybar.chromium {
 #mpd {
     padding: 0 9px;
     color: #ffffff;
-    border-radius: 9px 0px 9px 0px;
+    /* border-radius: 9px 0px 9px 0px; */
     /* height: 50px; */
     /* clip-path: polygon(25% 5%, 75% 5%, 100% 50%, 75% 95%, 25% 95%, 0% 50%); */
     /* clip-path: polygon(25% 5%, 75% 5%, 100% 50%, 75% 95%, 25% 95%, 0% 50%); */
@@ -278,7 +278,7 @@ label:focus {
 }
 
 #keyboard-state > label {
-    padding: 0 5px;
+    /* padding: 0 5px; */
 }
 
 #keyboard-state > label.locked {
