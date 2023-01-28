@@ -351,6 +351,23 @@ local function MyTelescopeConfig()
     end,
   })
 
+  vim.api.nvim_set_keymap('n', '<leader>fd', '', {
+    noremap = true,
+    silent = true,
+    callback = function()
+      require('telescope.builtin').find_files({
+        find_command = {
+          'rg',
+          '--no-ignore',
+          '-L',
+          '--hidden',
+          '--files',
+          vim.fn.expand('~/.config/nvim'),
+        },
+      })
+    end,
+  })
+
   vim.api.nvim_set_keymap('n', '<leader>bb', '', {
     noremap = true,
     silent = true,
