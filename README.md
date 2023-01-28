@@ -2,6 +2,8 @@
 
 Managed by [chezmoi](https://github.com/twpayne/chezmoi).
 
-Before applying the config, the following should probably be installed:
+Configs include stuff for
 * `tmux`
 * `fish`
+* `sway`
+* `...`

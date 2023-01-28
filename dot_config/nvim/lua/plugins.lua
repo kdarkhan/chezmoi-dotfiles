@@ -100,9 +100,7 @@ local function setup_autocommands()
     " Highlight on YANK
     " autocmd TextYankPost * silent! lua vim.highlight.on_yank { higroup="IncSearch", timeout=1500 }
     " Spell enable
-    autocmd FileType markdown,gitcommit,hgcommit,python setlocal spell
-    " Make genfiles readonly
-    autocmd BufRead,BufNewFile,BufEnter */google3/blaze-genfiles/* let &readonly = 1 | let &modifiable = 0
+    autocmd FileType markdown,gitcommit,hgcommit setlocal spell
     autocmd FileType python set colorcolumn=80
 
 
