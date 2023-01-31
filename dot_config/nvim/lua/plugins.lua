@@ -638,7 +638,7 @@ local function get_visual_tweak_plugins()
       priority = 9000,
     },
     {
-      'kyazdani42/nvim-web-devicons',
+      'nvim-tree/nvim-web-devicons',
       config = function()
         require('nvim-web-devicons').setup()
       end,
@@ -739,7 +739,7 @@ local function get_other_plugins()
       branch = 'main',
       dependencies = {
         'nvim-lua/plenary.nvim',
-        'kyazdani42/nvim-web-devicons', -- not strictly required, but recommended
+        'nvim-tree/nvim-web-devicons', -- not strictly required, but recommended
         'MunifTanjim/nui.nvim',
       },
       config = function()
