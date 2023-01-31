@@ -433,6 +433,7 @@ local function setup_lsp()
       }),
       null_ls.builtins.diagnostics.cspell.with({
         filetypes = { 'markdown', 'gitcommit', 'hgcommit' },
+        extra_args = { '--config', vim.fn.expand('~/.config/cspell.json') }
       }),
     },
     on_attach = MyLspOnAttach,
