@@ -425,17 +425,27 @@ local function setup_lsp()
   })
 
   local null_ls = require('null-ls')
-  null_ls.setup({
-    sources = {
-      null_ls.builtins.formatting.stylua,
-      null_ls.builtins.completion.spell.with({
-        filetypes = { 'markdown', 'gitcommit', 'hgcommit' },
-      }),
+  local null_ls_sources = {
+    null_ls.builtins.completion.spell.with({
+      filetypes = { 'markdown', 'gitcommit', 'hgcommit' },
+    }),
+  }
+  if vim.fn.executable('cspell') then
+    table.insert(
+      null_ls_sources,
       null_ls.builtins.diagnostics.cspell.with({
         filetypes = { 'markdown', 'gitcommit', 'hgcommit' },
-        extra_args = { '--config', vim.fn.expand('~/.config/cspell.json') }
-      }),
-    },
+        extra_args = { '--config', vim.fn.expand('~/.config/cspell.json') },
+      })
+    )
+  end
+
+  if vim.fn.executable('stylua') then
+    table.insert(null_ls_sources, null_ls.builtins.formatting.stylua)
+  end
+
+  null_ls.setup({
+    sources = null_ls_sources,
     on_attach = MyLspOnAttach,
   })
 
