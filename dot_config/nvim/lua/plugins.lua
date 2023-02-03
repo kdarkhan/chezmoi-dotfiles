@@ -430,7 +430,7 @@ local function setup_lsp()
       filetypes = { 'markdown', 'gitcommit', 'hgcommit' },
     }),
   }
-  if vim.fn.executable('cspell') then
+  if vim.fn.executable('cspell') == 1 then
     table.insert(
       null_ls_sources,
       null_ls.builtins.diagnostics.cspell.with({
@@ -440,7 +440,7 @@ local function setup_lsp()
     )
   end
 
-  if vim.fn.executable('stylua') then
+  if vim.fn.executable('stylua') == 1 then
     table.insert(null_ls_sources, null_ls.builtins.formatting.stylua)
   end
 
