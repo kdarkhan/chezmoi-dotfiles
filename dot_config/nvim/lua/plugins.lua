@@ -464,7 +464,7 @@ local function setup_lsp()
   end
 
   require('neodev').setup({})
-  require('lspconfig').sumneko_lua.setup({
+  require('lspconfig').lua_ls.setup({
     capabilities = capabilities,
     on_attach = MyLspOnAttach,
     settings = {
@@ -514,6 +514,7 @@ local function get_treesitter_plugins()
       config = function()
         require('nvim-treesitter.configs').setup({
           ensure_installed = {
+            'bash',
             'c',
             'cpp',
             'css',
