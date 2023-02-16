@@ -83,35 +83,67 @@ local function set_keymap_helper(lhs, rhs, opts, mode)
 end
 
 local function setup_autocommands()
-  vim.api.nvim_exec(
-    [[
-  augroup customColors
-    autocmd!
-    autocmd ColorScheme * highlight Normal guibg=NONE
-    autocmd ColorScheme * if &ft != "neo-tree" | highlight ExtraWhitespace ctermbg=red guibg=red
-    autocmd BufWinEnter * if &ft != "neo-tree" | match ExtraWhitespace /\s\+$/
-    autocmd InsertEnter * if &ft != "neo-tree" | match ExtraWhitespace /\s\+\%#\@<!$/
-    autocmd InsertLeave * if &ft != "neo-tree" | match ExtraWhitespace /\s\+$/
-    autocmd BufWinLeave * if &ft != "neo-tree" | call clearmatches()
-  augroup end
-
-  augroup CustomStuff
-    autocmd!
-    " Highlight on YANK
-    " autocmd TextYankPost * silent! lua vim.highlight.on_yank { higroup="IncSearch", timeout=1500 }
-    " Spell enable
-    autocmd FileType markdown,gitcommit,hgcommit setlocal spell
-    autocmd FileType python set colorcolumn=80
-
-
-    " autocmd BufWritePost init.lua PackerCompile
-
-    autocmd BufRead * let &l:modifiable = !&readonly
-    autocmd BufReadPost * call setpos(".", getpos("'\""))
-  augroup end
-  ]],
-    false
+  local trailing_group = vim.api.nvim_create_augroup('TrailingWhitespace', {})
+  local define_hl_group = function()
+    vim.api.nvim_set_hl(0, 'ExtraWhitespace', { ctermbg = 'red', bg = 'red' })
+  end
+  define_hl_group()
+  vim.api.nvim_create_autocmd('ColorScheme', {
+    pattern = '*',
+    callback = define_hl_group,
+    group = trailing_group,
+  })
+  vim.api.nvim_create_autocmd(
+    { 'BufWinEnter', 'InsertEnter', 'InsertLeave', 'BufWinLeave' },
+    {
+      pattern = '*',
+      callback = function(args)
+        if
+          vim.tbl_contains(
+            { 'neo-tree', 'noice', 'TelescopePrompt', 'help' },
+            vim.bo.filetype
+          )
+        then
+          return
+        end
+        if args.event == 'BufWinEnter' or args.event == 'InsertLeave' then
+          vim.fn.matchadd('ExtraWhitespace', [[\s\+$]])
+        elseif args.event == 'InsertEnter' then
+          vim.fn.clearmatches()
+          vim.fn.matchadd('ExtraWhitespace', [[\s\+\%#\@<!$]])
+        elseif args.event == 'BufWinLeave' then
+          vim.fn.clearmatches()
+        end
+      end,
+      group = trailing_group,
+    }
   )
+
+  local misc_group = vim.api.nvim_create_augroup('MiscGroup', {})
+  vim.api.nvim_create_autocmd('FileType', {
+    pattern = 'markdown,gitcommit,hgcommit',
+    callback = function()
+      vim.wo.spell = true
+    end,
+    group = misc_group,
+  })
+  vim.api.nvim_create_autocmd('FileType', {
+    pattern = 'python',
+    command = 'set colorcolumn=80',
+    group = misc_group,
+  })
+  vim.api.nvim_create_autocmd('BufRead', {
+    pattern = '*',
+    command = 'let &l:modifiable = !&readonly',
+    group = misc_group,
+  })
+  vim.api.nvim_create_autocmd('BufReadPost', {
+    pattern = '*',
+    callback = function()
+      vim.fn.setpos('.', vim.fn.getpos('\'"'))
+    end,
+    group = misc_group,
+  })
 end
 
 local function setup_keymaps()
