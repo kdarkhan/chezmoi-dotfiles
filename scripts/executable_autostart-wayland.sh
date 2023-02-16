@@ -15,7 +15,7 @@ else
     systemd-cat --identifier kanshi kanshi &
 fi
 
-pgrep swayidle || swayidle \
+pgrep swayidle || systemd-cat --identifier swayidle swayidle -d \
     timeout 600 'swaylock -c 1F1F28' \
     timeout 570 'swaymsg "output * dpms off"' \
     resume 'swaymsg "output * dpms on"' before-sleep 'playerctl -a pause; swaylock -c 1F1F28' &

@@ -638,7 +638,7 @@ local function get_statusline_plugins()
   return {
     {
       'nvim-lualine/lualine.nvim',
-      config = {
+      opts = {
         options = { section_separators = '', component_separators = '' },
         sections = {
           lualine_a = { 'mode' },
