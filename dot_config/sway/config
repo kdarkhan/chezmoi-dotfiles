@@ -29,10 +29,10 @@ bindsym $mod+Return exec "kitty -e ./scripts/tmux-resume-or-create.sh"
 
 # kill focused window
 bindsym --to-code $mod+q kill
-bindsym --to-code $mod+i exec "wofi --show drun"
+bindsym --to-code $mod+i exec "wofi -i --show drun"
 
 bindsym --to-code $mod+Shift+o exec swaylock -c 1F1F28
-bindsym --to-code $mod+Shift+p exec ./scripts/switch-display-input.sh toggle
+bindsym --locked --to-code $mod+Shift+p exec ./scripts/switch-display-input.sh toggle
 
 # change focus
 bindsym --to-code $mod+h focus left
