@@ -148,7 +148,7 @@ end
 
 local function setup_keymaps()
   -- Remap space as leader key
-  set_keymap_helper('<Space>', '<Nop>', nil, '')
+  set_keymap_helper('<Space>', '<Nop>')
 
   -- Remap for dealing with word wrap
   set_keymap_helper('k', "v:count == 0 ? 'gk' : 'k'", { expr = true })
@@ -669,14 +669,13 @@ local function get_visual_tweak_plugins()
       'rebelot/kanagawa.nvim',
       config = function()
         require('kanagawa').setup({
-          overrides = {
-            Visual = {
-              bg = require('kanagawa.colors').setup().sumiInk4,
-              -- bg = require('kanagawa.colors').setup().waveBlue2,
-            },
-          },
+          overrides = function(colors)
+            return {
+              Visual = { bg = colors.palette.waveBlue2 },
+            }
+          end,
         })
-        vim.cmd([[colorscheme kanagawa]])
+        vim.cmd([[colorscheme kanagawa-wave]])
       end,
       dependencies = { 'indent-blankline.nvim' },
       priority = 9000,
