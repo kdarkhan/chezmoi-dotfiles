@@ -225,7 +225,7 @@ local function setup_keymaps()
   set_keymap_helper('<Tab>', '>gv', nil, 'x')
   set_keymap_helper('<S-Tab>', '<gv', nil, 'x')
 
-  set_keymap_helper('gy', ':OSCYank<CR>', nil, 'v')
+  set_keymap_helper('gy', ':OSCYankVisual<CR>', nil, 'v')
 end
 
 local function visual_selection_range()
