@@ -556,6 +556,7 @@ local function get_treesitter_plugins()
             'json',
             'lua',
             'markdown',
+            'markdown_inline',
             'proto',
             'python',
             'regex',
