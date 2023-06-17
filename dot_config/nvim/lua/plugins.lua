@@ -518,7 +518,7 @@ local function get_lsp_plugins()
     {
       'neovim/nvim-lspconfig',
       dependencies = {
-        'j-hui/fidget.nvim',
+        { 'j-hui/fidget.nvim', branch = 'legacy' },
         'folke/trouble.nvim',
         'ray-x/lsp_signature.nvim',
         'simrat39/rust-tools.nvim',
