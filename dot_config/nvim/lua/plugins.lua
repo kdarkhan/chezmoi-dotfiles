@@ -383,10 +383,11 @@ local function get_telescope_plugins()
   }
 end
 
-function MyLspOnAttach(_, bufnr)
+function MyLspOnAttach(client, bufnr)
   vim.api.nvim_buf_set_option(bufnr, 'omnifunc', 'v:lua.vim.lsp.omnifunc')
 
   require('lsp_signature').on_attach()
+  require('lsp-inlayhints').on_attach(client, bufnr)
 
   local function buf_set_keymap_normal(lhs, callback, rhs)
     vim.api.nvim_buf_set_keymap(
@@ -446,10 +447,16 @@ local function setup_lsp()
   require('fidget').setup({})
 
   local lspconfig = require('lspconfig')
+  require('lsp-inlayhints').setup()
 
   local capabilities = require('cmp_nvim_lsp').default_capabilities()
 
   require('rust-tools').setup({
+    tools = {
+      inlay_hints = {
+        auto = false,
+      },
+    },
     server = {
       on_attach = MyLspOnAttach,
       capabilities = capabilities,
@@ -526,6 +533,7 @@ local function get_lsp_plugins()
         'kosayoda/nvim-lightbulb',
         'hrsh7th/nvim-cmp',
         'jose-elias-alvarez/null-ls.nvim',
+        'lvimuser/lsp-inlayhints.nvim',
       },
       config = setup_lsp,
     },
