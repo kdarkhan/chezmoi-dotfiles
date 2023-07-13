@@ -827,7 +827,9 @@ local function get_other_plugins()
                 ['p'] = 'paste_from_clipboard',
               },
             },
-            follow_current_file = true,
+            follow_current_file = {
+              enabled = true,
+            }
           },
           buffers = {
             show_unloaded = true,
