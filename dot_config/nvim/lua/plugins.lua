@@ -172,12 +172,12 @@ local function setup_keymaps()
   -- files
   set_keymap_helper(
     '<leader>ft',
-    ':NeoTreeRevealToggle<CR>',
+    ':Neotree reveal toggle<CR>',
     { desc = 'NeoTree toggle' }
   )
   set_keymap_helper(
     '<leader>ff',
-    ':NeoTreeReveal<CR>',
+    ':Neotree reveal<CR>',
     { desc = 'NeoTree find' }
   )
   set_keymap_helper(
