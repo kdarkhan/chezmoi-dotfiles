@@ -53,8 +53,9 @@ local function setup_options()
   vim.o.completeopt = 'menu,menuone,noselect'
 
   if vim.g['neovide'] then
-    vim.o.guifont = 'JetBrainsMonoNL Nerd Font Mono:h10'
-    vim.g['neovide_cursor_vfx_mode'] = 'pixiedust'
+    vim.o.guifont = 'Iosevka Nerd Font Mono:h12'
+    vim.g.neovide_scroll_animation_length = 0.5
+    vim.g.neovide_cursor_vfx_mode = 'pixiedust'
   end
 end
 
@@ -698,33 +699,28 @@ local function get_visual_tweak_plugins()
     {
       'lukas-reineke/indent-blankline.nvim',
       config = function()
-        vim.api.nvim_exec(
-          [[
-          augroup IndentBlankline
-            autocmd!
-            autocmd ColorScheme * highlight IndentBlanklineIndent1 guifg=#E06C75 blend=nocombine
-            autocmd ColorScheme * highlight IndentBlanklineIndent2 guifg=#E5C07B blend=nocombine
-            autocmd ColorScheme * highlight IndentBlanklineIndent3 guifg=#98C379 blend=nocombine
-            autocmd ColorScheme * highlight IndentBlanklineIndent4 guifg=#56B6C2 blend=nocombine
-            autocmd ColorScheme * highlight IndentBlanklineIndent5 guifg=#61AFEF blend=nocombine
-            autocmd ColorScheme * highlight IndentBlanklineIndent6 guifg=#C678DD blend=nocombine
-          augroup end
-          ]],
-          false
-        )
+        local hooks = require('ibl.hooks')
+        hooks.register(hooks.type.HIGHLIGHT_SETUP, function()
+          vim.api.nvim_set_hl(0, 'RainbowRed', { fg = '#E06C75' })
+          vim.api.nvim_set_hl(0, 'RainbowYellow', { fg = '#E5C07B' })
+          vim.api.nvim_set_hl(0, 'RainbowBlue', { fg = '#61AFEF' })
+          vim.api.nvim_set_hl(0, 'RainbowOrange', { fg = '#D19A66' })
+          vim.api.nvim_set_hl(0, 'RainbowGreen', { fg = '#98C379' })
+          vim.api.nvim_set_hl(0, 'RainbowViolet', { fg = '#C678DD' })
+          vim.api.nvim_set_hl(0, 'RainbowCyan', { fg = '#56B6C2' })
+        end)
 
-        require('indent_blankline').setup({
-          space_char_blankline = ' ',
-          use_treesitter = true,
-          show_first_indent_level = false,
-          filetype_exclude = { 'help', 'packer', 'terminal', 'neo-tree' },
-          char_highlight_list = {
-            'IndentBlanklineIndent1',
-            'IndentBlanklineIndent2',
-            'IndentBlanklineIndent3',
-            'IndentBlanklineIndent4',
-            'IndentBlanklineIndent5',
-            'IndentBlanklineIndent6',
+        require('ibl').setup({
+          indent = {
+            highlight = {
+              'RainbowRed',
+              'RainbowYellow',
+              'RainbowBlue',
+              'RainbowOrange',
+              'RainbowGreen',
+              'RainbowViolet',
+              'RainbowCyan',
+            },
           },
         })
       end,
@@ -829,7 +825,7 @@ local function get_other_plugins()
             },
             follow_current_file = {
               enabled = true,
-            }
+            },
           },
           buffers = {
             show_unloaded = true,
