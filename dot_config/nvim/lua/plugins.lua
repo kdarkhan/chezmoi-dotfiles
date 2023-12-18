@@ -103,7 +103,7 @@ local function setup_autocommands()
           vim.tbl_contains(
             { 'neo-tree', 'noice', 'TelescopePrompt', 'help' },
             vim.bo.filetype
-          )
+          ) or vim.fn.bufname():find('Neogit', 1, true) ~= nil
         then
           return
         end
