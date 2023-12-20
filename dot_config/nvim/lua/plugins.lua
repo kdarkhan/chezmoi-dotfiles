@@ -559,7 +559,6 @@ local function get_treesitter_plugins()
             'c',
             'cpp',
             'css',
-            'help',
             'html',
             'java',
             'json',
@@ -573,6 +572,7 @@ local function get_treesitter_plugins()
             'sql',
             'typescript',
             'vim',
+            'vimdoc',
             'yaml',
           },
           highlight = {
