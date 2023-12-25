@@ -385,10 +385,17 @@ local function get_telescope_plugins()
 end
 
 function MyLspOnAttach(client, bufnr)
-  vim.api.nvim_buf_set_option(bufnr, 'omnifunc', 'v:lua.vim.lsp.omnifunc')
+  -- vim.api.nvim_buf_set_option(bufnr, 'omnifunc', 'v:lua.vim.lsp.omnifunc')
+
+  vim.api.nvim_set_option_value('omnifunc', 'v:lua.vim.lsp.omnifunc', {
+    buf = bufnr,
+  })
+
+  if client.server_capabilities.inlayHintProvider then
+    vim.lsp.inlay_hint.enable(bufnr, true)
+  end
 
   require('lsp_signature').on_attach()
-  require('lsp-inlayhints').on_attach(client, bufnr)
 
   local function buf_set_keymap_normal(lhs, callback, rhs)
     vim.api.nvim_buf_set_keymap(
@@ -443,26 +450,19 @@ end
 local function setup_lsp()
   local lsp_servers = { 'clangd', 'gopls' }
 
+  vim.g.rustaceanvim = {
+    server = {
+      on_attach = MyLspOnAttach,
+    },
+  }
+
   require('trouble').setup({})
 
   require('fidget').setup({})
 
   local lspconfig = require('lspconfig')
-  require('lsp-inlayhints').setup()
 
   local capabilities = require('cmp_nvim_lsp').default_capabilities()
-
-  require('rust-tools').setup({
-    tools = {
-      inlay_hints = {
-        auto = false,
-      },
-    },
-    server = {
-      on_attach = MyLspOnAttach,
-      capabilities = capabilities,
-    },
-  })
 
   local null_ls = require('null-ls')
   local null_ls_sources = {
@@ -529,12 +529,15 @@ local function get_lsp_plugins()
         { 'j-hui/fidget.nvim', branch = 'legacy' },
         'folke/trouble.nvim',
         'ray-x/lsp_signature.nvim',
-        'simrat39/rust-tools.nvim',
         'folke/neodev.nvim',
         'kosayoda/nvim-lightbulb',
         'hrsh7th/nvim-cmp',
         'jose-elias-alvarez/null-ls.nvim',
-        'lvimuser/lsp-inlayhints.nvim',
+        {
+          'mrcjkb/rustaceanvim',
+          version = '^3',
+          ft = { 'rust' },
+        },
       },
       config = setup_lsp,
     },
