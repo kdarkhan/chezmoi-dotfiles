@@ -194,6 +194,7 @@ client.background       $fg
 # for_window [class=".*"] border pixel 0
 for_window [class="ghidra-Ghidra"] floating enable
 for_window [class="jetbrains-studio" title="win0"] floating enable
+for_window [class="Godot"] border pixel 1
 for_window [app_id="firefox"] border pixel 1
 for_window [app_id="Firefox-esr"] border pixel 1
 for_window [app_id="chromium"] border pixel 1
