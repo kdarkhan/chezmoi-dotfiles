@@ -458,8 +458,6 @@ local function setup_lsp()
 
   require('trouble').setup({})
 
-  require('fidget').setup({})
-
   local lspconfig = require('lspconfig')
 
   local capabilities = require('cmp_nvim_lsp').default_capabilities()
@@ -526,7 +524,7 @@ local function get_lsp_plugins()
     {
       'neovim/nvim-lspconfig',
       dependencies = {
-        { 'j-hui/fidget.nvim', branch = 'legacy' },
+        { 'j-hui/fidget.nvim', config = true },
         'folke/trouble.nvim',
         'ray-x/lsp_signature.nvim',
         'folke/neodev.nvim',
