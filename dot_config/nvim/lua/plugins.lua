@@ -1,3 +1,27 @@
+local function set_keymap_helper(lhs, rhs, opts, mode)
+  if mode == nil then
+    mode = 'n'
+  end
+
+  local actual_opts = {
+    noremap = true,
+    silent = true,
+  }
+
+  if type(rhs) == 'function' then
+    actual_opts['callback'] = rhs
+    rhs = ''
+  elseif rhs == nil then
+    rhs = ''
+  end
+
+  if opts ~= nil then
+    actual_opts = vim.tbl_extend('force', actual_opts, opts)
+  end
+
+  vim.api.nvim_set_keymap(mode, lhs, rhs, actual_opts)
+end
+
 local function setup_options()
   -- Incremental live completion
   vim.o.inccommand = 'nosplit'
@@ -52,36 +76,16 @@ local function setup_options()
   -- Set completeopt to have a better completion experience
   vim.o.completeopt = 'menu,menuone,noselect'
 
-  if vim.g['neovide'] then
+  if vim.g.neovide then
     vim.o.guifont = 'Iosevka Nerd Font Mono:h12'
-    vim.g.neovide_scroll_animation_length = 0.5
+    vim.g.neovide_scroll_animation_length = 0.3
     vim.g.neovide_cursor_vfx_mode = 'pixiedust'
+
+    set_keymap_helper('<C-S-V>', '<C-R>+', nil, 'i')
+    set_keymap_helper('gy', '"+y', nil, 'v')
   end
 end
 
-local function set_keymap_helper(lhs, rhs, opts, mode)
-  if mode == nil then
-    mode = 'n'
-  end
-
-  local actual_opts = {
-    noremap = true,
-    silent = true,
-  }
-
-  if type(rhs) == 'function' then
-    actual_opts['callback'] = rhs
-    rhs = ''
-  elseif rhs == nil then
-    rhs = ''
-  end
-
-  if opts ~= nil then
-    actual_opts = vim.tbl_extend('force', actual_opts, opts)
-  end
-
-  vim.api.nvim_set_keymap(mode, lhs, rhs, actual_opts)
-end
 
 local function setup_autocommands()
   local trailing_group = vim.api.nvim_create_augroup('TrailingWhitespace', {})
@@ -226,7 +230,28 @@ local function setup_keymaps()
   set_keymap_helper('<Tab>', '>gv', nil, 'x')
   set_keymap_helper('<S-Tab>', '<gv', nil, 'x')
 
-  set_keymap_helper('gy', ':OSCYankVisual<CR>', nil, 'v')
+  set_keymap_helper('<Esc>', '<C-\\><C-N>', nil, 't')
+
+  set_keymap_helper('<A-h>', '<C-\\><C-N><C-w>h', nil, 't')
+  set_keymap_helper('<A-h>', '<C-\\><C-N><C-w>h', nil, 'i')
+
+  set_keymap_helper('<A-j>', '<C-\\><C-N><C-w>j', nil, 't')
+  set_keymap_helper('<A-j>', '<C-\\><C-N><C-w>j', nil, 'i')
+
+  set_keymap_helper('<A-k>', '<C-\\><C-N><C-w>k', nil, 't')
+  set_keymap_helper('<A-k>', '<C-\\><C-N><C-w>k', nil, 'i')
+
+  set_keymap_helper('<A-l>', '<C-\\><C-N><C-w>l', nil, 't')
+  set_keymap_helper('<A-l>', '<C-\\><C-N><C-w>l', nil, 'i')
+
+  set_keymap_helper('<A-h>', '<C-w>h', nil, 'n')
+  set_keymap_helper('<A-j>', '<C-w>j', nil, 'n')
+  set_keymap_helper('<A-k>', '<C-w>k', nil, 'n')
+  set_keymap_helper('<A-l>', '<C-w>l', nil, 'n')
+
+  if not vim.g.neovide then
+    set_keymap_helper('gy', ':OSCYankVisual<CR>', nil, 'v')
+  end
 end
 
 local function visual_selection_range()
