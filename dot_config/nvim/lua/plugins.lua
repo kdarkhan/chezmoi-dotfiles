@@ -29,6 +29,8 @@ local function setup_options()
 
   vim.o.jumpoptions = 'stack'
 
+  vim.o.scrollback = 100000
+
   -- Set highlight on search
   vim.o.hlsearch = true
 
