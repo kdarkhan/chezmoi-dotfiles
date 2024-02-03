@@ -128,7 +128,6 @@ local function setup_autocommands()
           )
           or vim.fn.bufname():find('Neogit', 1, true) ~= nil
           -- or vim.api.nvim_win_get_config(0).relative ~= ''
-          or vim.bo.buftype == 'toggleterm'
           or vim.bo.buftype == 'terminal'
         then
           return
@@ -145,6 +144,13 @@ local function setup_autocommands()
       group = trailing_group,
     }
   )
+  vim.api.nvim_create_autocmd('FileType', {
+    pattern = 'toggleterm',
+    callback = function()
+      vim.fn.clearmatches()
+    end,
+    group = trailing_group,
+  })
 
   local misc_group = vim.api.nvim_create_augroup('MiscGroup', {})
   vim.api.nvim_create_autocmd('FileType', {
