@@ -83,11 +83,27 @@ local function setup_options()
     vim.g.neovide_scroll_animation_length = 0.3
     vim.g.neovide_cursor_vfx_mode = 'pixiedust'
 
+    -- Enable transparency
+    vim.o.winblend = 50
+    vim.o.pumblend = 20
+    vim.api.nvim_set_hl(0, 'PmenuSel', { blend = 0 })
+
     set_keymap_helper('<C-S-V>', '<C-R>+', nil, 'i')
     set_keymap_helper('gy', '"+y', nil, 'v')
+
+    -- Change scale
+    vim.g.neovide_scale_factor = 1.0
+    local change_scale_factor = function(delta)
+      vim.g.neovide_scale_factor = vim.g.neovide_scale_factor * delta
+    end
+    set_keymap_helper('<C-=>', function()
+      change_scale_factor(1.15)
+    end)
+    set_keymap_helper('<C-->', function()
+      change_scale_factor(1 / 1.15)
+    end)
   end
 end
-
 
 local function setup_autocommands()
   local trailing_group = vim.api.nvim_create_augroup('TrailingWhitespace', {})
@@ -107,9 +123,13 @@ local function setup_autocommands()
       callback = function(args)
         if
           vim.tbl_contains(
-            { 'neo-tree', 'noice', 'TelescopePrompt', 'help' },
+            { 'neo-tree', 'noice', 'TelescopePrompt', 'help', 'toggleterm' },
             vim.bo.filetype
-          ) or vim.fn.bufname():find('Neogit', 1, true) ~= nil
+          )
+          or vim.fn.bufname():find('Neogit', 1, true) ~= nil
+          -- or vim.api.nvim_win_get_config(0).relative ~= ''
+          or vim.bo.buftype == 'toggleterm'
+          or vim.bo.buftype == 'terminal'
         then
           return
         end
@@ -951,6 +971,13 @@ local function get_other_plugins()
           prefix = '<leader>',
         })
       end,
+    },
+    {
+      'akinsho/toggleterm.nvim',
+      opts = {
+        open_mapping = [[<c-\>]],
+        shell = 'fish',
+      },
     },
   }
 end
