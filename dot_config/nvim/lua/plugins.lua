@@ -80,7 +80,11 @@ local function setup_options()
 
   if vim.g.neovide then
     vim.o.guifont = 'Iosevka Nerd Font Mono:h12'
+    vim.g.neovide_floating_blur_amount_y = 2.0
     vim.g.neovide_scroll_animation_length = 0.3
+    vim.g.neovide_scroll_animation_far_lines = 10
+		vim.g.neovide_hide_mouse_when_typing = true
+    vim.g.neovide_cursor_trail_size = 0.8
     vim.g.neovide_cursor_vfx_mode = 'pixiedust'
 
     -- Enable transparency
@@ -126,9 +130,11 @@ local function setup_autocommands()
             { 'neo-tree', 'noice', 'TelescopePrompt', 'help', 'toggleterm' },
             vim.bo.filetype
           )
-          or vim.fn.bufname():find('Neogit', 1, true) ~= nil
+          or vim.fn.bufname(args.buf):find('Neogit', 1, true) ~= nil
+          or vim.fn.bufname(args.buf):find('term://', 1, true) ~= nil
           -- or vim.api.nvim_win_get_config(0).relative ~= ''
           or vim.bo.buftype == 'terminal'
+          or (vim.bo.buftype == '' and vim.bo.filetype == '')
         then
           return
         end
@@ -145,7 +151,7 @@ local function setup_autocommands()
     }
   )
   vim.api.nvim_create_autocmd('FileType', {
-    pattern = 'toggleterm',
+    pattern = 'toggleterm,help',
     callback = function()
       vim.fn.clearmatches()
     end,
@@ -177,6 +183,11 @@ local function setup_autocommands()
     end,
     group = misc_group,
   })
+  -- vim.api.nvim_create_autocmd('TermOpen', {
+  --   pattern = '*',
+  --   command = 'startinsert',
+  --   group = misc_group,
+  -- })
 end
 
 local function setup_keymaps()
@@ -592,10 +603,6 @@ local function get_lsp_plugins()
       },
       config = setup_lsp,
     },
-    {
-      'weilbith/nvim-code-action-menu',
-      cmd = 'CodeActionMenu',
-    },
   }
 end
 
@@ -777,43 +784,6 @@ local function get_visual_tweak_plugins()
             },
           },
         })
-      end,
-    },
-    {
-      'karb94/neoscroll.nvim',
-      enabled = false,
-      config = function()
-        require('neoscroll').setup({
-          eashing_function = 'sine',
-          cursor_scroll_alone = true,
-          stop_eof = true,
-        })
-
-        local neoscroll_conf = {}
-        -- Syntax: t[keys] = {function, {function arguments}}
-        neoscroll_conf['<C-u>'] = {
-          'scroll',
-          { '-vim.wo.scroll', 'true', '150' },
-        }
-        neoscroll_conf['<C-d>'] = {
-          'scroll',
-          { 'vim.wo.scroll', 'true', '150' },
-        }
-        neoscroll_conf['<C-b>'] = {
-          'scroll',
-          { '-vim.api.nvim_win_get_height(0)', 'true', '200' },
-        }
-        neoscroll_conf['<C-f>'] = {
-          'scroll',
-          { 'vim.api.nvim_win_get_height(0)', 'true', '200' },
-        }
-        neoscroll_conf['<C-y>'] = { 'scroll', { '-0.10', 'false', '50' } }
-        neoscroll_conf['<C-e>'] = { 'scroll', { '0.10', 'false', '50' } }
-        neoscroll_conf['zt'] = { 'zt', { '100' } }
-        neoscroll_conf['zz'] = { 'zz', { '100' } }
-        neoscroll_conf['zb'] = { 'zb', { '100' } }
-
-        require('neoscroll.config').set_mappings(neoscroll_conf)
       end,
     },
   }
