@@ -183,11 +183,12 @@ local function setup_autocommands()
     end,
     group = misc_group,
   })
-  -- vim.api.nvim_create_autocmd('TermOpen', {
-  --   pattern = '*',
-  --   command = 'startinsert',
-  --   group = misc_group,
-  -- })
+  vim.api.nvim_create_autocmd('TermOpen', {
+    pattern = '*',
+    -- command = 'startinsert',
+    command = 'setlocal nonumber',
+    group = misc_group,
+  })
 end
 
 local function setup_keymaps()
@@ -951,7 +952,7 @@ local function get_other_plugins()
     {
       'akinsho/toggleterm.nvim',
       opts = {
-        open_mapping = [[<c-\>]],
+        open_mapping = [[<c-Space>]],
         shell = 'fish',
       },
     },
