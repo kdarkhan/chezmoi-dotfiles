@@ -30,6 +30,7 @@ local function setup_options()
   vim.o.jumpoptions = 'stack'
 
   vim.o.scrollback = 100000
+  vim.o.timeoutlen = 400
 
   -- Set highlight on search
   vim.o.hlsearch = true
@@ -270,7 +271,7 @@ local function setup_keymaps()
   set_keymap_helper('<Tab>', '>gv', nil, 'x')
   set_keymap_helper('<S-Tab>', '<gv', nil, 'x')
 
-  set_keymap_helper('<Esc>', '<C-\\><C-N>', nil, 't')
+  set_keymap_helper('\\\\', '<C-\\><C-N>', nil, 't')
 
   set_keymap_helper('<A-h>', '<C-\\><C-N><C-w>h', nil, 't')
   set_keymap_helper('<A-h>', '<C-\\><C-N><C-w>h', nil, 'i')
