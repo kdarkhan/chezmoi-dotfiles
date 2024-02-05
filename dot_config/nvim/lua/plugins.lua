@@ -186,7 +186,6 @@ local function setup_autocommands()
   })
   vim.api.nvim_create_autocmd('TermOpen', {
     pattern = '*',
-    -- command = 'startinsert',
     command = 'setlocal nonumber | startinsert',
     group = misc_group,
   })
@@ -408,17 +407,31 @@ local function MyTelescopeConfig()
     require('telescope.builtin').find_files({
       -- find_command = { 'rg', '--files', '-.', '--no-ignore', '-g', '!.git/' },
     })
-  end)
+  end, {
+    desc = 'Search files',
+  })
 
-  set_keymap_helper('<leader>fg', require('telescope.builtin').live_grep)
-  set_keymap_helper('<leader>fm', require('telescope.builtin').man_pages)
+  set_keymap_helper('<leader>fv', function()
+    require('telescope.builtin').git_files({})
+  end, {
+    desc = 'Search git_files',
+  })
+
+  set_keymap_helper('<leader>fg', require('telescope.builtin').live_grep, {
+    desc = 'Live grep',
+  })
+  set_keymap_helper('<leader>fm', require('telescope.builtin').man_pages, {
+    desc = 'Search man pages',
+  })
 
   set_keymap_helper('<leader>fg', function()
     local text = get_visual_selection()
     require('telescope.builtin').live_grep({
       default_text = text,
     })
-  end, nil, 'v')
+  end, {
+    desc = 'Live grep selection',
+  }, 'v')
 
   set_keymap_helper('<leader>fd', function()
     require('telescope.builtin').find_files({
@@ -431,16 +444,42 @@ local function MyTelescopeConfig()
         vim.fn.expand('~/.config/nvim'),
       },
     })
+  end, {
+    desc = 'Search nvim dotfiles',
+  })
+
+  set_keymap_helper('<leader>f.', function()
+    require('telescope.builtin').find_files({
+      find_command = {
+        'rg',
+        '--no-ignore',
+        '-L',
+        '--hidden',
+        '--files',
+        vim.fn.expand('~'),
+      },
+    })
   end)
 
-  set_keymap_helper('<leader>bb', require('telescope.builtin').buffers)
+  set_keymap_helper('<leader>bb', require('telescope.builtin').buffers, {
+    desc = 'List buffers',
+  })
   set_keymap_helper(
     '<leader>fb',
-    require('telescope.builtin').current_buffer_fuzzy_find
+    require('telescope.builtin').current_buffer_fuzzy_find,
+    {
+      desc = 'Fuzzy find in current buffer',
+    }
   )
-  set_keymap_helper('<leader>fh', require('telescope.builtin').help_tags)
-  set_keymap_helper('<leader>fs', require('telescope.builtin').treesitter)
-  set_keymap_helper('<leader>fo', require('telescope.builtin').oldfiles)
+  set_keymap_helper('<leader>fh', require('telescope.builtin').help_tags, {
+    desc = 'Search help',
+  })
+  set_keymap_helper('<leader>fs', require('telescope.builtin').treesitter, {
+    desc = 'Search treesitter',
+  })
+  set_keymap_helper('<leader>fo', require('telescope.builtin').oldfiles, {
+    desc = 'Search oldfiles',
+  })
 end
 
 local function get_telescope_plugins()
@@ -486,45 +525,45 @@ function MyLspOnAttach(client, bufnr)
 
   require('lsp_signature').on_attach()
 
-  local function buf_set_keymap_normal(lhs, callback, rhs)
+  local function buf_set_keymap_normal(lhs, callback, rhs, desc)
     vim.api.nvim_buf_set_keymap(
       bufnr,
       'n',
       lhs,
       rhs or '',
-      { noremap = true, silent = true, callback = callback }
+      { noremap = true, silent = true, callback = callback, desc = desc }
     )
   end
 
   -- Mappings.
 
-  buf_set_keymap_normal('gD', vim.lsp.buf.declaration)
-  buf_set_keymap_normal('gd', require('telescope.builtin').lsp_definitions)
-  buf_set_keymap_normal('gt', require('telescope.builtin').lsp_type_definitions)
-  buf_set_keymap_normal('gr', require('telescope.builtin').lsp_references)
-  buf_set_keymap_normal('gi', require('telescope.builtin').lsp_implementations)
-  buf_set_keymap_normal('K', vim.lsp.buf.hover)
-  buf_set_keymap_normal('<C-k>', vim.lsp.buf.signature_help)
-  buf_set_keymap_normal('<leader>lwa', vim.lsp.buf.add_workspace_folder)
-  buf_set_keymap_normal('<leader>lwr', vim.lsp.buf.remove_workspace_folder)
+  buf_set_keymap_normal('gD', vim.lsp.buf.declaration, nil, 'Go to declaration')
+  buf_set_keymap_normal('gd', require('telescope.builtin').lsp_definitions, nil, '(lsp) Go to definition')
+  buf_set_keymap_normal('gt', require('telescope.builtin').lsp_type_definitions, nil, '(lsp) Go to type definition')
+  buf_set_keymap_normal('gr', require('telescope.builtin').lsp_references, nil, '(lsp) List references')
+  buf_set_keymap_normal('gi', require('telescope.builtin').lsp_implementations, nil, '(lsp) Go to implementations')
+  buf_set_keymap_normal('K', vim.lsp.buf.hover, nil, '(lsp) Hover')
+  buf_set_keymap_normal('<C-k>', vim.lsp.buf.signature_help, nil, '(lsp) Signature help')
+  buf_set_keymap_normal('<leader>lwa', vim.lsp.buf.add_workspace_folder, nil, 'Add workspace folder')
+  buf_set_keymap_normal('<leader>lwr', vim.lsp.buf.remove_workspace_folder, nil, 'Remove workspace folder')
   buf_set_keymap_normal('<leader>lwl', function()
     print(vim.inspect(vim.lsp.buf.list_workspace_folders()))
-  end)
+  end, nil, 'List workspace folders')
   buf_set_keymap_normal(
     '<leader>lwd',
-    require('telescope.builtin').lsp_workspace_diagnostics
+    require('telescope.builtin').lsp_workspace_diagnostics, nil, 'Workspace diagnostics'
   )
-  buf_set_keymap_normal('<leader>lr', vim.lsp.buf.rename)
+  buf_set_keymap_normal('<leader>lr', vim.lsp.buf.rename, nil, 'Rename')
   -- buf_set_keymap_normal('<leader>la', '', vim.lsp.buf.code_action)
-  buf_set_keymap_normal('<leader>la', nil, ':CodeActionMenu<CR>')
+  -- buf_set_keymap_normal('<leader>la', nil, ':CodeActionMenu<CR>', 'Code action menu')
   buf_set_keymap_normal(
     '<leader>ls',
-    require('telescope.builtin').lsp_workspace_symbols
+    require('telescope.builtin').lsp_workspace_symbols, nil, 'Workspace symbols'
   )
-  buf_set_keymap_normal('<leader>ld', vim.lsp.diagnostic.show_line_diagnostics)
-  buf_set_keymap_normal('<leader>lf', vim.lsp.buf.format)
-  buf_set_keymap_normal('gp', vim.lsp.diagnostic.goto_prev)
-  buf_set_keymap_normal('gn', vim.lsp.diagnostic.goto_next)
+  buf_set_keymap_normal('<leader>ld', vim.lsp.diagnostic.show_line_diagnostics, nil, 'Show line diagnostics')
+  buf_set_keymap_normal('<leader>lf', vim.lsp.buf.format, nil, 'Format buffer')
+  buf_set_keymap_normal('gp', vim.lsp.diagnostic.goto_prev, nil, '(lsp) Go to next diagnostic')
+  buf_set_keymap_normal('gn', vim.lsp.diagnostic.goto_next, nil, '(lsp) Go to prev diagnostic')
 
   -- buf_set_keymap_helper('n', '<leader>q', '<cmd>lua vim.lsp.diagnostic.set_loclist()<CR>', map_opts)
   vim.cmd([[
