@@ -84,7 +84,7 @@ local function setup_options()
     vim.g.neovide_floating_blur_amount_y = 2.0
     vim.g.neovide_scroll_animation_length = 0.3
     vim.g.neovide_scroll_animation_far_lines = 10
-		vim.g.neovide_hide_mouse_when_typing = true
+    vim.g.neovide_hide_mouse_when_typing = true
     vim.g.neovide_cursor_trail_size = 0.8
     vim.g.neovide_cursor_vfx_mode = 'pixiedust'
 
@@ -187,8 +187,16 @@ local function setup_autocommands()
   vim.api.nvim_create_autocmd('TermOpen', {
     pattern = '*',
     -- command = 'startinsert',
-    command = 'setlocal nonumber',
+    command = 'setlocal nonumber | startinsert',
     group = misc_group,
+  })
+  vim.api.nvim_create_autocmd({ 'TermClose' }, {
+    group = misc_group,
+    callback = function(args)
+      if vim.v.event.status == 0 then
+        vim.cmd({ cmd = 'bdelete', args = { args.buf }, bang = true })
+      end
+    end,
   })
 end
 
@@ -248,6 +256,20 @@ local function setup_keymaps()
     ':%!python3 -m json.tool<CR>',
     { desc = 'JSON format with python3' }
   )
+  set_keymap_helper('<leader>ad', function()
+    local path = vim.fn.expand('%')
+    print(path)
+    if vim.fn.filereadable(path) ~= '' then
+      path = vim.fn.resolve(path)
+      local dir = path:match('(.*/)')
+      if dir then
+        vim.fn.chdir(dir)
+        print('Moved to ' .. dir)
+      else
+        error('Could not find dir from ' .. path)
+      end
+    end
+  end, { desc = 'CD into cur buffer directory' })
   set_keymap_helper('<leader>am', ':make<CR>', { desc = 'Run make' })
 
   -- buffers
@@ -340,7 +362,7 @@ local function MyTelescopeConfig()
       -- path_display = opts.path_display,
       history = {
         path = '~/.local/share/nvim/telescope_history.sqlite3',
-        limit = 100,
+        limit = 1000,
       },
       mappings = {
         i = {
@@ -389,6 +411,7 @@ local function MyTelescopeConfig()
   end)
 
   set_keymap_helper('<leader>fg', require('telescope.builtin').live_grep)
+  set_keymap_helper('<leader>fm', require('telescope.builtin').man_pages)
 
   set_keymap_helper('<leader>fg', function()
     local text = get_visual_selection()
