@@ -292,7 +292,7 @@ local function setup_keymaps()
   set_keymap_helper('<Tab>', '>gv', nil, 'x')
   set_keymap_helper('<S-Tab>', '<gv', nil, 'x')
 
-  set_keymap_helper('\\\\', '<C-\\><C-N>', nil, 't')
+  set_keymap_helper('<Tab><Tab>', '<C-\\><C-N>', nil, 't')
 
   set_keymap_helper('<A-h>', '<C-\\><C-N><C-w>h', nil, 't')
   set_keymap_helper('<A-h>', '<C-\\><C-N><C-w>h', nil, 'i')
@@ -322,6 +322,13 @@ local function setup_keymaps()
     '<C-b>s',
     '<C-\\><C-O>:split term://fish<CR>',
     { desc = 'Split terminal vertical' },
+    't'
+  )
+
+  set_keymap_helper(
+    '<C-S-V>',
+    [['<C-\><C-N>"+pi']],
+    { desc = 'Split terminal vertical', expr = true },
     't'
   )
 
