@@ -311,6 +311,20 @@ local function setup_keymaps()
   set_keymap_helper('<A-k>', '<C-w>k', nil, 'n')
   set_keymap_helper('<A-l>', '<C-w>l', nil, 'n')
 
+  set_keymap_helper(
+    '<C-b>v',
+    '<C-\\><C-O>:vsplit term://fish<CR>',
+    { desc = 'Split terminal' },
+    't'
+  )
+
+  set_keymap_helper(
+    '<C-b>s',
+    '<C-\\><C-O>:split term://fish<CR>',
+    { desc = 'Split terminal vertical' },
+    't'
+  )
+
   if not vim.g.neovide then
     set_keymap_helper('gy', ':OSCYankVisual<CR>', nil, 'v')
   end
@@ -538,32 +552,86 @@ function MyLspOnAttach(client, bufnr)
   -- Mappings.
 
   buf_set_keymap_normal('gD', vim.lsp.buf.declaration, nil, 'Go to declaration')
-  buf_set_keymap_normal('gd', require('telescope.builtin').lsp_definitions, nil, '(lsp) Go to definition')
-  buf_set_keymap_normal('gt', require('telescope.builtin').lsp_type_definitions, nil, '(lsp) Go to type definition')
-  buf_set_keymap_normal('gr', require('telescope.builtin').lsp_references, nil, '(lsp) List references')
-  buf_set_keymap_normal('gi', require('telescope.builtin').lsp_implementations, nil, '(lsp) Go to implementations')
+  buf_set_keymap_normal(
+    'gd',
+    require('telescope.builtin').lsp_definitions,
+    nil,
+    '(lsp) Go to definition'
+  )
+  buf_set_keymap_normal(
+    'gt',
+    require('telescope.builtin').lsp_type_definitions,
+    nil,
+    '(lsp) Go to type definition'
+  )
+  buf_set_keymap_normal(
+    'gr',
+    require('telescope.builtin').lsp_references,
+    nil,
+    '(lsp) List references'
+  )
+  buf_set_keymap_normal(
+    'gi',
+    require('telescope.builtin').lsp_implementations,
+    nil,
+    '(lsp) Go to implementations'
+  )
   buf_set_keymap_normal('K', vim.lsp.buf.hover, nil, '(lsp) Hover')
-  buf_set_keymap_normal('<C-k>', vim.lsp.buf.signature_help, nil, '(lsp) Signature help')
-  buf_set_keymap_normal('<leader>lwa', vim.lsp.buf.add_workspace_folder, nil, 'Add workspace folder')
-  buf_set_keymap_normal('<leader>lwr', vim.lsp.buf.remove_workspace_folder, nil, 'Remove workspace folder')
+  buf_set_keymap_normal(
+    '<C-k>',
+    vim.lsp.buf.signature_help,
+    nil,
+    '(lsp) Signature help'
+  )
+  buf_set_keymap_normal(
+    '<leader>lwa',
+    vim.lsp.buf.add_workspace_folder,
+    nil,
+    'Add workspace folder'
+  )
+  buf_set_keymap_normal(
+    '<leader>lwr',
+    vim.lsp.buf.remove_workspace_folder,
+    nil,
+    'Remove workspace folder'
+  )
   buf_set_keymap_normal('<leader>lwl', function()
     print(vim.inspect(vim.lsp.buf.list_workspace_folders()))
   end, nil, 'List workspace folders')
   buf_set_keymap_normal(
     '<leader>lwd',
-    require('telescope.builtin').lsp_workspace_diagnostics, nil, 'Workspace diagnostics'
+    require('telescope.builtin').lsp_workspace_diagnostics,
+    nil,
+    'Workspace diagnostics'
   )
   buf_set_keymap_normal('<leader>lr', vim.lsp.buf.rename, nil, 'Rename')
   -- buf_set_keymap_normal('<leader>la', '', vim.lsp.buf.code_action)
   -- buf_set_keymap_normal('<leader>la', nil, ':CodeActionMenu<CR>', 'Code action menu')
   buf_set_keymap_normal(
     '<leader>ls',
-    require('telescope.builtin').lsp_workspace_symbols, nil, 'Workspace symbols'
+    require('telescope.builtin').lsp_workspace_symbols,
+    nil,
+    'Workspace symbols'
   )
-  buf_set_keymap_normal('<leader>ld', vim.lsp.diagnostic.show_line_diagnostics, nil, 'Show line diagnostics')
+  buf_set_keymap_normal(
+    '<leader>ld',
+    vim.lsp.diagnostic.show_line_diagnostics,
+    nil,
+    'Show line diagnostics'
+  )
   buf_set_keymap_normal('<leader>lf', vim.lsp.buf.format, nil, 'Format buffer')
-  buf_set_keymap_normal('gp', vim.lsp.diagnostic.goto_prev, nil, '(lsp) Go to next diagnostic')
-  buf_set_keymap_normal('gn', vim.lsp.diagnostic.goto_next, nil, '(lsp) Go to prev diagnostic')
+  buf_set_keymap_normal(
+    'gp',
+    vim.lsp.diagnostic.goto_prev,
+    nil,
+    '(lsp) Go to next diagnostic'
+  )
+  buf_set_keymap_normal(
+    'gn',
+    vim.lsp.diagnostic.goto_next,
+    nil,
+    '(lsp) Go to prev diagnostic'
+  )
 
   -- buf_set_keymap_helper('n', '<leader>q', '<cmd>lua vim.lsp.diagnostic.set_loclist()<CR>', map_opts)
   vim.cmd([[
