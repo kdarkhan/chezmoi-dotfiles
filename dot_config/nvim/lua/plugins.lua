@@ -135,6 +135,7 @@ local function setup_autocommands()
           or vim.fn.bufname(args.buf):find('term://', 1, true) ~= nil
           -- or vim.api.nvim_win_get_config(0).relative ~= ''
           or vim.bo.buftype == 'terminal'
+          or vim.bo.buftype == 'nofile'
           or (vim.bo.buftype == '' and vim.bo.filetype == '')
         then
           return
@@ -292,7 +293,7 @@ local function setup_keymaps()
   set_keymap_helper('<Tab>', '>gv', nil, 'x')
   set_keymap_helper('<S-Tab>', '<gv', nil, 'x')
 
-  set_keymap_helper('<Tab><Tab>', '<C-\\><C-N>', nil, 't')
+  set_keymap_helper('\\\\', '<C-\\><C-N>', nil, 't')
 
   set_keymap_helper('<A-h>', '<C-\\><C-N><C-w>h', nil, 't')
   set_keymap_helper('<A-h>', '<C-\\><C-N><C-w>h', nil, 'i')
