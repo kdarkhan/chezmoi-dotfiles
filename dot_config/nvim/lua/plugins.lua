@@ -592,56 +592,57 @@ function MyLspOnAttach(client, bufnr)
     '(lsp) Signature help'
   )
   buf_set_keymap_normal(
-    '<leader>lwa',
+    '\\wa',
     vim.lsp.buf.add_workspace_folder,
     nil,
     'Add workspace folder'
   )
   buf_set_keymap_normal(
-    '<leader>lwr',
+    '\\wd',
     vim.lsp.buf.remove_workspace_folder,
     nil,
     'Remove workspace folder'
   )
-  buf_set_keymap_normal('<leader>lwl', function()
+  buf_set_keymap_normal('\\wf', function()
     print(vim.inspect(vim.lsp.buf.list_workspace_folders()))
   end, nil, 'List workspace folders')
   buf_set_keymap_normal(
-    '<leader>lwd',
+    '\\wd',
     require('telescope.builtin').lsp_workspace_diagnostics,
     nil,
     'Workspace diagnostics'
   )
+  buf_set_keymap_normal(
+    '\\d',
+    vim.diagnostic.open_float,
+    nil,
+    'Show line diagnostic in a float'
+  )
+
   buf_set_keymap_normal('<leader>lr', vim.lsp.buf.rename, nil, 'Rename')
   -- buf_set_keymap_normal('<leader>la', '', vim.lsp.buf.code_action)
   -- buf_set_keymap_normal('<leader>la', nil, ':CodeActionMenu<CR>', 'Code action menu')
   buf_set_keymap_normal(
-    '<leader>ls',
+    '\\ws',
     require('telescope.builtin').lsp_workspace_symbols,
     nil,
     'Workspace symbols'
   )
-  buf_set_keymap_normal(
-    '<leader>ld',
-    vim.lsp.diagnostic.show_line_diagnostics,
-    nil,
-    'Show line diagnostics'
-  )
-  buf_set_keymap_normal('<leader>lf', vim.lsp.buf.format, nil, 'Format buffer')
+  -- buf_set_keymap_normal('<leader>lf', vim.lsp.buf.format, nil, 'Format buffer')
   buf_set_keymap_normal(
     'gp',
-    vim.lsp.diagnostic.goto_prev,
+    vim.diagnostic.goto_prev,
     nil,
     '(lsp) Go to next diagnostic'
   )
   buf_set_keymap_normal(
     'gn',
-    vim.lsp.diagnostic.goto_next,
+    vim.diagnostic.goto_next,
     nil,
     '(lsp) Go to prev diagnostic'
   )
 
-  -- buf_set_keymap_helper('n', '<leader>q', '<cmd>lua vim.lsp.diagnostic.set_loclist()<CR>', map_opts)
+  -- buf_set_keymap_helper('n', '<leader>q', '<cmd>lua vim.diagnostic.setloclist()<CR>', map_opts)
   vim.cmd([[
 		command! Format execute 'lua vim.lsp.buf.format({ async = true })'
 		augroup MyLspHold
@@ -1095,6 +1096,7 @@ local function get_other_plugins()
         shell = 'fish',
       },
     },
+    { dir = '~/work/project-switcher.nvim/', opts = {} }
   }
 end
 
