@@ -1,0 +1,26 @@
+"""" Map leader to space ---------------------
+let mapleader=" "
+
+""" Plugins  --------------------------------
+set surround
+set multiple-cursors
+set commentary
+
+" common configs
+set ignorecase
+set smartcase
+set showmode
+set incsearch
+
+""" Idea specific settings ------------------
+set ideajoin
+set ideastatusicon=gray
+set idearefactormode=keep
+
+" Keymaps
+map <c-o> <Action>(Back)
+map <c-i> <Action>(Forward)
+map <Leader>ff <Action>(ReformatCode)
+
+nnoremap gn :action GotoNextError<CR>
+nnoremap gp :action GotoPreviousError<CR>
