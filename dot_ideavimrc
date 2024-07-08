@@ -20,6 +20,7 @@ set idearefactormode=keep
 " Keymaps
 map <c-o> <Action>(Back)
 map <c-i> <Action>(Forward)
+imap <c-v> <Action>(EditorPaste)
 map <Leader>ff <Action>(ReformatCode)
 
 nnoremap gn :action GotoNextError<CR>
