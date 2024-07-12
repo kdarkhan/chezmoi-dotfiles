@@ -21,7 +21,10 @@ set idearefactormode=keep
 map <c-o> <Action>(Back)
 map <c-i> <Action>(Forward)
 imap <c-v> <Action>(EditorPaste)
-map <Leader>ff <Action>(ReformatCode)
+map <Leader>af <Action>(ReformatCode)
+map <Leader>as <Action>(ShowSettings)
+vmap <Tab> >gv
+vmap <S-Tab> <gv
 
 nnoremap gn :action GotoNextError<CR>
 nnoremap gp :action GotoPreviousError<CR>
