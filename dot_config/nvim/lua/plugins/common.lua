@@ -100,6 +100,8 @@ return {
         function() require("telescope.builtin").find_files({ cwd = require("lazy.core.config").options.root }) end,
         desc = "Find Plugin File",
       },
+      { "<leader><space>", LazyVim.pick("files", { root = false }), desc = "Find Files (cwd)" },
+      { "<leader>fF", LazyVim.pick("files"), desc = "Find Files (root)" },
     },
     -- change some options
     opts = {
@@ -174,7 +176,7 @@ return {
 
   -- for typescript, LazyVim also includes extra specs to properly setup lspconfig,
   -- treesitter, mason and typescript.nvim. So instead of the above, you can use:
-  { import = "lazyvim.plugins.extras.lang.typescript" },
+  -- { import = "lazyvim.plugins.extras.lang.typescript" },
 
   -- since `vim.tbl_deep_extend`, can only merge tables and not lists, the code above
   -- would overwrite `ensure_installed` with the new value.
@@ -224,9 +226,30 @@ return {
       ensure_installed = {
         "stylua",
         "shellcheck",
+        -- "flake8",
         "shfmt",
-        "flake8",
       },
     },
   },
+  {
+  "nvim-neo-tree/neo-tree.nvim",
+    keys = {
+      {"<leader>fe", false},
+      {"<leader>fE", false},
+      {
+        "<leader>fE",
+        function()
+          require("neo-tree.command").execute({ toggle = true, dir = LazyVim.root() })
+        end,
+        desc = "Explorer NeoTree (Root Dir)",
+      },
+      {
+        "<leader>fe",
+        function()
+          require("neo-tree.command").execute({ toggle = true, dir = vim.uv.cwd() })
+        end,
+        desc = "Explorer NeoTree (cwd)",
+      },
+    }
+  }
 }
