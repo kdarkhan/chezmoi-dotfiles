@@ -110,6 +110,33 @@ return {
         layout_config = { prompt_position = "top" },
         sorting_strategy = "ascending",
         winblend = 0,
+        mappings = {
+          i = {
+            ['<C-Y>'] = function(prompt_bufnr)
+              -- This helper copies the current line from the previewer below the cursor.
+              -- Handy when searching for imports of Java identifiers in other files.
+              local entry =
+                require('telescope.actions.state').get_selected_entry()
+              local picker = require('telescope.actions.state').get_current_picker(prompt_bufnr)
+
+              local line = nil
+
+              if entry.lnum and picker.previewer then
+                local bufnr = picker.previewer.state.bufnr
+                line = vim.fn.getbufline(bufnr, entry.lnum)[1]
+              end
+
+              require('telescope.actions').close(prompt_bufnr)
+
+              -- if line and vim.api.nvim_buf_get_option(0, 'modifiable') then
+              --   vim.fn.append('.', line)
+              -- end
+              vim.fn.setreg('"', line, 'l')
+            end,
+            -- ['<C-Down>'] = require('telescope.actions').cycle_history_next,
+            -- ['<C-Up>'] = require('telescope.actions').cycle_history_prev,
+          },
+        },
       },
     },
   },
@@ -251,5 +278,17 @@ return {
         desc = "Explorer NeoTree (cwd)",
       },
     }
-  }
+  },
+
+  {
+    "nvimdev/dashboard-nvim",
+    opts = {
+      config = {
+        header = nil,
+        week_header = {
+          enable = true,
+        },
+      }
+    },
+  },
 }
