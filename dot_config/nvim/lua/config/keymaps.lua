@@ -30,4 +30,8 @@ if vim.g.neovide then
   vim.keymap.set("n", "<C-->", function()
     change_scale_factor(1 / 1.15)
   end)
+else
+  -- Disable tmux stuff
+  vim.keymap.del("n", "<M-j>")
+  vim.keymap.del("n", "<M-k>")
 end
