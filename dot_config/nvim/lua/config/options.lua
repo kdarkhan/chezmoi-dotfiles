@@ -3,6 +3,7 @@
 -- Add any additional options here
 
 vim.opt.clipboard = ""
+vim.opt.relativenumber = false
 
 if vim.g.neovide then
   -- vim.o.guifont = "Iosevka Nerd Font Mono:h12"
