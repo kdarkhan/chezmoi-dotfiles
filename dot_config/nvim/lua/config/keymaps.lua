@@ -15,6 +15,22 @@ vim.keymap.set("x", "<S-Tab>", "<gv")
 
 vim.keymap.set("v", "gy", '"+y')
 
+vim.keymap.set("n", "<leader>nl", function()
+  require("noice").cmd("last")
+end, { desc = "Noice last" })
+
+vim.keymap.set("n", "<leader>na", function()
+  require("noice").cmd("all")
+end, { desc = "Noice all" })
+
+vim.keymap.set("n", "<leader>nh", function()
+  require("noice").cmd("history")
+end, { desc = "Noice history" })
+
+vim.keymap.set("n", "<leader>nh", function()
+  require("noice").cmd("dismiss")
+end, { desc = "Noice dismiss" })
+
 if vim.g.neovide then
   vim.keymap.set("i", "<C-S-V>", "<C-R>+")
 
