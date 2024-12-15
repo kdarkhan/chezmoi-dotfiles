@@ -1,7 +1,3 @@
--- since this is just an example spec, don't actually load anything here and return an empty spec
--- stylua: ignore
--- if true then return {} end
-
 -- every spec file under the "plugins" directory will be loaded automatically by lazy.nvim
 --
 -- In your plugin files, you can:
@@ -34,9 +30,6 @@ return {
     -- opts will be merged with the parent spec
     opts = { use_diagnostic_signs = true },
   },
-
-  -- disable trouble
-  -- { "folke/trouble.nvim", enabled = false },
 
   -- add symbols-outline
   {
@@ -95,11 +88,13 @@ return {
     keys = {
       {
         "<leader>/",
-        false
+        false,
       },
       {
         "<leader>fp",
-        function() require("telescope.builtin").find_files({ cwd = require("lazy.core.config").options.root }) end,
+        function()
+          require("telescope.builtin").find_files({ cwd = require("lazy.core.config").options.root })
+        end,
         desc = "Find Plugin File",
       },
       {
@@ -124,12 +119,11 @@ return {
         winblend = 0,
         mappings = {
           i = {
-            ['<C-Y>'] = function(prompt_bufnr)
+            ["<C-Y>"] = function(prompt_bufnr)
               -- This helper copies the current line from the previewer below the cursor.
               -- Handy when searching for imports of Java identifiers in other files.
-              local entry =
-                require('telescope.actions.state').get_selected_entry()
-              local picker = require('telescope.actions.state').get_current_picker(prompt_bufnr)
+              local entry = require("telescope.actions.state").get_selected_entry()
+              local picker = require("telescope.actions.state").get_current_picker(prompt_bufnr)
 
               local line = nil
 
@@ -138,12 +132,12 @@ return {
                 line = vim.fn.getbufline(bufnr, entry.lnum)[1]
               end
 
-              require('telescope.actions').close(prompt_bufnr)
+              require("telescope.actions").close(prompt_bufnr)
 
               -- if line and vim.api.nvim_buf_get_option(0, 'modifiable') then
               --   vim.fn.append('.', line)
               -- end
-              vim.fn.setreg('"', line, 'l')
+              vim.fn.setreg('"', line, "l")
             end,
             -- ['<C-Down>'] = require('telescope.actions').cycle_history_next,
             -- ['<C-Up>'] = require('telescope.actions').cycle_history_prev,
@@ -164,54 +158,6 @@ return {
       end,
     },
   },
-
-  -- add pyright to lspconfig
-  -- {
-  --   "neovim/nvim-lspconfig",
-  --   ---@class PluginLspOpts
-  --   opts = {
-  --     ---@type lspconfig.options
-  --     servers = {
-  --       -- pyright will be automatically installed with mason and loaded with lspconfig
-  --       pyright = {},
-  --     },
-  --   },
-  -- },
-
-  -- add tsserver and setup with typescript.nvim instead of lspconfig
-  -- {
-  --   "neovim/nvim-lspconfig",
-  --   dependencies = {
-  --     "jose-elias-alvarez/typescript.nvim",
-  --     init = function()
-  --       require("lazyvim.util").lsp.on_attach(function(_, buffer)
-  --         -- stylua: ignore
-  --         vim.keymap.set( "n", "<leader>co", "TypescriptOrganizeImports", { buffer = buffer, desc = "Organize Imports" })
-  --         vim.keymap.set("n", "<leader>cR", "TypescriptRenameFile", { desc = "Rename File", buffer = buffer })
-  --       end)
-  --     end,
-  --   },
-  --   ---@class PluginLspOpts
-  --   opts = {
-  --     ---@type lspconfig.options
-  --     servers = {
-  --       -- tsserver will be automatically installed with mason and loaded with lspconfig
-  --       tsserver = {},
-  --     },
-  --     -- you can do any additional lsp server setup here
-  --     -- return true if you don't want this server to be setup with lspconfig
-  --     ---@type table<string, fun(server:string, opts:_.lspconfig.options):boolean?>
-  --     setup = {
-  --       -- example to setup with typescript.nvim
-  --       tsserver = function(_, opts)
-  --         require("typescript").setup({ server = opts })
-  --         return true
-  --       end,
-  --       -- Specify * to use this function as a fallback for any server
-  --       -- ["*"] = function(server, opts) end,
-  --     },
-  --   },
-  -- },
 
   -- for typescript, LazyVim also includes extra specs to properly setup lspconfig,
   -- treesitter, mason and typescript.nvim. So instead of the above, you can use:
@@ -246,18 +192,6 @@ return {
     end,
   },
 
-  -- the opts function can also be used to change the default opts:
-  -- {
-  --   "nvim-lualine/lualine.nvim",
-  --   event = "VeryLazy",
-  --   opts = function(_, opts)
-  --     table.insert(opts.sections.lualine_x, "😄")
-  --   end,
-  -- },
-
-  -- use mini.starter instead of alpha
-  -- { import = "lazyvim.plugins.extras.ui.mini-starter" },
-
   -- add jsonls and schemastore packages, and setup treesitter for json, json5 and jsonc
   { import = "lazyvim.plugins.extras.lang.json" },
 
@@ -274,10 +208,10 @@ return {
     },
   },
   {
-  "nvim-neo-tree/neo-tree.nvim",
+    "nvim-neo-tree/neo-tree.nvim",
     keys = {
-      {"<leader>fe", false},
-      {"<leader>fE", false},
+      { "<leader>fe", false },
+      { "<leader>fE", false },
       {
         "<leader>fE",
         function()
@@ -292,18 +226,6 @@ return {
         end,
         desc = "Explorer NeoTree (cwd)",
       },
-    }
-  },
-
-  {
-    "nvimdev/dashboard-nvim",
-    opts = {
-      config = {
-        header = nil,
-        week_header = {
-          enable = true,
-        },
-      }
     },
   },
   {
@@ -311,7 +233,17 @@ return {
     opts = {
       formatters_by_ft = {
         markdown = { "mdformat" },
-      }
-    }
+      },
+    },
+  },
+  {
+    "NeogitOrg/neogit",
+    dependencies = {
+      "nvim-lua/plenary.nvim", -- required
+      "sindrets/diffview.nvim", -- optional - Diff integration
+
+      "nvim-telescope/telescope.nvim", -- optional
+    },
+    config = true,
   },
 }
