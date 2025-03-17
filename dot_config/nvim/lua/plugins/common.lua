@@ -5,22 +5,12 @@
 -- * disable/enabled LazyVim plugins
 -- * override the configuration of LazyVim plugins
 return {
-  {
-    "rebelot/kanagawa.nvim",
-    opts = {
-      overrides = function(colors)
-        return {
-          Visual = { bg = colors.palette.waveBlue2 },
-        }
-      end,
-    },
-  },
-
   -- Configure LazyVim to load theme
   {
     "LazyVim/LazyVim",
     opts = {
-      colorscheme = "kanagawa-wave",
+      -- colorscheme = "kanagawa-wave",
+      colorscheme = "habamax",
     },
   },
 
