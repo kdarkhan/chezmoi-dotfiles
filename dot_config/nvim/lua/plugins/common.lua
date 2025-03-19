@@ -6,13 +6,26 @@
 -- * override the configuration of LazyVim plugins
 return {
   -- Configure LazyVim to load theme
+  -- {
+  --   "LazyVim/LazyVim",
+  --   opts = {
+  --     -- colorscheme = "kanagawa-wave",
+  --     -- colorscheme = "habamax",
+  --     colorscheme = "everforest",
+  --   },
+  -- },
   {
-    "LazyVim/LazyVim",
-    opts = {
-      -- colorscheme = "kanagawa-wave",
-      colorscheme = "habamax",
-    },
+    "sainnhe/everforest",
+    config = function()
+      -- Optionally configure and load the colorscheme
+      -- directly inside the plugin declaration.
+      vim.g.everforest_enable_italic = true
+      vim.g.everforest_background = "hard"
+      vim.cmd.colorscheme("everforest")
+    end,
   },
+
+  -- { "catppuccin/nvim", name = "catppuccin", priority = 1000 },
 
   -- change trouble config
   {
