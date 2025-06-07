@@ -5,6 +5,8 @@
 vim.opt.clipboard = ""
 vim.opt.relativenumber = false
 
+vim.o.shell = "fish"
+
 if vim.g.neovide then
   vim.o.guifont = "Iosevka Nerd Font Mono:h12"
   -- vim.o.guifont = "VictorMono NF:h10"

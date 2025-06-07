@@ -141,8 +141,26 @@ return {
       "sindrets/diffview.nvim", -- optional - Diff integration
       "echasnovski/mini.pick", -- optional
       "folke/snacks.nvim", -- optional
+
+      "neovim/nvim-lspconfig", -- To find git repo
     },
     config = true,
+    keys = {
+      {
+        "<leader>ag",
+        function()
+          local root_finder = require("lspconfig.util").root_pattern(".git")
+          local cur = vim.fn.resolve(vim.fn.expand("%:p"))
+          local found = root_finder(cur)
+          if found ~= nil then
+            require("neogit").open({ cwd = found })
+          else
+            print("No git dir found for " .. cur)
+          end
+        end,
+        desc = "Neogit",
+      },
+    },
   },
   {
     "saghen/blink.cmp",
