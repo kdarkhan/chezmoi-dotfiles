@@ -19,8 +19,21 @@ return {
     "neovim/nvim-lspconfig",
     opts = function()
       local keys = require("lazyvim.plugins.lsp.keymaps").get()
-      -- change a keymap
-      keys[#keys + 1] = { "gK", vim.diagnostic.float }
+      keys[#keys + 1] = { "gK", vim.diagnostic.open_float, desc = "Diagnostic float" }
+      keys[#keys + 1] = {
+        "gp",
+        function()
+          vim.diagnostic.jump({ count = -1 })
+        end,
+        desc = "Diagnostic prev",
+      }
+      keys[#keys + 1] = {
+        "gn",
+        function()
+          vim.diagnostic.jump({ count = 1 })
+        end,
+        desc = "Diagnostic next",
+      }
     end,
   },
   {
