@@ -31,8 +31,6 @@ vim.keymap.set("n", "<leader>nh", function()
   require("noice").cmd("dismiss")
 end, { desc = "Noice dismiss" })
 
-vim.keymap.set("n", "gG", vim.diagnostic.open_float, { desc = "Toggle diagnostic float" })
-
 if vim.g.neovide then
   vim.keymap.set("i", "<C-S-V>", "<C-R>+")
 
