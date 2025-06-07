@@ -31,6 +31,8 @@ vim.keymap.set("n", "<leader>nh", function()
   require("noice").cmd("dismiss")
 end, { desc = "Noice dismiss" })
 
+vim.keymap.set("n", "<leader>aj", ":%!python -m json.tool<cr>", { desc = "Json format" })
+
 if vim.g.neovide then
   vim.keymap.set("i", "<C-S-V>", "<C-R>+")
 
