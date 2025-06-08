@@ -46,7 +46,12 @@ vim.keymap.set("n", "<leader>ac", function()
 end, { desc = "Autocd to cur file" })
 
 if vim.g.neovide then
+  -- Linux
   vim.keymap.set("i", "<C-S-V>", "<C-R>+")
+
+  -- MacOS
+  vim.keymap.set("c", "<D-v>", "<C-R>+") -- Paste command mode
+  vim.keymap.set("i", "<D-v>", '<ESC>l"+Pli') -- Paste insert mode
 
   -- Change scale factor
   vim.g.neovide_scale_factor = 1.0
@@ -65,3 +70,10 @@ else
   vim.keymap.del("n", "<M-j>")
   vim.keymap.del("n", "<M-k>")
 end
+
+-- Make copy/paste work in Neovide
+-- https://neovide.dev/faq.html#how-can-i-use-cmd-ccmd-v-to-copy-and-paste
+vim.api.nvim_set_keymap("", "<D-v>", "+p<CR>", { noremap = true, silent = true })
+vim.api.nvim_set_keymap("!", "<D-v>", "<C-R>+", { noremap = true, silent = true })
+vim.api.nvim_set_keymap("t", "<D-v>", "<C-R>+", { noremap = true, silent = true })
+vim.api.nvim_set_keymap("v", "<D-v>", "<C-R>+", { noremap = true, silent = true })
