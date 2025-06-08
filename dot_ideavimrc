@@ -26,5 +26,15 @@ map <Leader>as <Action>(ShowSettings)
 vmap <Tab> >gv
 vmap <S-Tab> <gv
 
+map gr <Action>(FindUsages)
+map gR <Action>(GotoRelated)
+map gN <Action>(RenameElement)
+" map gI <Action>(OptimizeImports)
+map gai <Action>(OptimizeImports)
+map gar <Action>(RunClass)
 nnoremap gn :action GotoNextError<CR>
 nnoremap gp :action GotoPreviousError<CR>
+nnoremap gi :action GotoImplementation<CR>
+" map gco <Action>(Github.Open.In.Browser)
+" nmap gco :action Github.Open.In.Browser<CR>
+" nmap gco :action Git.Hosting.Open.In.Browser.Group<CR>
