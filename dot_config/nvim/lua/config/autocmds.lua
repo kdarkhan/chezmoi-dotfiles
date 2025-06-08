@@ -19,3 +19,11 @@
 --     keys[#keys + 1] = { "documentHighlight", false }
 --   end,
 -- })
+-- autocmd TermOpen * setlocal scrollback=-1
+
+vim.api.nvim_create_autocmd("TermOpen", {
+  pattern = "*",
+  callback = function()
+    vim.opt_local.scrollback = 100000
+  end,
+})
