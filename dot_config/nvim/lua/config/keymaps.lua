@@ -33,6 +33,18 @@ end, { desc = "Noice dismiss" })
 
 vim.keymap.set("n", "<leader>aj", ":%!python -m json.tool<cr>", { desc = "Json format" })
 
+vim.keymap.set("n", "<leader>ac", function()
+  local root_finder = require("lspconfig.util").root_pattern(".git")
+  local cur = vim.fn.resolve(vim.fn.expand("%:p"))
+  local found = root_finder(cur)
+  if found ~= nil then
+    vim.fn.chdir(found)
+    print("Moved to " .. found)
+  else
+    print("No git dir found for " .. cur)
+  end
+end, { desc = "Autocd to cur file" })
+
 if vim.g.neovide then
   vim.keymap.set("i", "<C-S-V>", "<C-R>+")
 
