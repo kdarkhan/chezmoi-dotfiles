@@ -170,6 +170,18 @@ return {
           enabled = true,
         },
       },
+      keymap = {
+        ["<C-j>"] = {
+          function(cmp)
+            cmp.select_next({ count = 10 })
+          end,
+        },
+        ["<C-k>"] = {
+          function(cmp)
+            cmp.select_prev({ count = 10 })
+          end,
+        },
+      },
     },
   },
   {
