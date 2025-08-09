@@ -190,4 +190,7 @@ return {
       scroll = { enabled = false },
     },
   },
+  {
+    "brianhuster/unnest.nvim",
+  },
 }
