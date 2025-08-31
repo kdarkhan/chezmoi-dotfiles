@@ -27,3 +27,10 @@ vim.api.nvim_create_autocmd("TermOpen", {
     vim.opt_local.scrollback = 100000
   end,
 })
+
+vim.api.nvim_create_autocmd({ "BufEnter", "BufWinEnter" }, {
+  pattern = vim.fn.expand("~/.local/cargo/") .. "**",
+  callback = function()
+    vim.opt_local.modifiable = false
+  end,
+})
