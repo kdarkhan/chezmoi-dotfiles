@@ -29,7 +29,10 @@ vim.api.nvim_create_autocmd("TermOpen", {
 })
 
 vim.api.nvim_create_autocmd({ "BufEnter", "BufWinEnter" }, {
-  pattern = vim.fn.expand("~/.local/cargo/") .. "**",
+  pattern = (function()
+    local home = vim.fn.expand("~")
+    return { home .. "/.local/cargo/**", home .. "/.rustup/toolchains/**" }
+  end)(),
   callback = function()
     vim.opt_local.modifiable = false
   end,
