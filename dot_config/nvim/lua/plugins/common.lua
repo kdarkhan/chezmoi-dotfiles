@@ -95,7 +95,7 @@ return {
 
   -- add any tools you want to have installed below
   {
-    "williamboman/mason.nvim",
+    "mason-org/mason.nvim",
     opts = {
       ensure_installed = {
         "stylua",
@@ -139,7 +139,7 @@ return {
     dependencies = {
       "nvim-lua/plenary.nvim", -- required
       "sindrets/diffview.nvim", -- optional - Diff integration
-      "echasnovski/mini.pick", -- optional
+      "nvim-mini/mini.pick", -- optional
       "folke/snacks.nvim", -- optional
 
       "neovim/nvim-lspconfig", -- To find git repo
