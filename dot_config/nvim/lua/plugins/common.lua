@@ -17,24 +17,29 @@ return {
   -- LSP keymaps
   {
     "neovim/nvim-lspconfig",
-    opts = function()
-      local keys = require("lazyvim.plugins.lsp.keymaps").get()
-      keys[#keys + 1] = { "gK", vim.diagnostic.open_float, desc = "Diagnostic float" }
-      keys[#keys + 1] = {
-        "gp",
-        function()
-          vim.diagnostic.jump({ count = -1 })
-        end,
-        desc = "Diagnostic prev",
-      }
-      keys[#keys + 1] = {
-        "gn",
-        function()
-          vim.diagnostic.jump({ count = 1 })
-        end,
-        desc = "Diagnostic next",
-      }
-    end,
+    opts = {
+      servers = {
+        ["*"] = {
+          keys = {
+            { "gK", vim.diagnostic.open_float, desc = "Diagnostic float" },
+            {
+              "gp",
+              function()
+                vim.diagnostic.jump({ count = -1 })
+              end,
+              desc = "Diagnostic prev",
+            },
+            {
+              "gn",
+              function()
+                vim.diagnostic.jump({ count = 1 })
+              end,
+              desc = "Diagnostic next",
+            },
+          },
+        },
+      },
+    },
   },
   {
     "sainnhe/everforest",
@@ -87,6 +92,17 @@ return {
         "vim",
         "yaml",
       })
+
+      require("vim.treesitter.query").set(
+        "markdown",
+        "highlights",
+        [[
+        ;From MDeiml/tree-sitter-markdown
+        [
+          (fenced_code_block_delimiter)
+        ] @punctuation.delimiter
+        ]]
+      )
     end,
   },
 
@@ -102,6 +118,7 @@ return {
         "shellcheck",
         -- "flake8",
         "shfmt",
+        "gradle-language-server",
       },
     },
   },
@@ -131,6 +148,7 @@ return {
     opts = {
       formatters_by_ft = {
         markdown = { "mdformat" },
+        java = { "google-java-format", lsp_format = "never" },
       },
     },
   },
@@ -190,7 +208,62 @@ return {
       scroll = { enabled = false },
     },
   },
+
+  {
+    "ibhagwan/fzf-lua",
+    keys = {
+      { "<leader>sG", LazyVim.pick("live_grep"), desc = "Grep (Root Dir)" },
+      { "<leader>sg", LazyVim.pick("live_grep", { root = false }), desc = "Grep (cwd)" },
+      { "<leader>ff", LazyVim.pick("files", { root = false }), desc = "Find Files (cwd)" },
+      { "<leader>fF", LazyVim.pick("files"), desc = "Find Files (Root Dir)" },
+    },
+  },
   {
     "brianhuster/unnest.nvim",
+  },
+  {
+    "mfussenegger/nvim-jdtls",
+    ft = { "java", "groovy" },
+    config = function()
+      local project_name = vim.fn.fnamemodify(vim.fn.getcwd(), ":p:h:t")
+      local workspace_dir = vim.fn.expand("~/work/jdtls-workspace/" .. project_name)
+      -- local root_dir = require("jdtls.setup").find_root({ ".git", "mvnw", "gradlew" }),
+      -- local lsp_util = require('nvim_lsp').util;
+      -- local root_dir = lsp_util.root_pattern('.git') or
+
+      require("lspconfig").gradle_ls.setup({
+        cmd_env = {
+          JAVA_HOME = vim.fn.expand("~/.sdkman/candidates/java/17.0.13-zulu/"),
+        },
+      })
+      vim.lsp.config("jdtls", {
+        cmd = {
+          vim.fn.expand("~/opt/jdtls/bin/jdtls"),
+          "--java-executable",
+          vim.fn.expand("~/.sdkman/candidates/java/21.0.9-zulu/bin/java"),
+          "--jvm-arg=-javaagent:" .. vim.fn.expand("~/work/jdtls-workspace/lombok-1.18.44.jar"),
+          "-data",
+          workspace_dir,
+        },
+        root_markers = { ".git", "mvnw", "gradlew" },
+        settings = {
+          java = {
+            configuration = {
+              runtimes = {
+                {
+                  name = "JavaSE-11",
+                  path = vim.fn.expand("~/.sdkman/candidates/java/11.0.18-zulu/"),
+                },
+                {
+                  name = "JavaSE-17",
+                  path = vim.fn.expand("~/.sdkman/candidates/java/17.0.13-zulu/"),
+                },
+              },
+            },
+          },
+        },
+      })
+      vim.lsp.enable("jdtls")
+    end,
   },
 }
