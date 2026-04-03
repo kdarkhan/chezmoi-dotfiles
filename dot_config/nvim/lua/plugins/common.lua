@@ -5,58 +5,6 @@
 -- * disable/enabled LazyVim plugins
 -- * override the configuration of LazyVim plugins
 
-local path_aliases = {
-  { "src/main/java/com/", "smjc/" },
-  { "src/test/java/com/", "stjc/" },
-}
-
--- `to` must be a self-contained string: it runs in a subprocess (multiprocess mode)
--- and cannot capture upvalues. We generate the gsub lines at config load time.
--- The function also puts the filename first (like path.filename_first) so that
--- truncation hides the parent directory rather than the filename.
-local _to_lines = {}
-for _, a in ipairs(path_aliases) do
-  _to_lines[#_to_lines + 1] = ('  s = s:gsub("%s", "%s")'):format(a[1], a[2])
-end
-local fzf_fmt_to = string.format(
-  [[
-  return function(s, _, m)
-    local _path = m.path
-%s
-    local tail = _path.tail(s)
-    local parent = _path.parent(s)
-    if parent then
-      return tail .. "\t" .. _path.remove_trailing(parent)
-    end
-    return tail
-  end
-]],
-  table.concat(_to_lines, "\n")
-)
-
--- `from` runs in the main process, so a regular closure is fine.
--- It reverses the filename-first reorder, then reverses the path aliases.
-local function fzf_fmt_from(s)
-  -- fzf-lua prepends "<icon><nbsp>" to entries; strip everything up to the last nbsp
-  -- (utils.nbsp is U+2002 EN SPACE, \xe2\x80\x82) so we get a clean path.
-  local nbsp = "\xe2\x80\x82"
-  local _, last_nbsp_end = s:find(".*" .. nbsp)
-  if last_nbsp_end then
-    s = s:sub(last_nbsp_end + 1)
-  end
-  -- Reverse filename-first reorder: "tail\tparent" -> "parent/tail"
-  local tail, parent = s:match("^([^\t]+)\t(.+)$")
-  if tail and parent then
-    s = parent .. "/" .. tail
-  end
-  -- Reverse path aliases. Skip aliases with empty replacement — those are
-  -- display-only transforms (e.g. extension stripping) that can't be reversed here.
-  for _, a in ipairs(path_aliases) do
-    s = s:gsub(a[2], a[1])
-  end
-  return s
-end
-
 return {
   -- Configure LazyVim to load theme
   -- {
@@ -281,17 +229,23 @@ return {
   {
     "ibhagwan/fzf-lua",
     opts = {
-      formatters = {
-        java_aliases = {
-          to = fzf_fmt_to,
-          from = fzf_fmt_from,
-          enrich = function(o)
-            o.fzf_opts = vim.tbl_extend("keep", o.fzf_opts or {}, { ["--tabstop"] = 1 })
-            return o
+      files = {
+        formatter = "path.filename_first",
+        actions = {
+          ["ctrl-g"] = function(selected, opts)
+            local paths = {}
+            for _, s in ipairs(selected) do
+              local entry = require("fzf-lua").path.entry_to_file(s, opts)
+              if entry and entry.path then
+                table.insert(paths, entry.path)
+              end
+            end
+            if #paths > 0 then
+              require("fzf-lua").live_grep({ search_paths = paths })
+            end
           end,
         },
       },
-      files = { formatter = "path.filename_first" },
       grep = {
         formatter = "path.filename_first",
         actions = {
@@ -307,8 +261,6 @@ return {
           end,
         },
       },
-      -- files = { formatter = "java_aliases" },
-      -- grep = { formatter = "java_aliases" },
     },
     keys = {
       { "<leader>sG", LazyVim.pick("live_grep"), desc = "Grep (Root Dir)" },
