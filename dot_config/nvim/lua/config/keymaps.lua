@@ -50,8 +50,12 @@ if vim.g.neovide then
   vim.keymap.set("i", "<C-S-V>", "<C-R>+")
 
   -- MacOS
-  vim.keymap.set("c", "<D-v>", "<C-R>+") -- Paste command mode
-  vim.keymap.set("i", "<D-v>", '<ESC>l"+Pli') -- Paste insert mode
+  local function paste()
+    vim.api.nvim_paste(vim.fn.getreg("+"), true, -1)
+  end
+  vim.keymap.set({ "n", "i", "v", "c", "t" }, "<D-v>", paste, { silent = true, desc = "Paste" })
+  -- vim.keymap.set("c", "<D-v>", "<C-R>+") -- Paste command mode
+  -- vim.keymap.set("i", "<D-v>", '<ESC>l"+Pli') -- Paste insert mode
 
   -- Change scale factor
   vim.g.neovide_scale_factor = 1.0
@@ -70,10 +74,3 @@ else
   vim.keymap.del("n", "<M-j>")
   vim.keymap.del("n", "<M-k>")
 end
-
--- Make copy/paste work in Neovide
--- https://neovide.dev/faq.html#how-can-i-use-cmd-ccmd-v-to-copy-and-paste
-vim.api.nvim_set_keymap("", "<D-v>", "+p<CR>", { noremap = true, silent = true })
-vim.api.nvim_set_keymap("!", "<D-v>", "<C-R>+", { noremap = true, silent = true })
-vim.api.nvim_set_keymap("t", "<D-v>", "<C-R>+", { noremap = true, silent = true })
-vim.api.nvim_set_keymap("v", "<D-v>", "<C-R>+", { noremap = true, silent = true })

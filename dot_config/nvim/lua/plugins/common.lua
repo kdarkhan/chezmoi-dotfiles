@@ -11,15 +11,46 @@ local path_aliases = {
 }
 
 -- `to` must be a self-contained string: it runs in a subprocess (multiprocess mode)
--- and cannot capture upvalues. We generate it at config load time.
+-- and cannot capture upvalues. We generate the gsub lines at config load time.
+-- The function also puts the filename first (like path.filename_first) so that
+-- truncation hides the parent directory rather than the filename.
 local _to_lines = {}
 for _, a in ipairs(path_aliases) do
   _to_lines[#_to_lines + 1] = ('  s = s:gsub("%s", "%s")'):format(a[1], a[2])
 end
-local fzf_fmt_to = "return function(s)\n" .. table.concat(_to_lines, "\n") .. "\n  return s\nend"
+local fzf_fmt_to = string.format(
+  [[
+  return function(s, _, m)
+    local _path = m.path
+%s
+    local tail = _path.tail(s)
+    local parent = _path.parent(s)
+    if parent then
+      return tail .. "\t" .. _path.remove_trailing(parent)
+    end
+    return tail
+  end
+]],
+  table.concat(_to_lines, "\n")
+)
 
 -- `from` runs in the main process, so a regular closure is fine.
+-- It reverses the filename-first reorder, then reverses the path aliases.
 local function fzf_fmt_from(s)
+  -- fzf-lua prepends "<icon><nbsp>" to entries; strip everything up to the last nbsp
+  -- (utils.nbsp is U+2002 EN SPACE, \xe2\x80\x82) so we get a clean path.
+  local nbsp = "\xe2\x80\x82"
+  local _, last_nbsp_end = s:find(".*" .. nbsp)
+  if last_nbsp_end then
+    s = s:sub(last_nbsp_end + 1)
+  end
+  -- Reverse filename-first reorder: "tail\tparent" -> "parent/tail"
+  local tail, parent = s:match("^([^\t]+)\t(.+)$")
+  if tail and parent then
+    s = parent .. "/" .. tail
+  end
+  -- Reverse path aliases. Skip aliases with empty replacement — those are
+  -- display-only transforms (e.g. extension stripping) that can't be reversed here.
   for _, a in ipairs(path_aliases) do
     s = s:gsub(a[2], a[1])
   end
@@ -254,10 +285,30 @@ return {
         java_aliases = {
           to = fzf_fmt_to,
           from = fzf_fmt_from,
+          enrich = function(o)
+            o.fzf_opts = vim.tbl_extend("keep", o.fzf_opts or {}, { ["--tabstop"] = 1 })
+            return o
+          end,
         },
       },
-      files = { formatter = "java_aliases" },
-      grep = { formatter = "java_aliases" },
+      files = { formatter = "path.filename_first" },
+      grep = {
+        formatter = "path.filename_first",
+        actions = {
+          ["ctrl-y"] = function(selected, opts)
+            local entry = require("fzf-lua").path.entry_to_file(selected[1], opts)
+            if entry and entry.path and entry.line then
+              local lines = vim.fn.readfile(entry.path)
+              local text = lines[entry.line]
+              if text then
+                vim.fn.setreg("+", vim.trim(text))
+              end
+            end
+          end,
+        },
+      },
+      -- files = { formatter = "java_aliases" },
+      -- grep = { formatter = "java_aliases" },
     },
     keys = {
       { "<leader>sG", LazyVim.pick("live_grep"), desc = "Grep (Root Dir)" },
@@ -269,6 +320,11 @@ return {
         "<leader>fc",
         LazyVim.pick("files", { cwd = vim.fn.stdpath("config"), follow = true }),
         desc = "Find Config File",
+      },
+      {
+        "<leader>fC",
+        LazyVim.pick("files", { cwd = vim.fn.stdpath("data") .. "/lazy", follow = true }),
+        desc = "Find Plugin File",
       },
     },
   },
@@ -320,4 +376,22 @@ return {
       vim.lsp.enable("jdtls")
     end,
   },
+  -- {
+  --   "folke/snacks.nvim",
+  --   opts = function(_, opts)
+  --     local keys = opts.dashboard and opts.dashboard.preset and opts.dashboard.preset.keys or {}
+  --     for _, key in ipairs(keys) do
+  --       if key.key == "c" then
+  --         key.action = function()
+  --           require("fzf-lua").files({
+  --             cwd = vim.fn.stdpath("config"),
+  --             fd_opts = "--color=never --type f --type l --hidden --follow --exclude .git",
+  --           })
+  --         end
+  --         break
+  --       end
+  --     end
+  --     return opts
+  --   end,
+  -- },
 }
