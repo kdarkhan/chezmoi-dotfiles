@@ -4,6 +4,28 @@
 -- * add extra plugins
 -- * disable/enabled LazyVim plugins
 -- * override the configuration of LazyVim plugins
+
+local path_aliases = {
+  { "src/main/java/com/", "smjc/" },
+  { "src/test/java/com/", "stjc/" },
+}
+
+-- `to` must be a self-contained string: it runs in a subprocess (multiprocess mode)
+-- and cannot capture upvalues. We generate it at config load time.
+local _to_lines = {}
+for _, a in ipairs(path_aliases) do
+  _to_lines[#_to_lines + 1] = ('  s = s:gsub("%s", "%s")'):format(a[1], a[2])
+end
+local fzf_fmt_to = "return function(s)\n" .. table.concat(_to_lines, "\n") .. "\n  return s\nend"
+
+-- `from` runs in the main process, so a regular closure is fine.
+local function fzf_fmt_from(s)
+  for _, a in ipairs(path_aliases) do
+    s = s:gsub(a[2], a[1])
+  end
+  return s
+end
+
 return {
   -- Configure LazyVim to load theme
   -- {
@@ -204,19 +226,50 @@ return {
   },
   {
     "snacks.nvim",
-    opts = {
+    opts_not = {
       scroll = { enabled = false },
     },
-  },
 
+    opts = function(_, opts)
+      local keys = opts.dashboard and opts.dashboard.preset and opts.dashboard.preset.keys or {}
+      opts.scroll.enabled = false
+      for _, key in ipairs(keys) do
+        if key.key == "c" then
+          key.action = function()
+            require("fzf-lua").files({
+              cwd = vim.fn.stdpath("config"),
+              follow = true,
+            })
+          end
+          break
+        end
+      end
+      return opts
+    end,
+  },
   {
     "ibhagwan/fzf-lua",
+    opts = {
+      formatters = {
+        java_aliases = {
+          to = fzf_fmt_to,
+          from = fzf_fmt_from,
+        },
+      },
+      files = { formatter = "java_aliases" },
+      grep = { formatter = "java_aliases" },
+    },
     keys = {
       { "<leader>sG", LazyVim.pick("live_grep"), desc = "Grep (Root Dir)" },
       { "<leader>sg", LazyVim.pick("live_grep", { root = false }), desc = "Grep (cwd)" },
       { "<leader>ff", LazyVim.pick("live_grep", { root = false }), desc = "Grep (cwd)" },
       { "<leader>fF", LazyVim.pick("files"), desc = "Find Files (Root Dir)" },
       { "<leader><space>", LazyVim.pick("files", { root = false }), desc = "Find Files" },
+      {
+        "<leader>fc",
+        LazyVim.pick("files", { cwd = vim.fn.stdpath("config"), follow = true }),
+        desc = "Find Config File",
+      },
     },
   },
   {
