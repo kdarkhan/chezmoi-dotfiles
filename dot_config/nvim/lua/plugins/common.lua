@@ -228,8 +228,9 @@ return {
   },
   {
     "ibhagwan/fzf-lua",
-    opts = {
-      files = {
+    opts = function(_, opts)
+      require("fzf-lua").config.defaults.keymap.fzf["ctrl-a"] = "toggle-all"
+      opts.files = vim.tbl_deep_extend("force", opts.files or {}, {
         formatter = "path.filename_first",
         actions = {
           ["ctrl-g"] = function(selected, opts)
@@ -245,8 +246,8 @@ return {
             end
           end,
         },
-      },
-      grep = {
+      })
+      opts.grep = vim.tbl_deep_extend("force", opts.grep or {}, {
         formatter = "path.filename_first",
         actions = {
           ["ctrl-y"] = function(selected, opts)
@@ -260,8 +261,9 @@ return {
             end
           end,
         },
-      },
-    },
+      })
+      return opts
+    end,
     keys = {
       { "<leader>sG", LazyVim.pick("live_grep"), desc = "Grep (Root Dir)" },
       { "<leader>sg", LazyVim.pick("live_grep", { root = false }), desc = "Grep (cwd)" },
