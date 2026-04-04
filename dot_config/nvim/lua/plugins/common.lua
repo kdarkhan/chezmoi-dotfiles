@@ -40,15 +40,6 @@ local function goto_definition_or_references()
 end
 
 return {
-  -- Configure LazyVim to load theme
-  -- {
-  --   "LazyVim/LazyVim",
-  --   opts = {
-  --     -- colorscheme = "kanagawa-wave",
-  --     -- colorscheme = "habamax",
-  --     colorscheme = "everforest",
-  --   },
-  -- },
   -- LSP keymaps
   {
     "neovim/nvim-lspconfig",
@@ -413,22 +404,4 @@ return {
       })
     end,
   },
-  -- {
-  --   "folke/snacks.nvim",
-  --   opts = function(_, opts)
-  --     local keys = opts.dashboard and opts.dashboard.preset and opts.dashboard.preset.keys or {}
-  --     for _, key in ipairs(keys) do
-  --       if key.key == "c" then
-  --         key.action = function()
-  --           require("fzf-lua").files({
-  --             cwd = vim.fn.stdpath("config"),
-  --             fd_opts = "--color=never --type f --type l --hidden --follow --exclude .git",
-  --           })
-  --         end
-  --         break
-  --       end
-  --     end
-  --     return opts
-  --   end,
-  -- },
 }
