@@ -322,7 +322,6 @@ return {
         callback = function(ev)
           local root = vim.fs.root(ev.buf, { ".git", "mvnw", "gradlew" }) or vim.fn.getcwd()
           local workspace_dir = vim.fn.expand("~/work/jdtls-workspace/" .. vim.fn.fnamemodify(root, ":t"))
-          print("root is " .. root .. " and work is " .. workspace_dir)
           vim.lsp.start({
             name = "jdtls",
             cmd = {
