@@ -380,6 +380,7 @@ return {
               "--java-executable",
               vim.fn.expand("~/.sdkman/candidates/java/21.0.9-zulu/bin/java"),
               "--jvm-arg=-javaagent:" .. vim.fn.expand("~/work/jdtls-workspace/lombok-1.18.44.jar"),
+              "--jvm-arg=-XX:+UseZGC",
               "-data",
               workspace_dir,
             },
@@ -389,6 +390,9 @@ return {
             },
             settings = {
               java = {
+                import = {
+                  gradle = { enabled = true },
+                },
                 configuration = {
                   runtimes = {
                     {
