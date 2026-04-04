@@ -288,46 +288,70 @@ return {
   {
     "mfussenegger/nvim-jdtls",
     ft = { "java", "groovy" },
+    keys = {
+      {
+        "<leader>ct",
+        function()
+          require("jdtls.tests").goto_subjects()
+        end,
+        desc = "Go to test/source",
+      },
+    },
     config = function()
-      local project_name = vim.fn.fnamemodify(vim.fn.getcwd(), ":p:h:t")
-      local workspace_dir = vim.fn.expand("~/work/jdtls-workspace/" .. project_name)
-      -- local root_dir = require("jdtls.setup").find_root({ ".git", "mvnw", "gradlew" }),
-      -- local lsp_util = require('nvim_lsp').util;
-      -- local root_dir = lsp_util.root_pattern('.git') or
-
-      require("lspconfig").gradle_ls.setup({
-        cmd_env = {
-          JAVA_HOME = vim.fn.expand("~/.sdkman/candidates/java/17.0.13-zulu/"),
-        },
-      })
-      vim.lsp.config("jdtls", {
-        cmd = {
-          vim.fn.expand("~/opt/jdtls/bin/jdtls"),
-          "--java-executable",
-          vim.fn.expand("~/.sdkman/candidates/java/21.0.9-zulu/bin/java"),
-          "--jvm-arg=-javaagent:" .. vim.fn.expand("~/work/jdtls-workspace/lombok-1.18.44.jar"),
-          "-data",
-          workspace_dir,
-        },
-        root_markers = { ".git", "mvnw", "gradlew" },
-        settings = {
-          java = {
-            configuration = {
-              runtimes = {
-                {
-                  name = "JavaSE-11",
-                  path = vim.fn.expand("~/.sdkman/candidates/java/11.0.18-zulu/"),
-                },
-                {
-                  name = "JavaSE-17",
-                  path = vim.fn.expand("~/.sdkman/candidates/java/17.0.13-zulu/"),
+      vim.api.nvim_create_autocmd("FileType", {
+        pattern = { "java", "groovy" },
+        callback = function(ev)
+          local root = vim.fs.root(ev.buf, { ".git", "mvnw", "gradlew" }) or vim.fn.getcwd()
+          local workspace_dir = vim.fn.expand("~/work/jdtls-workspace/" .. vim.fn.fnamemodify(root, ":t"))
+          print("root is " .. root .. " and work is " .. workspace_dir)
+          vim.lsp.start({
+            name = "jdtls",
+            cmd = {
+              "jdtls",
+              "--java-executable",
+              vim.fn.expand("~/.sdkman/candidates/java/21.0.9-zulu/bin/java"),
+              "--jvm-arg=-javaagent:" .. vim.fn.expand("~/work/jdtls-workspace/lombok-1.18.44.jar"),
+              "-data",
+              workspace_dir,
+            },
+            root_dir = root,
+            settings = {
+              java = {
+                configuration = {
+                  runtimes = {
+                    {
+                      name = "JavaSE-11",
+                      path = vim.fn.expand("~/.sdkman/candidates/java/11.0.18-zulu/"),
+                    },
+                    {
+                      name = "JavaSE-17",
+                      path = vim.fn.expand("~/.sdkman/candidates/java/17.0.13-zulu/"),
+                    },
+                  },
                 },
               },
             },
+          })
+        end,
+      })
+      vim.lsp.config("gradle_ls", {
+        cmd = {
+          "env",
+          "JAVA_HOME=" .. vim.fn.expand("~/.sdkman/candidates/java/17.0.13-zulu/"),
+          "gradle-language-server",
+        },
+        init_options = {
+          settings = {
+            gradleWrapperEnabled = true,
+            gradle = {
+              nestedProjects = true,
+            },
+            ["gradle.nestedProjects"] = true,
+            ["java.gradle.buildServer.enabled"] = true,
           },
         },
       })
-      vim.lsp.enable("jdtls")
+      vim.lsp.enable("gradle_ls")
     end,
   },
   -- {
