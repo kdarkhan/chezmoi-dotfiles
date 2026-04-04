@@ -124,6 +124,26 @@ return {
     },
   },
   {
+    "mason-org/mason-lspconfig.nvim",
+    config = function()
+      vim.lsp.config("gradle_ls", {
+        cmd = { "gradle-language-server" },
+        cmd_env = { JAVA_HOME = vim.fn.expand("~/.sdkman/candidates/java/17.0.13-zulu/") },
+        init_options = {
+          settings = {
+            gradleWrapperEnabled = true,
+            gradle = {
+              nestedProjects = true,
+            },
+            ["gradle.nestedProjects"] = true,
+            ["java.gradle.buildServer.enabled"] = true,
+          },
+        },
+      })
+      vim.lsp.enable("gradle_ls")
+    end,
+  },
+  {
     "nvim-neo-tree/neo-tree.nvim",
     keys = {
       { "<leader>fe", false },
@@ -287,7 +307,6 @@ return {
   },
   {
     "mfussenegger/nvim-jdtls",
-    ft = { "java", "groovy" },
     keys = {
       {
         "<leader>ct",
@@ -299,7 +318,7 @@ return {
     },
     config = function()
       vim.api.nvim_create_autocmd("FileType", {
-        pattern = { "java", "groovy" },
+        pattern = { "java" },
         callback = function(ev)
           local root = vim.fs.root(ev.buf, { ".git", "mvnw", "gradlew" }) or vim.fn.getcwd()
           local workspace_dir = vim.fn.expand("~/work/jdtls-workspace/" .. vim.fn.fnamemodify(root, ":t"))
@@ -334,24 +353,6 @@ return {
           })
         end,
       })
-      vim.lsp.config("gradle_ls", {
-        cmd = {
-          "env",
-          "JAVA_HOME=" .. vim.fn.expand("~/.sdkman/candidates/java/17.0.13-zulu/"),
-          "gradle-language-server",
-        },
-        init_options = {
-          settings = {
-            gradleWrapperEnabled = true,
-            gradle = {
-              nestedProjects = true,
-            },
-            ["gradle.nestedProjects"] = true,
-            ["java.gradle.buildServer.enabled"] = true,
-          },
-        },
-      })
-      vim.lsp.enable("gradle_ls")
     end,
   },
   -- {
