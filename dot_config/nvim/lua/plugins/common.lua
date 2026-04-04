@@ -5,6 +5,40 @@
 -- * disable/enabled LazyVim plugins
 -- * override the configuration of LazyVim plugins
 
+local function goto_definition_or_references()
+  local cur_buf = vim.api.nvim_get_current_buf()
+  local cur_line = vim.api.nvim_win_get_cursor(0)[1] - 1 -- 0-indexed
+  local cur_uri = vim.uri_from_bufnr(cur_buf)
+  local client = vim.lsp.get_clients({ bufnr = cur_buf })[1]
+  local encoding = client and client.offset_encoding or "utf-16"
+  local params = vim.lsp.util.make_position_params(0, encoding)
+
+  vim.lsp.buf_request_all(cur_buf, "textDocument/definition", params, function(results)
+    local locs = {}
+    for _, res in pairs(results) do
+      if res.result then
+        local r = vim.islist(res.result) and res.result or { res.result }
+        vim.list_extend(locs, r)
+      end
+    end
+
+    if #locs == 0 then
+      return
+    elseif #locs == 1 then
+      local loc = locs[1]
+      local uri = loc.uri or loc.targetUri
+      local range = loc.range or loc.targetSelectionRange
+      if uri == cur_uri and range.start.line == cur_line then
+        require("fzf-lua").lsp_references({ ignore_current_line = true, jump1 = true })
+      else
+        vim.lsp.util.show_document(loc, encoding, { focus = true })
+      end
+    else
+      require("fzf-lua").lsp_definitions({ jump1 = true })
+    end
+  end)
+end
+
 return {
   -- Configure LazyVim to load theme
   -- {
@@ -22,7 +56,12 @@ return {
       servers = {
         ["*"] = {
           keys = {
-            { "gi", "<cmd>FzfLua lsp_implementations jump1=true ignore_current_line=true<cr>", desc = "Goto Implementation" },
+            { "gd", goto_definition_or_references, desc = "Goto Definition" },
+            {
+              "gi",
+              "<cmd>FzfLua lsp_implementations jump1=true ignore_current_line=true<cr>",
+              desc = "Goto Implementation",
+            },
             { "gI", false },
             { "gK", vim.diagnostic.open_float, desc = "Diagnostic float" },
             {
