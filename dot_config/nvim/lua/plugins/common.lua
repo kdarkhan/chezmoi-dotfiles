@@ -250,6 +250,12 @@ return {
     "ibhagwan/fzf-lua",
     opts = function(_, opts)
       require("fzf-lua").config.defaults.keymap.fzf["ctrl-a"] = "toggle-all"
+      opts.lsp = vim.tbl_deep_extend("force", opts.lsp or {}, {
+        formatter = "path.filename_first",
+      })
+      opts.oldfiles = vim.tbl_deep_extend("force", opts.oldfiles or {}, {
+        formatter = "path.filename_first",
+      })
       opts.files = vim.tbl_deep_extend("force", opts.files or {}, {
         formatter = "path.filename_first",
         actions = {
@@ -317,6 +323,10 @@ return {
       },
     },
     config = function()
+      local extendedClientCapabilities = require("jdtls").extendedClientCapabilities
+      extendedClientCapabilities.resolveAdditionalTextEditsSupport = true
+      extendedClientCapabilities.onCompletionItemSelectedCommand = "editor.action.triggerParameterHints"
+
       vim.api.nvim_create_autocmd("FileType", {
         pattern = { "java" },
         callback = function(ev)
@@ -329,10 +339,19 @@ return {
               "--java-executable",
               vim.fn.expand("~/.sdkman/candidates/java/21.0.9-zulu/bin/java"),
               "--jvm-arg=-javaagent:" .. vim.fn.expand("~/work/jdtls-workspace/lombok-1.18.44.jar"),
+              "--add-modules=ALL-SYSTEM",
+              "--add-opens",
+              "java.base/java.util=ALL-UNNAMED",
+              "--add-opens",
+              "java.base/java.lang=ALL-UNNAMED",
+              "-jar",
               "-data",
               workspace_dir,
             },
             root_dir = root,
+            init_options = {
+              extendedClientCapabilities = extendedClientCapabilities,
+            },
             settings = {
               java = {
                 configuration = {
@@ -344,6 +363,7 @@ return {
                     {
                       name = "JavaSE-17",
                       path = vim.fn.expand("~/.sdkman/candidates/java/17.0.13-zulu/"),
+                      default = true,
                     },
                   },
                 },
