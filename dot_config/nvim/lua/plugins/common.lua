@@ -22,6 +22,8 @@ return {
       servers = {
         ["*"] = {
           keys = {
+            { "gi", "<cmd>FzfLua lsp_implementations jump1=true ignore_current_line=true<cr>", desc = "Goto Implementation" },
+            { "gI", false },
             { "gK", vim.diagnostic.open_float, desc = "Diagnostic float" },
             {
               "gp",

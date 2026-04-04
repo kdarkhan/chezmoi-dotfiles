@@ -7,6 +7,8 @@
 -- vim.keymap.set("n", "gb", "<cmd>bnext<cr>", { desc = "Next Buffer" })
 -- vim.keymap.set("n", "gB", "<cmd>bprevious<cr>", { desc = "Prev Buffer" })
 
+vim.keymap.set("n", "gI", "gi", { desc = "Go to last insert" })
+
 vim.keymap.set("n", "gh", "H", { desc = "Prev Buffer" })
 vim.keymap.set("n", "gl", "L", { desc = "Next Buffer" })
 
