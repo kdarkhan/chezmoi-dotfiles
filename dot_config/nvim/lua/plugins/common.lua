@@ -146,12 +146,19 @@ return {
   {
     "mason-org/mason.nvim",
     opts = {
+      -- For testing local mason registry
+      -- registries = {
+      --   "file:~/work/mason-registry",
+      --   "github:mason-org/mason-registry",
+      -- },
       ensure_installed = {
         "stylua",
         "shellcheck",
         -- "flake8",
         "shfmt",
         "gradle-language-server",
+        "java-debug-adapter",
+        -- "java-test",
       },
     },
   },
@@ -344,7 +351,12 @@ return {
     "brianhuster/unnest.nvim",
   },
   {
+    "mfussenegger/nvim-dap",
+    config = function() end,
+  },
+  {
     "mfussenegger/nvim-jdtls",
+    dependencies = { "mfussenegger/nvim-dap" },
     keys = {
       {
         "<leader>ct",
@@ -359,9 +371,30 @@ return {
       extendedClientCapabilities.resolveAdditionalTextEditsSupport = true
       extendedClientCapabilities.onCompletionItemSelectedCommand = "editor.action.triggerParameterHints"
 
+      vim.api.nvim_create_autocmd("LspAttach", {
+        callback = function(ev)
+          local client = vim.lsp.get_client_by_id(ev.data.client_id)
+          if client and client.name == "jdtls" then
+            require("jdtls").setup_dap({ hotcodereplace = "auto" })
+          end
+        end,
+      })
+
       vim.api.nvim_create_autocmd("FileType", {
         pattern = { "java" },
         callback = function(ev)
+          local mason_packages = vim.fn.stdpath("data") .. "/mason/packages"
+          local bundles = {}
+          vim.list_extend(
+            bundles,
+            vim.fn.glob(
+              mason_packages .. "/java-debug-adapter/extension/server/com.microsoft.java.debug.plugin-*.jar",
+              true,
+              true
+            )
+          )
+          vim.list_extend(bundles, vim.fn.glob(mason_packages .. "/java-test/extension/server/*.jar", true, true))
+
           local root = vim.fs.root(ev.buf, { ".git", "mvnw", "gradlew" }) or vim.fn.getcwd()
           local workspace_dir = vim.fn.expand("~/work/jdtls-workspace/" .. vim.fn.fnamemodify(root, ":t"))
           vim.lsp.start({
@@ -377,6 +410,7 @@ return {
             },
             root_dir = root,
             init_options = {
+              bundles = bundles,
               extendedClientCapabilities = extendedClientCapabilities,
             },
             settings = {
@@ -403,5 +437,66 @@ return {
         end,
       })
     end,
+  },
+  {
+    "rcasia/neotest-java",
+    ft = "java",
+    dependencies = {
+      "mfussenegger/nvim-jdtls",
+      "mfussenegger/nvim-dap",
+    },
+  },
+  {
+    "nvim-neotest/neotest",
+    dependencies = {
+      "nvim-neotest/nvim-nio",
+      "nvim-lua/plenary.nvim",
+      "nvim-treesitter/nvim-treesitter",
+      "rcasia/neotest-java",
+    },
+    ft = "java",
+    config = function()
+      require("neotest").setup({
+        adapters = {
+          require("neotest-java")({
+            incremental_build = true,
+          }),
+        },
+      })
+    end,
+    keys = {
+      {
+        "<leader>tt",
+        function()
+          require("neotest").run.run()
+        end,
+        desc = "Run Nearest Test",
+        ft = "java",
+      },
+      {
+        "<leader>tf",
+        function()
+          require("neotest").run.run(vim.fn.expand("%"))
+        end,
+        desc = "Run Test File",
+        ft = "java",
+      },
+      {
+        "<leader>to",
+        function()
+          require("neotest").output.open({ enter = true })
+        end,
+        desc = "Test Output",
+        ft = "java",
+      },
+      {
+        "<leader>tS",
+        function()
+          require("neotest").summary.toggle()
+        end,
+        desc = "Test Summary",
+        ft = "java",
+      },
+    },
   },
 }
