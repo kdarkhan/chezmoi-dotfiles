@@ -308,21 +308,37 @@ return {
               require("fzf-lua").live_grep({ search_paths = paths })
             end
           end,
+          ["ctrl-y"] = {
+            fn = function(selected, opts)
+              local entry = require("fzf-lua").path.entry_to_file(selected[1], opts)
+              if entry and entry.path then
+                local abspath = vim.fn.fnamemodify(entry.path, ":p")
+                vim.fn.setreg("+", abspath)
+                vim.notify("Copied: " .. abspath, vim.log.levels.INFO)
+              end
+            end,
+            exec_silent = true,
+          },
         },
       })
       opts.grep = vim.tbl_deep_extend("force", opts.grep or {}, {
         formatter = "path.filename_first",
         actions = {
-          ["ctrl-y"] = function(selected, opts)
-            local entry = require("fzf-lua").path.entry_to_file(selected[1], opts)
-            if entry and entry.path and entry.line then
-              local lines = vim.fn.readfile(entry.path)
-              local text = lines[entry.line]
-              if text then
-                vim.fn.setreg("+", vim.trim(text))
+          ["ctrl-y"] = {
+            fn = function(selected, opts)
+              local entry = require("fzf-lua").path.entry_to_file(selected[1], opts)
+              if entry and entry.path and entry.line then
+                local lines = vim.fn.readfile(entry.path)
+                local text = lines[entry.line]
+                if text then
+                  local trimmed = vim.trim(text)
+                  vim.fn.setreg("+", trimmed)
+                  vim.notify("Copied: " .. trimmed, vim.log.levels.INFO)
+                end
               end
-            end
-          end,
+            end,
+            exec_silent = true,
+          },
         },
       })
       return opts
@@ -478,7 +494,15 @@ return {
         ft = "java",
       },
       {
-        "<leader>tS",
+        "<leader>tp",
+        function()
+          require("neotest").output_panel.toggle()
+        end,
+        desc = "Test Output",
+        ft = "java",
+      },
+      {
+        "<leader>ts",
         function()
           require("neotest").summary.toggle()
         end,
