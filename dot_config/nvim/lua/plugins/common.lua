@@ -157,8 +157,6 @@ return {
         -- "flake8",
         "shfmt",
         "gradle-language-server",
-        "java-debug-adapter",
-        -- "java-test",
       },
     },
   },
@@ -330,9 +328,9 @@ return {
       return opts
     end,
     keys = {
+      { "<leader>ff", "<cmd>FzfLua resume<cr>", desc = "Resume picker" },
       { "<leader>sG", LazyVim.pick("live_grep"), desc = "Grep (Root Dir)" },
       { "<leader>sg", LazyVim.pick("live_grep", { root = false }), desc = "Grep (cwd)" },
-      { "<leader>ff", LazyVim.pick("live_grep", { root = false }), desc = "Grep (cwd)" },
       { "<leader>fF", LazyVim.pick("files"), desc = "Find Files (Root Dir)" },
       { "<leader><space>", LazyVim.pick("files", { root = false }), desc = "Find Files" },
       {
@@ -383,17 +381,7 @@ return {
       vim.api.nvim_create_autocmd("FileType", {
         pattern = { "java" },
         callback = function(ev)
-          local mason_packages = vim.fn.stdpath("data") .. "/mason/packages"
           local bundles = {}
-          vim.list_extend(
-            bundles,
-            vim.fn.glob(
-              mason_packages .. "/java-debug-adapter/extension/server/com.microsoft.java.debug.plugin-*.jar",
-              true,
-              true
-            )
-          )
-          vim.list_extend(bundles, vim.fn.glob(mason_packages .. "/java-test/extension/server/*.jar", true, true))
 
           local root = vim.fs.root(ev.buf, { ".git", "mvnw", "gradlew" }) or vim.fn.getcwd()
           local workspace_dir = vim.fn.expand("~/work/jdtls-workspace/" .. vim.fn.fnamemodify(root, ":t"))
