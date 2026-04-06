@@ -9,6 +9,8 @@
 
 vim.keymap.set("n", "gI", "gi", { desc = "Go to last insert" })
 
+require("which-key").add({ { "<leader>t", group = "test" } })
+
 vim.keymap.set("n", "gh", "H", { desc = "Prev Buffer" })
 vim.keymap.set("n", "gl", "L", { desc = "Next Buffer" })
 
