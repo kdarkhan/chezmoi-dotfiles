@@ -58,8 +58,6 @@ if vim.g.neovide then
     vim.api.nvim_paste(vim.fn.getreg("+"), true, -1)
   end
   vim.keymap.set({ "n", "i", "v", "c", "t" }, "<D-v>", paste, { silent = true, desc = "Paste" })
-  -- vim.keymap.set("c", "<D-v>", "<C-R>+") -- Paste command mode
-  -- vim.keymap.set("i", "<D-v>", '<ESC>l"+Pli') -- Paste insert mode
 
   -- Change scale factor
   vim.g.neovide_scale_factor = 1.0

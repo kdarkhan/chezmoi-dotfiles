@@ -277,7 +277,8 @@ return {
               follow = true,
             })
           end
-          break
+        elseif key.key == "P" then
+          key.key = "p"
         end
       end
       return opts
@@ -510,5 +511,10 @@ return {
         ft = "java",
       },
     },
+  },
+  {
+    "kylechui/nvim-surround",
+    version = "^4.0.0", -- Use for stability; omit to use `main` branch for the latest features
+    event = "VeryLazy",
   },
 }
