@@ -296,10 +296,10 @@ return {
       opts.files = vim.tbl_deep_extend("force", opts.files or {}, {
         formatter = "path.filename_first",
         actions = {
-          ["ctrl-g"] = function(selected, opts)
+          ["ctrl-g"] = function(selected, optz)
             local paths = {}
             for _, s in ipairs(selected) do
-              local entry = require("fzf-lua").path.entry_to_file(s, opts)
+              local entry = require("fzf-lua").path.entry_to_file(s, optz)
               if entry and entry.path then
                 table.insert(paths, entry.path)
               end
@@ -309,8 +309,8 @@ return {
             end
           end,
           ["ctrl-y"] = {
-            fn = function(selected, opts)
-              local entry = require("fzf-lua").path.entry_to_file(selected[1], opts)
+            fn = function(selected, optz)
+              local entry = require("fzf-lua").path.entry_to_file(selected[1], optz)
               if entry and entry.path then
                 local abspath = vim.fn.fnamemodify(entry.path, ":p")
                 vim.fn.setreg("+", abspath)
@@ -325,8 +325,8 @@ return {
         formatter = "path.filename_first",
         actions = {
           ["ctrl-y"] = {
-            fn = function(selected, opts)
-              local entry = require("fzf-lua").path.entry_to_file(selected[1], opts)
+            fn = function(selected, optz)
+              local entry = require("fzf-lua").path.entry_to_file(selected[1], optz)
               if entry and entry.path and entry.line then
                 local lines = vim.fn.readfile(entry.path)
                 local text = lines[entry.line]
