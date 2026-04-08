@@ -214,13 +214,21 @@ return {
     "NeogitOrg/neogit",
     dependencies = {
       "nvim-lua/plenary.nvim", -- required
-      "sindrets/diffview.nvim", -- optional - Diff integration
+      "esmuellert/codediff.nvim",
       "nvim-mini/mini.pick", -- optional
       "folke/snacks.nvim", -- optional
 
       "neovim/nvim-lspconfig", -- To find git repo
     },
-    config = true,
+    opts = {
+      integrations = {
+        diffview = false,
+      },
+      diff_viewer = "codediff",
+      -- context_highlight fires a decoration provider on every scroll redraw, generating a burst
+      -- of extmark API calls that overwhelms the Neovim<->Neovide msgpack channel on large diffs.
+      disable_context_highlighting = true,
+    },
     keys = {
       {
         "<leader>ag",
@@ -516,5 +524,12 @@ return {
     "kylechui/nvim-surround",
     version = "^4.0.0", -- Use for stability; omit to use `main` branch for the latest features
     event = "VeryLazy",
+  },
+  {
+    "MeanderingProgrammer/render-markdown.nvim",
+    opts = {
+      code = { enabled = false, conceal_delimiters = false, inline = false },
+      link = { enabled = false },
+    },
   },
 }

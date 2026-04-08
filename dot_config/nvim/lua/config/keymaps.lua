@@ -9,6 +9,10 @@
 
 vim.keymap.set("n", "gI", "gi", { desc = "Go to last insert" })
 
+vim.keymap.set({ "n", "x", "o" }, "<CR>", function()
+  require("flash").treesitter()
+end, { desc = "Flash Treesitter" })
+
 require("which-key").add({ { "<leader>t", group = "test" } })
 
 vim.keymap.set("n", "gh", "H", { desc = "Prev Buffer" })
