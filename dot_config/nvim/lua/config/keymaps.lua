@@ -53,54 +53,67 @@ vim.keymap.set("n", "<leader>ac", function()
   end
 end, { desc = "Autocd to cur file" })
 
+local jira_done = false
+local jira_role = "assignee"
+local jira_base_url = vim.fn.getenv("JIRA_BASE_URL")
+
 local function jira_picker()
-  local jira_base_url = vim.fn.getenv("JIRA_BASE_URL")
-  require("fzf-lua").fzf_exec(
-    "acli jira workitem search"
-      .. " --jql 'assignee = currentUser() AND statusCategory != Done'"
-      .. " --fields 'key,summary'"
-      .. " --csv"
-      .. " --limit 100"
-      .. " | tail -n +2"
-      .. " | awk -F',' '{key=$1; sub(/^[^,]*,/,\"\"); printf \"%-15s %s\\n\", key, $0}'",
-    {
-      prompt = "Jira> ",
-      actions = {
-        ["default"] = function(selected)
-          if not (selected and selected[1]) then
-            return
-          end
-          local key = selected[1]:match("^(%S+)")
-          if key and vim.bo.modifiable then
-            vim.api.nvim_put({ key }, "c", true, true)
-          end
-        end,
-        ["ctrl-y"] = function(selected)
-          if not (selected and selected[1]) then
-            return
-          end
-          local key = selected[1]:match("^(%S+)")
-          if key then
-            local url = jira_base_url .. "/browse/" .. key
-            vim.fn.setreg("+", url)
-            vim.notify("Copied: " .. url)
-          end
-        end,
-        ["alt-enter"] = function(selected)
-          if not (selected and selected[1]) then
-            return
-          end
-          local key = selected[1]:match("^(%S+)")
-          if key then
-            vim.ui.open(jira_base_url .. "/browse/" .. key)
-          end
-        end,
-      },
-    }
-  )
+  local jql = jira_role .. " = currentUser()"
+  if not jira_done then
+    jql = jql .. " AND statusCategory != Done"
+  end
+  jql = jql .. " ORDER BY updated DESC"
+
+  local cmd = "acli jira workitem search --jql "
+    .. vim.fn.shellescape(jql)
+    .. " --fields key,summary --json --limit 100"
+    .. [[ | jq -r '.[] | .key + "  " + .fields.summary']]
+
+  local function get_key(selected)
+    if not (selected and selected[1]) then
+      return nil
+    end
+    return selected[1]:match("^(%S+)")
+  end
+
+  require("fzf-lua").fzf_exec(cmd, {
+    prompt = string.format("[%s|%s] Jira> ", jira_role, jira_done and "all" or "open"),
+    actions = {
+      ["default"] = function(selected)
+        local key = get_key(selected)
+        if key and vim.bo.modifiable then
+          vim.api.nvim_put({ key }, "c", true, true)
+        end
+      end,
+      ["ctrl-y"] = function(selected)
+        local key = get_key(selected)
+        if key then
+          local url = jira_base_url .. "/browse/" .. key
+          vim.fn.setreg("+", url)
+          vim.notify("Copied: " .. url)
+        end
+      end,
+      ["alt-enter"] = function(selected)
+        local key = get_key(selected)
+        if key then
+          vim.ui.open(jira_base_url .. "/browse/" .. key)
+        end
+      end,
+      ["ctrl-d"] = function()
+        jira_done = not jira_done
+        vim.schedule(jira_picker)
+      end,
+      ["ctrl-r"] = function()
+        jira_role = jira_role == "assignee" and "reporter" or "assignee"
+        vim.schedule(jira_picker)
+      end,
+    },
+  })
 end
 
-vim.keymap.set("n", "<leader>fj", jira_picker, { desc = "Jira issue picker" })
+if jira_base_url ~= vim.NIL and jira_base_url ~= "" then
+  vim.keymap.set("n", "<leader>fj", jira_picker, { desc = "Jira issue picker" })
+end
 
 if vim.g.neovide then
   -- Linux
