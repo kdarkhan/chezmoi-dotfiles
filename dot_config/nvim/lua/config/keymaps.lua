@@ -99,7 +99,7 @@ local function jira_picker()
           vim.ui.open(jira_base_url .. "/browse/" .. key)
         end
       end,
-      ["ctrl-d"] = function()
+      ["ctrl-s"] = function()
         jira_done = not jira_done
         vim.schedule(jira_picker)
       end,
