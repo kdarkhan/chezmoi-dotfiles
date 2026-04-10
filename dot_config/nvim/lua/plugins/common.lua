@@ -255,6 +255,8 @@ return {
         },
       },
       keymap = {
+        ["<Tab>"] = { "show", "select_next", "snippet_forward", "fallback" },
+        ["<S-Tab>"] = { "select_prev", "snippet_backward", "fallback" },
         ["<C-j>"] = {
           function(cmp)
             cmp.select_next({ count = 10 })
