@@ -247,11 +247,23 @@ return {
     },
   },
   {
+    "nvim-mini/mini.pairs",
+    opts = {
+      modes = { insert = true, command = false, terminal = false },
+    },
+  },
+  {
     "saghen/blink.cmp",
     opts = {
       completion = {
         ghost_text = {
           enabled = true,
+        },
+      },
+      cmdline = {
+        keymap = { preset = "default" },
+        completion = {
+          ghost_text = { enabled = false },
         },
       },
       keymap = {
