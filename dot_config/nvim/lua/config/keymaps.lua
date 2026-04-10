@@ -39,7 +39,7 @@ vim.keymap.set("n", "<leader>nh", function()
   require("noice").cmd("dismiss")
 end, { desc = "Noice dismiss" })
 
-vim.keymap.set("n", "<leader>aj", ":%!python -m json.tool<cr>", { desc = "Json format" })
+vim.keymap.set("n", "<leader>aj", ":%!jq<cr>", { desc = "Json format" })
 
 vim.keymap.set("n", "<leader>ac", function()
   local root_finder = require("lspconfig.util").root_pattern(".git")
