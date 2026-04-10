@@ -53,6 +53,55 @@ vim.keymap.set("n", "<leader>ac", function()
   end
 end, { desc = "Autocd to cur file" })
 
+local function jira_picker()
+  local jira_base_url = vim.fn.getenv("JIRA_BASE_URL")
+  require("fzf-lua").fzf_exec(
+    "acli jira workitem search"
+      .. " --jql 'assignee = currentUser() AND statusCategory != Done'"
+      .. " --fields 'key,summary'"
+      .. " --csv"
+      .. " --limit 100"
+      .. " | tail -n +2"
+      .. " | awk -F',' '{key=$1; sub(/^[^,]*,/,\"\"); printf \"%-15s %s\\n\", key, $0}'",
+    {
+      prompt = "Jira> ",
+      actions = {
+        ["default"] = function(selected)
+          if not (selected and selected[1]) then
+            return
+          end
+          local key = selected[1]:match("^(%S+)")
+          if key and vim.bo.modifiable then
+            vim.api.nvim_put({ key }, "c", true, true)
+          end
+        end,
+        ["ctrl-y"] = function(selected)
+          if not (selected and selected[1]) then
+            return
+          end
+          local key = selected[1]:match("^(%S+)")
+          if key then
+            local url = jira_base_url .. "/browse/" .. key
+            vim.fn.setreg("+", url)
+            vim.notify("Copied: " .. url)
+          end
+        end,
+        ["alt-enter"] = function(selected)
+          if not (selected and selected[1]) then
+            return
+          end
+          local key = selected[1]:match("^(%S+)")
+          if key then
+            vim.ui.open(jira_base_url .. "/browse/" .. key)
+          end
+        end,
+      },
+    }
+  )
+end
+
+vim.keymap.set("n", "<leader>fj", jira_picker, { desc = "Jira issue picker" })
+
 if vim.g.neovide then
   -- Linux
   vim.keymap.set("i", "<C-S-V>", "<C-R>+")
