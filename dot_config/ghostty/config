@@ -63,4 +63,6 @@ theme = Everforest Dark Hard
 
 custom-shader = /Users/dkubigenov/work/ghostty-cursor-shaders/cursor_sweep.glsl
 
-
+scrollback-limit=100000000
+font-family="VictorMono Nerd Font Mono"
+font-size=15
