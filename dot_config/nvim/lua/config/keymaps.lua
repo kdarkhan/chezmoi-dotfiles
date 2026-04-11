@@ -39,7 +39,25 @@ vim.keymap.set("n", "<leader>nh", function()
   require("noice").cmd("dismiss")
 end, { desc = "Noice dismiss" })
 
-vim.keymap.set("n", "<leader>aj", ":%!jq<cr>", { desc = "Json format" })
+vim.keymap.set("n", "<leader>aj", function()
+  if not vim.bo.modifiable then
+    vim.notify("Buffer is not modifiable", vim.log.levels.ERROR)
+    return
+  end
+  local lines = vim.api.nvim_buf_get_lines(0, 0, -1, false)
+  local input = table.concat(lines, "\n")
+  local result = vim.fn.system("jq .", input)
+  if vim.v.shell_error == 0 then
+    local formatted = vim.split(result, "\n", { plain = true })
+    -- jq output ends with a newline, remove the trailing empty string
+    if formatted[#formatted] == "" then
+      table.remove(formatted)
+    end
+    vim.api.nvim_buf_set_lines(0, 0, -1, false, formatted)
+  else
+    vim.notify(result, vim.log.levels.ERROR)
+  end
+end, { desc = "Json format" })
 
 vim.keymap.set("n", "<leader>ac", function()
   local root_finder = require("lspconfig.util").root_pattern(".git")
