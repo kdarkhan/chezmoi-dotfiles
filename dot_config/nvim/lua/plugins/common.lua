@@ -371,6 +371,7 @@ return {
       { "<leader>sG", LazyVim.pick("live_grep"), desc = "Grep (Root Dir)" },
       { "<leader>sg", LazyVim.pick("live_grep", { root = false }), desc = "Grep (cwd)" },
       { "<leader>fF", LazyVim.pick("files"), desc = "Find Files (Root Dir)" },
+      { "<leader>fl", LazyVim.pick("lsp_document_symbols"), desc = "LSP symbols" },
       { "<leader><space>", LazyVim.pick("files", { root = false }), desc = "Find Files" },
       {
         "<leader>fc",
@@ -545,5 +546,11 @@ return {
       code = { enabled = false, conceal_delimiters = false, inline = false },
       link = { enabled = false },
     },
+  },
+  {
+    "stevearc/oil.nvim",
+    opts = {},
+    dependencies = { { "nvim-mini/mini.icons", opts = {} } },
+    lazy = false,
   },
 }
