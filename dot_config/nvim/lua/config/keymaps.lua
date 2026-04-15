@@ -129,6 +129,81 @@ local function jira_picker()
   })
 end
 
+local _term_objects = {} -- buf -> snacks terminal object
+
+-- Intercept all snacks terminal creation so the picker works for any terminal
+vim.schedule(function()
+  local orig_open = Snacks.terminal.open
+  Snacks.terminal.open = function(cmd, opts)
+    local term = orig_open(cmd, opts)
+    if term and term.buf then
+      _term_objects[term.buf] = term
+    end
+    return term
+  end
+end)
+
+for i = 1, 4 do
+  vim.keymap.set({ "n", "t" }, "<leader>" .. i, function()
+    local term = Snacks.terminal(nil, { env = { TERM_NUM = tostring(i) } })
+    if term and term.buf then
+      vim.b[term.buf].term_leader_idx = i
+    end
+  end, { desc = "Terminal " .. i })
+end
+
+vim.keymap.set("n", "<leader>ft", function()
+
+  local terms = {}
+  for _, buf in ipairs(vim.api.nvim_list_bufs()) do
+    if vim.api.nvim_buf_is_valid(buf) and vim.bo[buf].buftype == "terminal" then
+      local title = vim.b[buf].term_title or ""
+      local shell = vim.api.nvim_buf_get_name(buf):match(":([^:]+)$") or "?"
+      local idx = vim.b[buf].term_leader_idx
+      local idx_str = idx and ("[" .. idx .. "]") or "   "
+      local label = string.format("%d\t%s %-6s %s", buf, idx_str, shell, title)
+      table.insert(terms, { label = label, buf = buf })
+    end
+  end
+  if #terms == 0 then
+    vim.notify("No terminals open", vim.log.levels.INFO)
+    return
+  end
+  require("fzf-lua").fzf_exec(
+    vim.tbl_map(function(x) return x.label end, terms),
+    {
+      prompt = "Terminals> ",
+      fzf_opts = { ["--no-sort"] = true },
+      previewer = {
+        _ctor = function()
+          local p = require("fzf-lua.previewer.builtin").buffer_or_file:extend()
+          function p:parse_entry(entry_str)
+            local bufnr = tonumber(entry_str:match("^(%d+)\t"))
+            if bufnr and vim.api.nvim_buf_is_valid(bufnr) then
+              return { bufnr = bufnr, terminal = true }
+            end
+            return {}
+          end
+          return p
+        end,
+      },
+      actions = {
+        ["default"] = function(selected)
+          if not (selected and selected[1]) then return end
+          local bufnr = tonumber(selected[1]:match("^(%d+)\t"))
+          if not bufnr then return end
+          local term_obj = _term_objects[bufnr]
+          if term_obj and term_obj:buf_valid() then
+            term_obj:show()
+            term_obj:focus()
+            vim.cmd("startinsert")
+          end
+        end,
+      },
+    }
+  )
+end, { desc = "Terminal picker" })
+
 if jira_base_url ~= vim.NIL and jira_base_url ~= "" then
   vim.keymap.set("n", "<leader>fj", jira_picker, { desc = "Jira issue picker" })
 end
