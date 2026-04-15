@@ -181,7 +181,11 @@ vim.keymap.set("n", "<leader>ft", function()
           function p:parse_entry(entry_str)
             local bufnr = tonumber(entry_str:match("^(%d+)\t"))
             if bufnr and vim.api.nvim_buf_is_valid(bufnr) then
-              return { bufnr = bufnr, terminal = true }
+              return {
+                bufnr = bufnr,
+                terminal = true,
+                line = vim.api.nvim_buf_line_count(bufnr),
+              }
             end
             return {}
           end
