@@ -144,7 +144,7 @@ vim.schedule(function()
 end)
 
 for i = 1, 4 do
-  vim.keymap.set({ "n", "t" }, "<leader>" .. i, function()
+  vim.keymap.set("n", "<leader>" .. i, function()
     local term = Snacks.terminal(nil, { env = { TERM_NUM = tostring(i) } })
     if term and term.buf then
       vim.b[term.buf].term_leader_idx = i
