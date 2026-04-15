@@ -145,10 +145,10 @@ end)
 
 for i = 1, 4 do
   vim.keymap.set("n", "<leader>" .. i, function()
-    local term = Snacks.terminal(nil, { env = { TERM_NUM = tostring(i) } })
-    if term and term.buf then
-      vim.b[term.buf].term_leader_idx = i
-    end
+    Snacks.terminal(nil, {
+      env = { TERM_NUM = tostring(i) },
+      win = { wo = { winbar = string.format("%d: %%{get(b:, 'term_title', '')}", i) } },
+    })
   end, { desc = "Terminal " .. i })
 end
 
@@ -156,10 +156,11 @@ vim.keymap.set("n", "<leader>ft", function()
 
   local terms = {}
   for _, buf in ipairs(vim.api.nvim_list_bufs()) do
-    if vim.api.nvim_buf_is_valid(buf) and vim.bo[buf].buftype == "terminal" then
+    if vim.api.nvim_buf_is_valid(buf) and vim.bo[buf].filetype == "snacks_terminal" then
       local title = vim.b[buf].term_title or ""
       local shell = vim.api.nvim_buf_get_name(buf):match(":([^:]+)$") or "?"
-      local idx = vim.b[buf].term_leader_idx
+      local st = vim.b[buf].snacks_terminal
+      local idx = st and st.env and st.env.TERM_NUM
       local idx_str = idx and ("[" .. idx .. "]") or "   "
       local label = string.format("%d\t%s %-6s %s", buf, idx_str, shell, title)
       table.insert(terms, { label = label, buf = buf })
