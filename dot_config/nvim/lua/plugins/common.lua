@@ -266,7 +266,18 @@ return {
         },
       },
       keymap = {
-        ["<Tab>"] = { "show", "select_next", "snippet_forward", "fallback" },
+        ["<Tab>"] = {
+          function(cmp)
+            local col = vim.fn.col(".") - 1
+            if col == 0 or vim.fn.getline("."):sub(1, col):match("^%s*$") then
+              return false
+            end
+            return cmp.show()
+          end,
+          "select_next",
+          "snippet_forward",
+          "fallback",
+        },
         ["<S-Tab>"] = { "select_prev", "snippet_backward", "fallback" },
         ["<C-j>"] = {
           function(cmp)
