@@ -554,7 +554,14 @@ return {
   {
     "coder/claudecode.nvim",
     opts = {
-      git_repo_cwd = true,
+      cwd_provider = function(ctx)
+        local path = ctx.file and vim.fn.resolve(ctx.file) or vim.fn.resolve(vim.fn.getcwd())
+        local dir = vim.fn.isdirectory(path) == 1 and path or vim.fn.fnamemodify(path, ":h")
+        local r = vim.fn.systemlist({ "git", "-C", dir, "rev-parse", "--show-toplevel" })
+        if vim.v.shell_error == 0 and r[1] and r[1] ~= "" then
+          return r[1]
+        end
+      end,
     },
   },
   {
