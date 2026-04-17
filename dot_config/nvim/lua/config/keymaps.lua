@@ -59,7 +59,7 @@ vim.keymap.set("n", "<leader>aj", function()
   end
 end, { desc = "Json format" })
 
-vim.keymap.set("n", "<leader>ac", function()
+vim.keymap.set("n", "<leader>ad", function()
   local root_finder = require("lspconfig.util").root_pattern(".git")
   local cur = vim.fn.resolve(vim.fn.expand("%:p"))
   local found = root_finder(cur)
@@ -153,7 +153,6 @@ for i = 1, 4 do
 end
 
 vim.keymap.set("n", "<leader>ft", function()
-
   local terms = {}
   for _, buf in ipairs(vim.api.nvim_list_bufs()) do
     if vim.api.nvim_buf_is_valid(buf) and vim.bo[buf].filetype == "snacks_terminal" then
@@ -171,7 +170,9 @@ vim.keymap.set("n", "<leader>ft", function()
     return
   end
   require("fzf-lua").fzf_exec(
-    vim.tbl_map(function(x) return x.label end, terms),
+    vim.tbl_map(function(x)
+      return x.label
+    end, terms),
     {
       prompt = "Terminals> ",
       fzf_opts = { ["--no-sort"] = true },
@@ -194,9 +195,13 @@ vim.keymap.set("n", "<leader>ft", function()
       },
       actions = {
         ["default"] = function(selected)
-          if not (selected and selected[1]) then return end
+          if not (selected and selected[1]) then
+            return
+          end
           local bufnr = tonumber(selected[1]:match("^(%d+)\t"))
-          if not bufnr then return end
+          if not bufnr then
+            return
+          end
           local term_obj = _term_objects[bufnr]
           if term_obj and term_obj:buf_valid() then
             term_obj:show()

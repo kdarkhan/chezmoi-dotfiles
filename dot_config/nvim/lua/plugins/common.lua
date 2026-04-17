@@ -431,6 +431,12 @@ return {
       vim.api.nvim_create_autocmd("FileType", {
         pattern = { "java" },
         callback = function(ev)
+          -- stdlib file paths look like jdt://contents/java.base/java.util/UUID.java?=...
+          -- We don't want to start a new jdtls server for those.
+          if vim.startswith(vim.api.nvim_buf_get_name(ev.buf), "jdt://") then
+            return
+          end
+
           local bundles = {}
 
           local root = vim.fs.root(ev.buf, { ".git", "mvnw", "gradlew" }) or vim.fn.getcwd()
@@ -543,6 +549,12 @@ return {
         desc = "Test Summary",
         ft = "java",
       },
+    },
+  },
+  {
+    "coder/claudecode.nvim",
+    opts = {
+      git_repo_cwd = true,
     },
   },
   {
