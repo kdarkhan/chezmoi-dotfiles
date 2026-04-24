@@ -182,6 +182,11 @@ return {
   },
   {
     "nvim-neo-tree/neo-tree.nvim",
+    opts = {
+      filesystem = {
+        group_empty_dirs = true,
+      },
+    },
     keys = {
       { "<leader>fe", false },
       { "<leader>fE", false },
