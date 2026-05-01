@@ -1,0 +1,32 @@
+(defcfg
+  ;; For Windows
+  ;; input  (low-level-hook)
+  ;; output (send-event-sink)
+
+  ;; For MacOS
+  input  (iokit-name "Apple Internal Keyboard / Trackpad")
+  output (kext)
+
+  ;; This option tells KMonad to let non-configured keys act normal
+  fallthrough true
+)
+
+(defsrc
+    caps a    s    d    f    g    h    j    k    l    ;
+)
+
+(defalias
+    sft_a (multi-tap 200 (tap-hold-next-release 170 a lsft) a)
+    alt_s (multi-tap 200 (tap-hold-next-release 170 s lalt) s)
+    ctl_d (multi-tap 200 (tap-hold-next-release 170 d lctl) d)
+    met_f (multi-tap 200 (tap-hold-next-release 170 f lmet) f)
+
+    met_j (multi-tap 200 (tap-hold-next-release 170 j rmet) j)
+    ctl_k (multi-tap 200 (tap-hold-next-release 170 k rctl) k)
+    alt_l (multi-tap 200 (tap-hold-next-release 170 l lalt) l)
+    sft_; (multi-tap 200 (tap-hold-next-release 170 ; rsft) ;)
+)
+
+(deflayer homerowmods
+    esc @sft_a   @alt_s   @ctl_d   @met_f   g   h   @met_j   @ctl_k   @alt_l   @sft_;
+)
