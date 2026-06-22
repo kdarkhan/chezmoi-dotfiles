@@ -232,6 +232,10 @@ return {
     opts = {
       integrations = {
         diffview = false,
+        telescope = false,
+        fzf_lua = false,
+        mini_pick = false,
+        snacks = true,
       },
       diff_viewer = "codediff",
       -- context_highlight fires a decoration provider on every scroll redraw, generating a burst
@@ -501,6 +505,7 @@ return {
   },
   {
     "rcasia/neotest-java",
+    commit = "4652443",
     ft = "java",
     dependencies = {
       "mfussenegger/nvim-jdtls",
@@ -586,17 +591,42 @@ return {
     version = "^4.0.0", -- Use for stability; omit to use `main` branch for the latest features
     event = "VeryLazy",
   },
-  {
-    "MeanderingProgrammer/render-markdown.nvim",
-    opts = {
-      code = { enabled = false, conceal_delimiters = false, inline = false },
-      link = { enabled = false },
-    },
-  },
+  -- {
+  --   "MeanderingProgrammer/render-markdown.nvim",
+  --   opts = {
+  --     code = { enabled = false, conceal_delimiters = false, inline = false },
+  --     link = { enabled = false },
+  --   },
+  -- },
   {
     "stevearc/oil.nvim",
     opts = {},
     dependencies = { { "nvim-mini/mini.icons", opts = {} } },
+    lazy = false,
+  },
+  {
+    "subnut/nvim-ghost.nvim",
+    init = function()
+      vim.g.nvim_ghost_server_port = 4112
+      local ghost_group = vim.api.nvim_create_augroup("nvim_ghost_user_autocommands", { clear = true })
+
+      vim.api.nvim_create_autocmd("User", {
+        pattern = { "*reddit.com", "*stackoverflow.com", "*github.com" },
+        group = ghost_group,
+        callback = function()
+          print("hello hello")
+          vim.bo.filetype = "markdown"
+          if vim.g.neovide then
+            vim.fn.system([[osascript -e 'tell application "Neovide" to activate']])
+          end
+        end,
+      })
+    end,
+    config = function()
+      -- Prevent child processes (e.g. neogit's headless nvim) from inheriting
+      -- this socket path and failing with "address already in use".
+      vim.fn.setenv("NVIM_LISTEN_ADDRESS", nil)
+    end,
     lazy = false,
   },
 }
