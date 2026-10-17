@@ -1,0 +1,16 @@
+{{- $machine_type := promptChoiceOnce . "machine_type" "Machine type" (list "personal" "work") "personal" -}}
+{{- $desktop_env := promptStringOnce . "desktop_env" "Desktop environment (sway/hyprland/kde/none)" (env "XDG_CURRENT_DESKTOP" | lower | default "none") -}}
+{{- $email := promptStringOnce . "email" "Git email" -}}
+{{- $fullname := promptStringOnce . "fullname" "Git full name" -}}
+
+sourceDir = {{ .chezmoi.sourceDir | quote }}
+mode = "symlink"
+
+[git]
+    autoPush = false
+
+[data]
+    machine_type = {{ $machine_type | quote }}
+    desktop_env = {{ $desktop_env | quote }}
+    email = {{ $email | quote }}
+    fullname = {{ $fullname | quote }}

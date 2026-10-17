@@ -13,6 +13,10 @@ scripts/autostart-wayland.sh
 .config/gammastep/
 {{- end }}
 
+{{- if ne .desktop_env "hyprland" }}
+.config/hypr/
+{{- end }}
+
 
 {{- if not (lookPath "kitty") }}
 .config/kitty/
